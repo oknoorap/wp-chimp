@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/tfirdaus/wp-chimp#readme",
   "devDependencies": {
+    "@commitlint/cli": "^6.1.0",
     "autoprefixer": "^7.1.1",
     "cssnano": "^3.10.0",
     "eslint": "^4.14.0",
