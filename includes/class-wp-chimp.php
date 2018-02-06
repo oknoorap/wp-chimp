@@ -66,8 +66,8 @@ class WP_Chimp {
 	 * @since    0.1.0
 	 */
 	public function __construct() {
-		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
-			$this->version = PLUGIN_NAME_VERSION;
+		if ( defined( 'WP_CHIMP_VERSION' ) ) {
+			$this->version = WP_CHIMP_VERSION;
 		} else {
 			$this->version = '0.1.0';
 		}
