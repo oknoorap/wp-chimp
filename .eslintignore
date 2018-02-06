@@ -1,0 +1,6 @@
+# Files
+*.min.js
+
+# Directories
+node_modules/*
+vendor/*

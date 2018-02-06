@@ -1,0 +1,39 @@
+{
+  "name": "wp-chimp",
+  "version": "0.1.0-alpha.1",
+  "description": "Lightweight, clean and optimized MailChimp subscription form for WordPress",
+  "main": "wp-chimp.php",
+  "directories": {
+    "dev:init": "tests",
+    "dev:start": "tests",
+    "build:dev": "tests",
+    "build": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "dev-kit/bin/ npm install && composer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tfirdaus/wp-chimp.git"
+  },
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "mailchimp"
+  ],
+  "author": "Thoriq Firdaus",
+  "license": "GPL-2.0+",
+  "bugs": {
+    "url": "https://github.com/tfirdaus/wp-chimp/issues"
+  },
+  "homepage": "https://github.com/tfirdaus/wp-chimp#readme",
+  "devDependencies": {
+    "autoprefixer": "^7.1.1",
+    "cssnano": "^3.10.0",
+    "eslint": "^4.14.0",
+    "eslint-plugin-wordpress": "^0.1.0",
+    "stylelint": "^8.4.0",
+    "stylelint-config-wordpress": "^12.0.0"
+  }
+}
