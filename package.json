@@ -1,7 +1,7 @@
 {
   "name": "wp-chimp",
   "version": "0.1.0-alpha.1",
-  "description": "Lightweight, clean and optimized MailChimp subscription form for WordPress",
+  "description": "Lightweight MailChimp form for WordPress",
   "main": "wp-chimp.php",
   "directories": {
     "dev:init": "tests",
