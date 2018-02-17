@@ -9,6 +9,8 @@
  * @subpackage WP_Chimp/admin
  */
 
+namespace WP_Chimp;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -19,7 +21,7 @@
  * @subpackage WP_Chimp/admin
  * @author     Thoriq Firdaus <thoriqoe@gmail.com>
  */
-class WP_Chimp_Admin {
+class Plugin_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -50,7 +52,6 @@ class WP_Chimp_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**

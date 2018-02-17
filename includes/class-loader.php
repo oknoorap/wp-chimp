@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Register all actions and filters for the plugin
  *
@@ -9,6 +8,8 @@
  * @package    WP_Chimp
  * @subpackage WP_Chimp/includes
  */
+
+namespace WP_Chimp;
 
 /**
  * Register all actions and filters for the plugin.
@@ -21,7 +22,7 @@
  * @subpackage WP_Chimp/includes
  * @author     Thoriq Firdaus <thoriqoe@gmail.com>
  */
-class WP_Chimp_Loader {
+class Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

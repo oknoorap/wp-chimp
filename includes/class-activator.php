@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin activation
  *
@@ -9,6 +8,8 @@
  * @package    WP_Chimp
  * @subpackage WP_Chimp/includes
  */
+
+namespace WP_Chimp;
 
 /**
  * Fired during plugin activation.
@@ -20,7 +21,7 @@
  * @subpackage WP_Chimp/includes
  * @author     Thoriq Firdaus <thoriqoe@gmail.com>
  */
-class WP_Chimp_Activator {
+class Activator {
 
 	/**
 	 * Short Description. (use period)

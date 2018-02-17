@@ -12,6 +12,8 @@
  * @subpackage WP_Chimp/includes
  */
 
+namespace WP_Chimp;
+
 /**
  * The core plugin class.
  *
@@ -26,7 +28,7 @@
  * @subpackage WP_Chimp/includes
  * @author     Thoriq Firdaus <thoriqoe@gmail.com>
  */
-class WP_Chimp {
+class Plugin {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -34,7 +36,7 @@ class WP_Chimp {
 	 *
 	 * @since    0.1.0
 	 * @access   protected
-	 * @var      WP_Chimp_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      WP_Chimp\Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -102,26 +104,28 @@ class WP_Chimp {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-chimp-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-chimp-i18n.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-languages.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wp-chimp-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-plugin-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wp-chimp-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-plugin-public.php';
 
-		$this->loader = new WP_Chimp_Loader();
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'blocks/form.php';
+
+		$this->loader = new Loader();
 
 	}
 
@@ -136,7 +140,7 @@ class WP_Chimp {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new WP_Chimp_i18n();
+		$plugin_i18n = new Languages();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -151,7 +155,7 @@ class WP_Chimp {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new WP_Chimp_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Plugin_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -167,7 +171,7 @@ class WP_Chimp {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new WP_Chimp_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Plugin_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -198,7 +202,7 @@ class WP_Chimp {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     0.1.0
-	 * @return    WP_Chimp_Loader    Orchestrates the hooks of the plugin.
+	 * @return    WP_Chimp\Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

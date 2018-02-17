@@ -1,5 +1,6 @@
+'use strict';
+
 (function( $ ) {
-	'use strict';
 
 	/**
 	 * All of the code for your public-facing JavaScript source

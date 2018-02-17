@@ -1,0 +1,1 @@
+{"version":3,"sources":["editor.css"],"names":[],"mappings":"AAAA;;;;GAIG;AACH;EACE,aAAa,EAAE","file":"editor.css","sourcesContent":["/**\n * The following styles get applied inside the editor only.\n *\n * Replace them with your own styles or remove the file completely.\n */\n.wp-block-wp-chimp-form__select-list {\n  width: 220px; }\n"]}

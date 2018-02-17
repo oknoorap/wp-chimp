@@ -3,7 +3,9 @@
  *
  * Replace them with your own styles or remove the file completely.
  */
-.wp-block-wp-chimp-form__select-list {
-  width: 220px; }
+.wp-block-wp-chimp-form {
 
-/*# sourceMappingURL=editor.css.map */
+	&__select-list {
+		width: 220px;
+	}
+}

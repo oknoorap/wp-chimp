@@ -1,6 +1,6 @@
 {
-  "extends": "plugin:wordpress/recommended",
-  "plugins": [
-    "wordpress"
-  ]
+  "extends": "wordpress",
+  "parserOptions": {
+    "ecmaVersion": 6
+  }
 }

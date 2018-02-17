@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -13,6 +12,8 @@
  * @subpackage WP_Chimp/includes
  */
 
+namespace WP_Chimp;
+
 /**
  * Define the internationalization functionality.
  *
@@ -24,8 +25,7 @@
  * @subpackage WP_Chimp/includes
  * @author     Thoriq Firdaus <thoriqoe@gmail.com>
  */
-class WP_Chimp_i18n {
-
+class Languages {
 
 	/**
 	 * Load the plugin text domain for translation.
@@ -39,9 +39,5 @@ class WP_Chimp_i18n {
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
-
 	}
-
-
-
 }

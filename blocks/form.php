@@ -3,8 +3,11 @@
  * Functions to register client-side assets (scripts and stylesheets) for the
  * Gutenberg block.
  *
- * @package wp-chimp
+ * @package WP_Chimp
+ * @subpackage WP_Chimp/blocks
  */
+
+namespace WP_Chimp;
 
 /**
  * Registers all block assets so that they can be enqueued through Gutenberg in
@@ -49,8 +52,8 @@ function form_block_init() {
 
 	register_block_type( 'wp-chimp/form', array(
 		'editor_script' => 'form-block-editor',
-		'editor_style'  => 'form-block-editor',
-		'style'         => 'form-block',
+		'editor_style' => 'form-block-editor',
+		'style' => 'form-block'
 	) );
 }
-add_action( 'init', 'form_block_init' );
+add_action( 'init', __NAMESPACE__ . '\\form_block_init' );

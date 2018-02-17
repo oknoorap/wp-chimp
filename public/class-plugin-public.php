@@ -9,6 +9,8 @@
  * @subpackage WP_Chimp/public
  */
 
+namespace WP_Chimp;
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -19,7 +21,7 @@
  * @subpackage WP_Chimp/public
  * @author     Thoriq Firdaus <thoriqoe@gmail.com>
  */
-class WP_Chimp_Public {
+class Plugin_Public {
 
 	/**
 	 * The ID of this plugin.

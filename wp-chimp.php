@@ -12,7 +12,7 @@
  * @package           WP_Chimp
  *
  * @wordpress-plugin
- * Plugin Name:       WP Chimp
+ * Plugin Name:       WP-Chimp
  * Plugin URI:        https://wordpress.org/plugins/wp-chimp
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           0.1.0
@@ -43,30 +43,30 @@ define( 'WP_CHIMP_VERSION', '0.1.0' );
  * This action is documented in includes/class-wp-chimp-activator.php
  */
 function activate_wp_chimp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-chimp-activator.php';
-	WP_Chimp_Activator::activate();
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-activator.php';
+	WP_Chimp\Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-wp-chimp-deactivator.php
+ * This action is documented in includes/class-deactivator.php
  */
 function deactivate_wp_chimp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-chimp-deactivator.php';
-	WP_Chimp_Deactivator::deactivate();
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-deactivator.php';
+	WP_Chimp\Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_wp_chimp' );
 register_deactivation_hook( __FILE__, 'deactivate_wp_chimp' );
 
-// Load the modules from Composer.
-require_once plugin_dir_path( __FILE__ ) . 'includes/vendor/autoload.php';
+// Load packages isntalled with Composer.
+require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-wp-chimp.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin.php';
 
 /**
  * Begins execution of the plugin.
@@ -78,7 +78,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wp-chimp.php';
  * @since    0.1.0
  */
 function run_wp_chimp() {
-	$plugin = new WP_Chimp();
+	$plugin = new WP_Chimp\Plugin();
 	$plugin->run();
 }
 run_wp_chimp();

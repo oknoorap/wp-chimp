@@ -45,6 +45,8 @@ npm-debug.log
 ######################
 *.min.css
 *.min.js
+*.css
+*.js
 
 # Dist direcotories #
 #####################
