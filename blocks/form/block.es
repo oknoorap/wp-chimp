@@ -51,7 +51,7 @@
 
     // Block Attributes
     attributes: {
-      mailChimpList: {
+      mailingList: {
         type: 'string'
       }
     },
@@ -66,7 +66,7 @@
      * @return {Element}       Element to render.
      */
     edit({ className, attributes, setAttributes }) {
-      const { mailChimpList } = attributes;
+      const { mailingList } = attributes;
 
       /**
        * Set the selected MailChimp list
@@ -76,7 +76,7 @@
        */
       function onSelectOption( value ) {
         setAttributes({
-          mailChimpList: value
+          mailingList: value
         });
       }
 
@@ -89,7 +89,7 @@
         }, [
           createElement( SelectControl, {
             className: `${className}__select-list`,
-            value: mailChimpList,
+            value: mailingList,
             options: [ {
               value: '1',
               label: 'List 1'
