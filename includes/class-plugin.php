@@ -68,6 +68,7 @@ class Plugin {
 	 * @since    0.1.0
 	 */
 	public function __construct() {
+
 		if ( defined( 'WP_CHIMP_VERSION' ) ) {
 			$this->version = WP_CHIMP_VERSION;
 		} else {
@@ -80,6 +81,11 @@ class Plugin {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
+		// Enable Gutenberg blocks if WordPress supports it.
+		if ( \function_exists( 'register_block_type' ) ) {
+			$this->define_blocks_hooks();
+		}
+
 	}
 
 	/**
@@ -87,10 +93,10 @@ class Plugin {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - WP_Chimp_Loader. Orchestrates the hooks of the plugin.
-	 * - WP_Chimp_i18n. Defines internationalization functionality.
-	 * - WP_Chimp_Admin. Defines all hooks for the admin area.
-	 * - WP_Chimp_Public. Defines all hooks for the public side of the site.
+	 * - WP_Chimp/Loader. Orchestrates the hooks of the plugin.
+	 * - WP_Chimp/Languages. Defines internationalization functionality.
+	 * - WP_Chimp/Plugin_Admin. Defines all hooks for the admin area.
+	 * - WP_Chimp/Plugin_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -123,26 +129,29 @@ class Plugin {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-plugin-public.php';
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'blocks/form.php';
+		/**
+		 * Functions and classes to load Gutenberg "Subscription Form" in the admin,
+		 * and the block rendering in the public-facing of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'blocks/class-blocks-form.php';
 
 		$this->loader = new Loader();
-
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the WP_Chimp_i18n class in order to set the domain and to register the hook
+	 * Uses the WP_Chimp/Languages class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
-	 * @since    0.1.0
-	 * @access   private
+	 * @since  0.1.0
+	 * @access private
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Languages();
+		$languages = new Languages();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		$this->loader->add_action( 'plugins_loaded', $languages, 'load_plugin_textdomain' );
 
 	}
 
@@ -176,6 +185,20 @@ class Plugin {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+	}
+
+	/**
+	 * Register all of the hooks related to the Gutenberg block functionality
+	 * of the plugin.
+	 *
+	 * @since  0.1.0
+	 * @access private
+	 */
+	private function define_blocks_hooks() {
+
+		$blocks_form = new Blocks_Form();
+
+		$this->loader->add_action( 'init', $blocks_form, 'form_block_init' );
 	}
 
 	/**

@@ -29,8 +29,6 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-use DrewM\MailChimp\MailChimp as MailChimp;
-
 /**
  * Currently pligin version.
  * Start at version 0.1.0 and use SemVer - https://semver.org

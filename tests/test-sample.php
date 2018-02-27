@@ -2,7 +2,7 @@
 /**
  * Class SampleTest
  *
- * @package Wp_Chimp
+ * @package WP_Chimp
  */
 
 /**

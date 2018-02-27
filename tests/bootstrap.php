@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file
  *
- * @package Wp_Chimp
+ * @package WP_Chimp
  */
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
