@@ -85,7 +85,6 @@ class Plugin {
 		if ( \function_exists( 'register_block_type' ) ) {
 			$this->define_blocks_hooks();
 		}
-
 	}
 
 	/**
@@ -169,6 +168,11 @@ class Plugin {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$admin_page = new Admin_Page( $this->get_plugin_name(), $this->get_version() );
+		$admin_menu = new Admin_Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
+
+		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
+		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
 	}
 
 	/**

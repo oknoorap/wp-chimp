@@ -28,18 +28,18 @@ class Plugin_Admin {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    0.1.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @since  0.1.0
+	 * @access private
+	 * @var    string   $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
 
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    0.1.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
+	 * @since  0.1.0
+	 * @access private
+	 * @var    string  $version The current version of this plugin.
 	 */
 	private $version;
 
@@ -54,12 +54,28 @@ class Plugin_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
+
+		$this->load_dependencies();
+	}
+
+	/**
+	 * Load the required dependencies for this plugin.
+	 *
+	 * @since  0.1.0
+	 * @access private
+	 */
+	private function load_dependencies() {
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/abstract/class-wp-db-table.php';
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-admin-menu.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-admin-page.php';
 	}
 
 	/**
 	 * Register the stylesheets for the admin area.
 	 *
-	 * @since    0.1.0
+	 * @since 0.1.0
 	 */
 	public function enqueue_styles() {
 
@@ -74,15 +90,13 @@ class Plugin_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
 	 * Register the JavaScript for the admin area.
 	 *
-	 * @since    0.1.0
+	 * @since 0.1.0
 	 */
 	public function enqueue_scripts() {
 
@@ -97,9 +111,6 @@ class Plugin_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), $this->version, false );
-
 	}
-
 }
