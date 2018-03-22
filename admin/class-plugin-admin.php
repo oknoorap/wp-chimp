@@ -79,18 +79,22 @@ class Plugin_Admin {
 	 */
 	public function enqueue_styles() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in WP_Chimp_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The WP_Chimp_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), $this->version, 'all' );
+		$screen = get_current_screen();
+
+		if ( 'settings_page_' . $this->plugin_name === $screen->id ) {
+			/**
+			 * This function is provided for demonstration purposes only.
+			 *
+			 * An instance of this class should be passed to the run() function
+			 * defined in WP_Chimp_Loader as all of the hooks are defined
+			 * in that particular class.
+			 *
+			 * The WP_Chimp_Loader will then create the relationship
+			 * between the defined hooks and the functions defined in this
+			 * class.
+			 */
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/admin.css', [], $this->version, 'all' );
+		}
 	}
 
 	/**
@@ -100,17 +104,24 @@ class Plugin_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in WP_Chimp_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The WP_Chimp_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), $this->version, false );
+		$screen = get_current_screen();
+
+		if ( 'settings_page_' . $this->plugin_name === $screen->id ) {
+
+			wp_enqueue_script( 'wp-api' );
+
+			/**
+			 * This function is provided for demonstration purposes only.
+			 *
+			 * An instance of this class should be passed to the run() function
+			 * defined in WP_Chimp_Loader as all of the hooks are defined
+			 * in that particular class.
+			 *
+			 * The WP_Chimp_Loader will then create the relationship
+			 * between the defined hooks and the functions defined in this
+			 * class.
+			 */
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', [ 'jquery', 'wp-api' ], $this->version );
+		}
 	}
 }
