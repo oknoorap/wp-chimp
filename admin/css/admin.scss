@@ -2,3 +2,20 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.wp-chimp-table {
+	margin: 30px 0;
+
+	&__th-id {
+		width: 100px;
+	}
+
+	&__th-subscribers,
+	&__th-last-sync {
+		width: 150px;
+	}
+
+	&__th-shortcode {
+		width: 320px;
+	}
+}
