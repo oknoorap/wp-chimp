@@ -63,3 +63,7 @@ npm-debug.log
 .env
 /wp-content
 /wordpress
+
+# Exception #
+######################
+!gulpfile.js

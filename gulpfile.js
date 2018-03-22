@@ -1,14 +1,13 @@
 /* eslint-env node */
-const gulp = require('gulp');
-const babel = require('gulp-babel');
-const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const sourcemaps = require('gulp-sourcemaps');
-
-const mergeStream = require('merge-stream');
+const gulp = require( 'gulp' );
+const babel = require( 'gulp-babel' );
+const sass = require( 'gulp-sass' );
+const autoprefixer = require( 'gulp-autoprefixer' );
+const sourcemaps = require( 'gulp-sourcemaps' );
+const mergeStream = require( 'merge-stream' );
 
 const autoprefixerConfig = {
-  browsers: ['last 3 versions'],
+  browsers: [ 'last 3 versions' ],
   cascade: false
 };
 
@@ -23,7 +22,7 @@ const scriptSources = [
     'src': 'public/js/*.es',
     'dest': 'public/js'
   }
-]
+];
 
 const styleSources = [
   {
@@ -36,55 +35,56 @@ const styleSources = [
     'src': 'public/css/*.scss',
     'dest': 'public/css'
   }
-]
+];
 
-gulp.task('script', () => {
+gulp.task( 'script', () => {
 
   var stream = mergeStream();
   var script = [];
 
-  scriptSources.forEach((value, index) => {
-    script[index] = gulp.src(value.src)
-      .pipe(babel())
-      .pipe(gulp.dest(value.dest));
+  scriptSources.forEach( ( value, index ) => {
+    script[index] = gulp.src( value.src )
+      .pipe( babel() )
+      .pipe( gulp.dest( value.dest ) );
 
-    stream.add(script[index]);
+    stream.add( script[index]);
   });
 
   return stream;
 });
 
-gulp.task('style', () => {
+gulp.task( 'style', () => {
 
   var stream = mergeStream();
   var style = [];
 
-  styleSources.forEach((value, index) => {
-    style[index] = gulp.src(value.src)
-      .pipe(sass().on('error', sass.logError))
-        .pipe(sourcemaps.init())
-        .pipe(autoprefixer(autoprefixerConfig))
-        .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest(value.dest));
+  styleSources.forEach( ( value, index ) => {
+    style[index] = gulp.src( value.src )
+      .pipe( sass().on( 'error', sass.logError ) )
+        .pipe( sourcemaps.init() )
+        .pipe( autoprefixer( autoprefixerConfig ) )
+        .pipe( sourcemaps.write( '.' ) )
+      .pipe( gulp.dest( value.dest ) );
 
-    stream.add(style[index]);
+    stream.add( style[index]);
   });
 
   return stream;
 });
 
-gulp.task('default', ['script', 'style'], () => {
+gulp.task( 'default', [ 'script', 'style' ], () => {
 
-  var watchScripts = []
-  scriptSources.forEach((value, index) => {
+  var watchScripts = [];
+  var watchStyles = [];
+
+  scriptSources.forEach( ( value, index ) => {
     watchScripts[index] = value.src;
   });
 
-  var watchStyles = []
-  styleSources.forEach((value, index) => {
+  styleSources.forEach( ( value, index ) => {
     watchStyles[index] = value.src;
   });
 
-  gulp.watch(watchScripts, ['script']);
-  gulp.watch(watchStyles, ['style']);
+  gulp.watch( watchScripts, [ 'script' ]);
+  gulp.watch( watchStyles, [ 'style' ]);
 });
