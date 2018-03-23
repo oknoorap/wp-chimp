@@ -76,7 +76,14 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin.php';
  * @since    0.1.0
  */
 function run_wp_chimp() {
-	$plugin = new WP_Chimp\Plugin();
+
+	$args = [
+		'plugin_name' => 'wp-chimp',
+		'plugin_file' => __FILE__,
+		'version'     => WP_CHIMP_VERSION,
+	];
+
+	$plugin = new WP_Chimp\Plugin( $args );
 	$plugin->run();
 }
 run_wp_chimp();
