@@ -36,28 +36,7 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'WP_CHIMP_VERSION', '0.1.0' );
 
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-wp-chimp-activator.php
- */
-function activate_wp_chimp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-activator.php';
-	WP_Chimp\Activator::activate();
-}
-
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-deactivator.php
- */
-function deactivate_wp_chimp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-deactivator.php';
-	WP_Chimp\Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_wp_chimp' );
-register_deactivation_hook( __FILE__, 'deactivate_wp_chimp' );
-
-// Load packages isntalled with Composer.
+// Load packages installed through Composer.
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**
