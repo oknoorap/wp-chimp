@@ -52,6 +52,8 @@ class Plugin_Admin {
 	 */
 	public function __construct( $plugin_name, $version ) {
 
+		global $wpdb;
+
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 
@@ -65,9 +67,6 @@ class Plugin_Admin {
 	 * @access private
 	 */
 	private function load_dependencies() {
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/abstract/class-wp-db-table.php';
-
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-admin-menu.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-admin-page.php';
 	}
