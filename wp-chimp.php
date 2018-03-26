@@ -7,34 +7,27 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://wp-chimp.com
- * @since             0.1.0
- * @package           WP_Chimp
+ * @link    https://wp-chimp.com
+ * @since   0.1.0
+ * @package WP_Chimp
  *
  * @wordpress-plugin
- * Plugin Name:       WP-Chimp
- * Plugin URI:        https://wordpress.org/plugins/wp-chimp
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           0.1.0
- * Author:            Thoriq Firdaus
- * Author URI:        https://wp-chimp.com
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       wp-chimp
- * Domain Path:       /languages
+ * Plugin Name: WP Chimp
+ * Plugin URI: https://wordpress.org/plugins/wp-chimp
+ * Description: This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Version: 0.1.0
+ * Author: Thoriq Firdaus
+ * Author URI: https://wp-chimp.com
+ * License: GPL-2.0+
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain: wp-chimp
+ * Domain Path: /languages
  */
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
-
-/**
- * Currently pligin version.
- * Start at version 0.1.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'WP_CHIMP_VERSION', '0.1.0' );
 
 // Load packages installed through Composer.
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
@@ -52,17 +45,21 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin.php';
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    0.1.0
+ * This function is also useful to check if the plugin is activated
+ * through the function_exists() function.
+ *
+ * @since  0.1.0
+ * @return WP_Chimp\Plugin The Plugin instance.
  */
-function run_wp_chimp() {
+function wp_chimp() {
 
-	$args = [
-		'plugin_name' => 'wp-chimp',
-		'plugin_file' => __FILE__,
-		'version'     => WP_CHIMP_VERSION,
-	];
+	static $plugin;
 
-	$plugin = new WP_Chimp\Plugin( $args );
-	$plugin->run();
+	if ( is_null( $plugin ) ) {
+		$plugin = new WP_Chimp\Plugin( 'wp-chimp', '0.1.0', __FILE__ );
+		$plugin->run();
+	}
+
+	return $plugin;
 }
-run_wp_chimp();
+wp_chimp();

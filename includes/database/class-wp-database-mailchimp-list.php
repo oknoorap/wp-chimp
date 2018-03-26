@@ -12,7 +12,7 @@
 namespace WP_Chimp;
 
 /**
- * Setup the global "chimp_mailchimp_list" database table
+ * Setup the "chimp_mailchimp_list" database schema
  *
  * @since 0.1.0
  */
