@@ -134,6 +134,17 @@ class Plugin {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'blocks/class-blocks-form.php';
 
+		/**
+		 * A base WordPress database table class, which facilitates the creation of
+		 * and schema changes to individual database tables.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'abstract/class-wp-db-table.php';
+
+		/**
+		 * Class and methods to handle the `wp_chimp_mailchimp_list` database.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'database/class-db-mailchimp-list.php';
+
 		$this->loader = new Loader();
 	}
 
@@ -189,6 +200,22 @@ class Plugin {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+	/**
+	 * Register all of the hooks related to the database functionality
+	 * of the plugin.
+	 *
+	 * @since  0.1.0
+	 * @access private
+	 */
+	private function define_database_hooks() {
+
+		$db_mailchimp_list = new WP_Database_MailChimp_List();
+
+		// Create or Update the database upon plugin activation.
+		register_activation_hook( $this->file, [ $db_mailchimp_list, 'maybe_upgrade' ] );
+
+		$this->loader->add_action( 'switch_blog', $db_mailchimp_list, 'switch_blog' );
+		$this->loader->add_action( 'admin_init', $db_mailchimp_list, 'maybe_upgrade' );
 	}
 
 	/**
