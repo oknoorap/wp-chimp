@@ -190,4 +190,23 @@ class Admin_Page {
 		<p class="description"><?php esc_html_e( 'Add your MailChimp API key' ); ?>. <a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank"><?php esc_html_e( 'How to generate the API key?', 'wp-chimp' ); ?></a></p>
 	<?php
 	}
+
+	/**
+	 * Add the action link in Plugin list screen.
+	 *
+	 * @since 0.1.0
+	 * @access public
+	 *
+	 * @param  array $links WordPress built-in links (e.g. Activate, Deactivate, and Edit).
+	 * @return array        Action links with the new one added.
+	 */
+	public function register_action_links( $links ) {
+
+		$markup   = '<a href="' . esc_url( get_admin_url( null, 'options-general.php?page=%2$s' ) ) . '">%1$s</a>';
+		$settings = [
+			'settings' => sprintf( $markup, __( 'Settings', 'wp-chimp' ), $this->plugin_name ),
+		];
+
+		return array_merge( $settings, $links );
+	}
 }
