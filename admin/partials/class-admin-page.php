@@ -107,10 +107,10 @@ class Admin_Page {
 	 */
 	public function get_state() {
 
-		// TODO change the allSynced value.
+		// TODO: change the init value.
 		$state = [
-			'apiKey'    => (bool) $this->mailchimp_api_key,
-			'allSynced' => false,
+			'apiKey' => (bool) $this->mailchimp_api_key,
+			'init'   => false,
 		];
 
 		return wp_json_encode( $state, 0, 3 );

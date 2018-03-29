@@ -1,6 +1,6 @@
 <?php
 /**
- * MailChimp List Table: DB_MailChimp_List class
+ * MailChimp List Table: DB_MailChimp_Lists class
  *
  * @link       https://wp-chimp.com
  * @since      0.1.0
@@ -9,21 +9,21 @@
  * @subpackage WP_Chimp/database
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Storage;
 
 /**
  * Setup the "chimp_mailchimp_list" database schema
  *
  * @since 0.1.0
  */
-final class WP_Database_MailChimp_List extends WP_Database {
+final class WP_Database_MailChimp_Lists extends WP_Database {
 
 	/**
 	 * Table name
 	 *
 	 * @var string
 	 */
-	protected $name = 'chimp_mailchimp_list';
+	protected $name = 'chimp_mailchimp_lists';
 
 	/**
 	 * Database version
@@ -42,7 +42,7 @@ final class WP_Database_MailChimp_List extends WP_Database {
 		$this->schema = "
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			list_id varchar(20) NOT NULL DEFAULT '',
-			title varchar(200) NOT NULL DEFAULT '',
+			name varchar(200) NOT NULL DEFAULT '',
 			subscribers bigint(20) NOT NULL DEFAULT '0',
 			double_opt_in tinyint(1) NOT NULL DEFAULT '0',
 			synced_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',

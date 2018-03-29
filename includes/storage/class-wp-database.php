@@ -8,10 +8,10 @@
  * @license https://www.gnu.org/licenses/gpl-2.0.html
  *
  * @package    WP_Chimp
- * @subpackage WP_Chimp/admin/partials/abstract
+ * @subpackage WP_Chimp/includes/storage
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Storage;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -292,21 +292,6 @@ abstract class WP_Database {
 		$this->db_version = $this->is_global()
 			? get_network_option( null, $this->db_version_key, false )
 			: get_option( $this->db_version_key, false );
-	}
-
-	/**
-	 * Add class hooks to WordPress actions
-	 *
-	 * @since 1.1.0
-	 */
-	private function add_hooks() {
-
-		// Activation hook.
-		register_activation_hook( $this->file, [ $this, 'maybe_upgrade' ] );
-
-		// Add table to the global database object.
-		add_action( 'switch_blog', [ $this, 'switch_blog' ] );
-		add_action( 'admin_init', [ $this, 'maybe_upgrade' ] );
 	}
 
 	/**

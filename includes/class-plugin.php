@@ -94,6 +94,7 @@ class Plugin {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->define_database_hooks();
+		$this->define_api_hooks();
 
 		// Enable Gutenberg blocks if WordPress supports it.
 		if ( function_exists( 'register_block_type' ) ) {
@@ -129,12 +130,29 @@ class Plugin {
 		 * A base WordPress database table class, which facilitates the creation of
 		 * and schema changes to individual database tables.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/database/class-wp-database.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/storage/class-wp-database.php';
 
 		/**
 		 * Class and methods to handle the `wp_chimp_mailchimp_list` database.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/database/class-wp-database-mailchimp-list.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/storage/class-wp-database-mailchimp-lists.php';
+
+		/**
+		 * Class and methods to queue process on storing the MailChimp from the API response
+		 * to the database.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/storage/class-mailchimp-lists-process.php';
+
+		/**
+		 * Class and methods that handle database query and caching of the MailChimp list.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/storage/class-mailchimp-lists-query.php';
+
+		/**
+		 * The class responsible to register the custom API endpoint with the WP-API
+		 * that'll retrieve the MailChimp list.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/endpoints/class-rest-mailchimp-list-controller.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
@@ -233,13 +251,28 @@ class Plugin {
 	 */
 	private function define_database_hooks() {
 
-		$db_mailchimp_list = new WP_Database_MailChimp_List();
+		$db_mailchimp_list = new Storage\WP_Database_MailChimp_Lists();
 
 		// Create or Update the database upon plugin activation.
 		register_activation_hook( $this->file, [ $db_mailchimp_list, 'maybe_upgrade' ] );
 
 		$this->loader->add_action( 'switch_blog', $db_mailchimp_list, 'switch_blog' );
 		$this->loader->add_action( 'admin_init', $db_mailchimp_list, 'maybe_upgrade' );
+	}
+
+	/**
+	 * Register custom REST API routes of the plugin using WP-API.
+	 *
+	 * @since  0.1.0
+	 * @access private
+	 */
+	private function define_api_hooks() {
+
+		$lists_query = new Storage\MailChimp_Lists_Query();
+		$lists_rest  = new Endpoints\REST_MailChimp_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
+		$lists_rest->register_query( $lists_query );
+
+		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' );
 	}
 
 	/**
