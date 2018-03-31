@@ -144,7 +144,7 @@ final class MailChimp_Lists_Query {
 		}
 
 		$data       = wp_parse_args( $data, $defaults );
-		$current_id = self::get_by_id( $data['list_id'] );
+		$current_id = self::get_by_the_id( $data['list_id'] );
 
 		/**
 		 * First let's check the list_id existance. We'll need to be sure that
