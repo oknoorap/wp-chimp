@@ -94,7 +94,7 @@ final class MailChimp_Lists_Query {
 	 *               Or, an empty array if the list is not present,
 	 *               with the $id is not present.
 	 */
-	static public function get_by_id( $id = '' ) {
+	static public function get_by_the_id( $id = '' ) {
 
 		global $wpdb;
 
