@@ -1,4 +1,14 @@
 <?php
+/**
+ * The file that defines the class and the methods to query
+ * *_chimp_mailchimp_lists table.
+ *
+ * @link       https://wp-chimp.com
+ * @since      0.1.0
+ *
+ * @package    WP_Chimp
+ * @subpackage WP_Chimp/includes
+ */
 
 namespace WP_Chimp\Storage;
 
@@ -8,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class that register new menu in the Admin area and load the page.
+ * The class to query the *_chimp_mailchimp_lists table
  *
  * @since 0.1.0
  */
@@ -101,7 +111,7 @@ final class MailChimp_Lists_Query {
 		$cache_key = "get_list_id:{$id}";
 		$list      = wp_cache_get( $cache_key, 'wp_chimp_lists' );
 
-		if ( false === $list && is_string( $id ) && ! empty( $id ) ) {
+		if ( false === (bool) $list && is_string( $id ) && ! empty( $id ) ) {
 
 			$list = $wpdb->get_row( $wpdb->prepare("
 				SELECT list_id, name, subscribers, double_opt_in
