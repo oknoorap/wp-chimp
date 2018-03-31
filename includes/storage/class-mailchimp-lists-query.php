@@ -237,6 +237,19 @@ final class MailChimp_Lists_Query {
 	 * @param  string $id The MailChimp list ID {@link https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id}.
 	 */
 	public function delete( $id = '' ) {
+		global $wpdb;
+
+		$deleted = $wpdb->delete( $wpdb->chimp_mailchimp_lists,
+			[ 'list_id' => $id ],
+			[ '%s' ]
+		);
+
+		if ( false !== $deleted ) {
+			self::clean_cache( 'lists' );
+			self::clean_cache( "list{$id}" );
+		}
+	}
+
 	/**
 	 * Function to check if the required column contains valid data
 	 *
