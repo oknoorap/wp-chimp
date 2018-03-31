@@ -322,3 +322,21 @@ final class MailChimp_Lists_Query {
 		return $sanitized_data;
 	}
 
+	/**
+	 * Function to clean the list from the Object Cache
+	 *
+	 * @since  0.1.0
+	 *
+	 * @param  string $cache_key The list ID to delete from the cache.
+	 * @return void
+	 */
+	static private function clean_cache( $cache_key ) {
+		global $_wp_susp_wp_suspend_cache_invalidation;
+
+		if ( ! empty( $_wp_suspend_cache_invalidation ) ) { // Bail if cache invalidation is suspended.
+			return;
+		}
+
+		wp_cache_delete( $cache_key, 'wp_chimp_lists' ); // Delete list from the cache.
+	}
+}
