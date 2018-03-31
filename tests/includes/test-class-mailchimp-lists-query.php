@@ -36,7 +36,6 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 		$this->lists_db->maybe_upgrade();
 
 		$this->lists_query = new Storage\MailChimp_Lists_Query();
-
 		$this->wpdb        = $GLOBALS['wpdb'];
 		$this->sample_data = [
 			[
@@ -84,6 +83,11 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 			],
 			[], // Bad example of empty array.
 		];
+
+		// Insert the data to the table.
+		foreach ( $this->sample_data as $data ) {
+			$this->lists_query->insert( $data );
+		}
 	}
 
 	/**
@@ -107,10 +111,6 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_insert() {
-
-		foreach ( $this->sample_data as $key => $data ) {
-			$this->lists_query->insert( $data );
-		}
 
 		$saved_data = $this->lists_query->query();
 
@@ -154,13 +154,28 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	 */
 	public function test_get_the_ids() {
 
-		foreach ( $this->sample_data as $key => $data ) {
-			$this->lists_query->insert( $data );
-		}
-
 		$mailchimp_list_ids = $this->lists_query->get_the_ids();
 
 		$this->assertTrue( is_array( $mailchimp_list_ids ) );
 		$this->assertEquals( [ '320424cb3b', '520524cb3b', '610424aa1c', '827304a9a2' ], $mailchimp_list_ids );
+	}
+
+	/**
+	 * Test method to get the MailChimp list by the list_id
+	 *
+	 * @since  0.1.0
+	 * @see    Storage\MailChimp_Lists_Query()->get_by_the_id();
+	 *
+	 * @return void
+	 */
+	public function test_get_by_the_id() {
+
+		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
+		$this->assertEquals( [
+			'list_id'       => '520524cb3b',
+			'name'          => 'MailChimp List 1',
+			'subscribers'   => 100,
+			'double_opt_in' => 0,
+		], $list );
 	}
 }
