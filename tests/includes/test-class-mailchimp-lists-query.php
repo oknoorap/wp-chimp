@@ -37,30 +37,8 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 
 		$this->lists_query = new Storage\MailChimp_Lists_Query();
 
-		$this->wpdb = $GLOBALS['wpdb'];
-	}
-
-	/**
-	 * Test the update method.
-	 *
-	 * @since  0.1.0
-	 *
-	 * @return void
-	 */
-	public function test_check_db_install() {
-		$this->assertEquals( "{$this->wpdb->prefix}chimp_mailchimp_lists", $this->wpdb->chimp_mailchimp_lists );
-	}
-
-	/**
-	 * Test method to insert a new entry to the database.
-	 *
-	 * @see Storage\MailChimp_Lists_Query()->insert();
-	 *
-	 * @return void
-	 */
-	public function test_query() {
-
-		$sample_data = [
+		$this->wpdb        = $GLOBALS['wpdb'];
+		$this->sample_data = [
 			[
 				'list_id'       => '520524cb3b',
 				'name'          => 'MailChimp List 1',
@@ -106,12 +84,35 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 			],
 			[], // Bad example of empty array.
 		];
+	}
 
-		foreach ( $sample_data as $key => $data ) {
+	/**
+	 * Test the update method.
+	 *
+	 * @since  0.1.0
+	 *
+	 * @return void
+	 */
+	public function test_check_db_install() {
+		$this->assertEquals( "{$this->wpdb->prefix}chimp_mailchimp_lists", $this->wpdb->chimp_mailchimp_lists );
+	}
+
+	/**
+	 * Test method to insert a new entry to the database.
+	 *
+	 * @since  0.1.0
+	 * @see    Storage\MailChimp_Lists_Query()->insert();
+	 * @see    Storage\MailChimp_Lists_Query()->query();
+	 *
+	 * @return void
+	 */
+	public function test_insert() {
+
+		foreach ( $this->sample_data as $key => $data ) {
 			$this->lists_query->insert( $data );
 		}
 
-		$retrieved_data = $this->lists_query->query();
+		$saved_data = $this->lists_query->query();
 
 		/**
 		 * Assuming that the last 2 of the data are invalid.
@@ -120,26 +121,46 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 		 * inserted to the table since the 'rand' column will be
 		 * filtered-out before inserting the data to the table.
 		 */
-		$this->assertEquals( 4, count( $retrieved_data ) );
+		$this->assertEquals( 4, count( $saved_data ) );
 
-		$retrieved_data_sorted = [];
-		foreach ( $retrieved_data as $data ) {
-			$retrieved_data_sorted[ $data['list_id'] ] = $data['name'];
+		$saved_data_sorted = [];
+		foreach ( $saved_data as $data ) {
+			$saved_data_sorted[ $data['list_id'] ] = $data['name'];
 		}
 
-		$this->assertTrue( array_key_exists( '520524cb3b', $retrieved_data_sorted ) );
-		$this->assertEquals( 'MailChimp List 1', $retrieved_data_sorted['520524cb3b'] );
+		$this->assertTrue( array_key_exists( '520524cb3b', $saved_data_sorted ) );
+		$this->assertEquals( 'MailChimp List 1', $saved_data_sorted['520524cb3b'] );
 
-		$this->assertTrue( array_key_exists( '320424cb3b', $retrieved_data_sorted ) );
-		$this->assertEquals( 'MailChimp List 2', $retrieved_data_sorted['320424cb3b'] );
+		$this->assertTrue( array_key_exists( '320424cb3b', $saved_data_sorted ) );
+		$this->assertEquals( 'MailChimp List 2', $saved_data_sorted['320424cb3b'] );
 
-		$this->assertTrue( array_key_exists( '610424aa1c', $retrieved_data_sorted ) );
-		$this->assertEquals( 'MailChimp List 3', $retrieved_data_sorted['610424aa1c'] );
+		$this->assertTrue( array_key_exists( '610424aa1c', $saved_data_sorted ) );
+		$this->assertEquals( 'MailChimp List 3', $saved_data_sorted['610424aa1c'] );
 
 		// Ommitted because the 'name' is empty.
-		$this->assertFalse( array_key_exists( '729404aa1c', $retrieved_data_sorted ) );
+		$this->assertFalse( array_key_exists( '729404aa1c', $saved_data_sorted ) );
 
-		$this->assertTrue( array_key_exists( '827304a9a2', $retrieved_data_sorted ) );
-		$this->assertEquals( 'MailChimp List 6', $retrieved_data_sorted['827304a9a2'] );
+		$this->assertTrue( array_key_exists( '827304a9a2', $saved_data_sorted ) );
+		$this->assertEquals( 'MailChimp List 6', $saved_data_sorted['827304a9a2'] );
+	}
+
+	/**
+	 * Test method to get list of the MailChimp IDs
+	 *
+	 * @since  0.1.0
+	 * @see    Storage\MailChimp_Lists_Query()->get_list_ids();
+	 *
+	 * @return void
+	 */
+	public function test_get_the_ids() {
+
+		foreach ( $this->sample_data as $key => $data ) {
+			$this->lists_query->insert( $data );
+		}
+
+		$mailchimp_list_ids = $this->lists_query->get_the_ids();
+
+		$this->assertTrue( is_array( $mailchimp_list_ids ) );
+		$this->assertEquals( [ '320424cb3b', '520524cb3b', '610424aa1c', '827304a9a2' ], $mailchimp_list_ids );
 	}
 }
