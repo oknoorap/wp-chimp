@@ -278,3 +278,47 @@ final class MailChimp_Lists_Query {
 		return true;
 	}
 }
+		 * or, if it is not the expected data type.
+		 */
+		if ( ! is_string( $data['name'] ) || empty( $data['name'] ) ) {
+			return true;
+		}
+	}
+
+	/**
+	 * Function to filter-out array that should not to include be in the table
+	 *
+	 * @since  0.1.0
+	 * @access private
+	 *
+	 * @param  array $data List of columns and the values to add to the table.
+	 * @return array       List of columns with the invalid columnes filtered-out
+	 */
+	private function sanitize_columns( array $data ) {
+
+		$diffs = array_diff_key( $data, $this->default_data );
+		foreach ( $diffs as $key => $diff ) {
+			unset( $data[ $key ] );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Function to sanitize values before inserting to the table
+	 *
+	 * @since  0.1.0 Strip all the tags.
+	 *
+	 * @param  array $data The unsanitize data.
+	 * @return array Sanitized values.
+	 */
+	static private function sanitize_values( array $data ) {
+
+		$sanitized_data = [];
+		foreach ( $data as $key => $value ) {
+			$sanitized_data[ $key ] = wp_strip_all_tags( $value );
+		}
+
+		return $sanitized_data;
+	}
+
