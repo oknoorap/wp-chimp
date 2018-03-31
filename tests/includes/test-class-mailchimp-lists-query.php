@@ -178,4 +178,32 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 			'double_opt_in' => 0,
 		], $list );
 	}
+
+	/**
+	 * Test method to update the existing MailChimp list ID in the database
+	 *
+	 * @since  0.1.0
+	 * @see    Storage\MailChimp_Lists_Query()->update();
+	 *
+	 * @return void
+	 */
+	public function test_update() {
+
+		$new_data = [
+			'list_id'       => '520524cb3b',
+			'name'          => 'MailChimp List Updated 1.1',
+			'subscribers'   => 230,
+			'double_opt_in' => 1,
+		];
+
+		// Update the list data.
+		$updated = $this->lists_query->update( '520524cb3b', $new_data );
+		$this->assertEquals( 1, $updated );
+
+		// Get the updated data from the list.
+		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
+		$this->assertEquals( 'MailChimp List Updated 1.1', $list['name'] );
+		$this->assertEquals( '230', $list['subscribers'] );
+		$this->assertEquals( '1', $list['double_opt_in'] );
+	}
 }

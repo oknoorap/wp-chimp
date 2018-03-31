@@ -59,11 +59,10 @@ final class MailChimp_Lists_Query {
 	 * @return array An associative array of the MailChimp list ID.
 	 *               Or, an empty array if the table is empty.
 	 */
-	static public function query() {
-
+	public function query() {
 		global $wpdb;
 
-		$cache_key = 'get_lists';
+		$cache_key = 'lists';
 
 		/**
 		 * First, we will check whether the data is available in
@@ -97,26 +96,28 @@ final class MailChimp_Lists_Query {
 	 * @return array An associative array of the MailChimp list ID.
 	 *               Or, an empty array if the table is empty.
 	 */
-	static public function get_the_ids() {
-
+	public function get_the_ids() {
 		global $wpdb;
 
-		$cache_key = 'get_ids';
+		$cache_key = 'list_ids';
 		$list_ids  = wp_cache_get( $cache_key, 'wp_chimp_lists' );
 
-		if ( false === $list_ids ) {
+		if ( false === (bool) $list_ids ) {
+
 			$results = $wpdb->get_results("
 				SELECT list_id
 				FROM $wpdb->chimp_mailchimp_lists
 			", ARRAY_A );
 
-			foreach ( $results as $value ) {
-				$list_ids[] = $value['list_id'];
+			$list_ids = [];
+			foreach ( $results as $result ) {
+				$list_ids[] = $result['list_id'];
 			}
+
 			wp_cache_add( $cache_key, $list_ids, 'wp_chimp_lists' );
 		}
 
-		return false === $list_ids ? [] : $list_ids;
+		return $list_ids;
 	}
 
 	/**
@@ -130,22 +131,16 @@ final class MailChimp_Lists_Query {
 	 *               Or, an empty array if the list is not present,
 	 *               with the $id is not present.
 	 */
-	static public function get_by_the_id( $id = '' ) {
-
+	public function get_by_the_id( $id = '' ) {
 		global $wpdb;
 
-		$cache_key = "get_list_id:{$id}";
-		$list      = wp_cache_get( $cache_key, 'wp_chimp_lists' );
-
-		if ( false === (bool) $list && is_string( $id ) && ! empty( $id ) ) {
+		if ( is_string( $id ) && ! empty( $id ) ) {
 
 			$list = $wpdb->get_row( $wpdb->prepare("
 				SELECT list_id, name, subscribers, double_opt_in
 				FROM $wpdb->chimp_mailchimp_lists
 				WHERE list_id = %s
 			", [ $id ] ), ARRAY_A );
-
-			wp_cache_add( $cache_key, $list, 'wp_chimp_lists' );
 		}
 
 		return false === $list ? [] : $list;
@@ -158,48 +153,48 @@ final class MailChimp_Lists_Query {
 	 * @access public
 	 *
 	 * @param  array $data The data to add into the table.
-	 * @return bool Returns true if the data has been success fully added.
-	 *              Otherwise, it returns false if an error occured.
+	 * @return int|bool|WP_Error Should return 1 the data has been success fully added.
+	 *                           Otherwise, it should return false if an error
+	 *                           occured, or WP_Error if it is failed to
+	 *                           insert the data.
 	 */
-	static public function insert( array $data ) {
-
+	public function insert( array $data ) {
 		global $wpdb;
 
-		$defaults = [
-			'list_id'       => '',
-			'name'          => '',
-			'subscribers'   => 0,
-			'double_opt_in' => 0,
-			'synced_at'     => '0000-00-00 00:00:00',
-		];
+		$data = $this->sanitize_columns( $data );
+		$data = wp_parse_args( $data, $this->default_data );
 
-		// Filter-out array that should not to include to the database.
-		$diffs = array_diff_key( $data, $defaults );
-		foreach ( $diffs as $key => $diff ) {
-			unset( $data[ $key ] );
+		if ( $this->is_columns_data_invalid( $data ) ) {
+			return false;
 		}
 
-		$data       = wp_parse_args( $data, $defaults );
-		$current_id = self::get_by_the_id( $data['list_id'] );
-
 		/**
-		 * First let's check the list_id existance. We'll need to be sure that
+		 * First let's check the 'list_id' existance. We'll need to be sure that
 		 * the ID is a string, it is not an empty, and the row with the ID
 		 * does not exist.
 		 */
-		if ( ! is_string( $data['list_id'] ) || empty( $data['list_id'] ) || ! empty( $current_id ) ) {
-			return false;
+		$current_id = $this->get_by_the_id( $data['list_id'] );
+
+		if ( ! empty( $current_id ) ) {
+			return new WP_Error( 'wp_signups_domain_exists', esc_html__( 'That signup already exists.', 'wp-chimp' ), $this );
 		}
 
-		/**
-		 * Do not insert the entry to the database if the MailChimp name is empty,
-		 * or, if it is not the expected data type.
-		 */
-		if ( ! is_string( $data['name'] ) || empty( $data['name'] ) ) {
-			return false;
+		$inserted = $wpdb->insert( $wpdb->chimp_mailchimp_lists, self::sanitize_values( $data ),
+			[ '%s', '%s', '%d', '%d', '%s' ]
+		);
+
+		if ( false === $inserted ) { // If the data is successfully inserted, add to the cache.
+			// Translators: %s is the MailChimp list ID.
+			return new WP_Error( 'wp_signups_insert_list_error', sprintf( esc_html__( 'Inserting the MailChimp list ID %s failed.', 'wp-chimp' ), $data['list_id'] ), $data );
+		} else {
+			$cache_key = "list:{$data['list_id']}";
+			wp_cache_add( $cache_key, self::sanitize_values( $data ), 'wp_chimp_lists' );
+
+			// Clean cache containing all the lists.
+			self::clean_cache( 'lists' );
 		}
 
-		return $wpdb->insert( $wpdb->chimp_mailchimp_lists, $data, [ '%s', '%s', '%d', '%d', '%s' ] );
+		return $inserted;
 	}
 
 	/**
@@ -214,18 +209,29 @@ final class MailChimp_Lists_Query {
 	 * @return int|false Number of rows affected/selected or false on error
 	 */
 	public function update( $id = '', array $data ) {
-
 		global $wpdb;
 
-		if ( ! is_string( $id ) || empty( $id ) ) {
+		if ( $this->is_columns_data_invalid( $data ) ) {
 			return false;
 		}
 
-		return $wpdb->update( $wpdb->chimp_mailchimp_lists, $data,
+		unset( $data['list_id'] ); // Remove the `list_id` from the updated column.
+
+		$updated = $wpdb->update( $wpdb->chimp_mailchimp_lists, self::sanitize_values( $data ),
 			[ 'list_id' => $id ],
 			[ '%s', '%d', '%d', '%s' ],
 			[ '%s' ]
 		);
+
+		if ( false !== $updated ) { // If the data is updated, update the cache as well.
+			$cache_key = "list:{$id}";
+			wp_cache_set( $cache_key, self::sanitize_values( $data ), 'wp_chimp_lists' );
+
+			// Clean cache containing all the lists.
+			self::clean_cache( 'lists' );
+		}
+
+		return $updated;
 	}
 
 	/**
@@ -272,12 +278,6 @@ final class MailChimp_Lists_Query {
 
 		/**
 		 * Do not insert the entry to the database if the MailChimp name is empty,
-		 * or, if it is not the expected data type.
-		 */
-		if ( ! is_string( $data['name'] ) || empty( $data['name'] ) ) {
-		return true;
-	}
-}
 		 * or, if it is not the expected data type.
 		 */
 		if ( ! is_string( $data['name'] ) || empty( $data['name'] ) ) {
