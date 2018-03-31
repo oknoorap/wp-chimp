@@ -15,15 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class MailChimp_Lists_Query {
 
 	/**
-	 * List of updateable columns in the table.
-	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
-	 */
-	const COLUMNS = ;
-
-	/**
 	 * Function to get all MailChimp list from the table.
 	 *
 	 * @since  0.1.0
@@ -138,14 +129,21 @@ final class MailChimp_Lists_Query {
 
 		global $wpdb;
 
-		$data = wp_parse_args( $data, [
+		$defaults = [
 			'list_id'       => '',
 			'name'          => '',
 			'subscribers'   => 0,
 			'double_opt_in' => 0,
 			'synced_at'     => '0000-00-00 00:00:00',
-		] );
+		];
 
+		// Filter-out array that should not to include to the database.
+		$diffs = array_diff_key( $data, $defaults );
+		foreach ( $diffs as $key => $diff ) {
+			unset( $data[ $key ] );
+		}
+
+		$data       = wp_parse_args( $data, $defaults );
 		$current_id = self::get_by_id( $data['list_id'] );
 
 		/**
@@ -154,6 +152,14 @@ final class MailChimp_Lists_Query {
 		 * does not exist.
 		 */
 		if ( ! is_string( $data['list_id'] ) || empty( $data['list_id'] ) || ! empty( $current_id ) ) {
+			return false;
+		}
+
+		/**
+		 * Do not insert the entry to the database if the MailChimp name is empty,
+		 * or, if it is not the expected data type.
+		 */
+		if ( ! is_string( $data['name'] ) || empty( $data['name'] ) ) {
 			return false;
 		}
 
