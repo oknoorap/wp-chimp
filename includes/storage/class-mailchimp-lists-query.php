@@ -25,6 +25,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class MailChimp_Lists_Query {
 
 	/**
+	 * The columns and its value.
+	 *
+	 * @since  0.1.0
+	 * @access protected
+	 * @var    array
+	 */
+	protected $default_data;
+
+	/**
+	 * The class constructor.
+	 *
+	 * @since  0.1.0
+	 * @access public
+	 */
+	public function __construct() {
+
+		$this->default_data = [
+			'list_id'       => '',
+			'name'          => '',
+			'subscribers'   => 0,
+			'double_opt_in' => 0,
+			'synced_at'     => '0000-00-00 00:00:00',
+		];
+	}
+
+	/**
 	 * Function to get all MailChimp list from the table.
 	 *
 	 * @since  0.1.0
