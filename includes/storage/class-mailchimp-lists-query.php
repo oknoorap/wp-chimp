@@ -237,6 +237,31 @@ final class MailChimp_Lists_Query {
 	 * @param  string $id The MailChimp list ID {@link https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id}.
 	 */
 	public function delete( $id = '' ) {
+	/**
+	 * Function to check if the required column contains valid data
+	 *
+	 * @since  0.1.0
+	 * @access private
+	 *
+	 * @param  array $data The data containing the columns to insert to the database.
+	 * @return boolean
+	 */
+	private function is_columns_data_invalid( array $data ) {
+
+		/**
+		 * First let's check the list_id existance. We'll need to be sure that
+		 * the ID is a string, it is not an empty, and the row with the ID
+		 * does not exist.
+		 */
+		if ( ! is_string( $data['list_id'] ) || empty( $data['list_id'] ) ) {
+			return true;
+		}
+
+		/**
+		 * Do not insert the entry to the database if the MailChimp name is empty,
+		 * or, if it is not the expected data type.
+		 */
+		if ( ! is_string( $data['name'] ) || empty( $data['name'] ) ) {
 		return true;
 	}
 }
