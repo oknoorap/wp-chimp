@@ -143,7 +143,7 @@ final class MailChimp_Lists_Query {
 			", [ $id ] ), ARRAY_A );
 		}
 
-		return false === $list ? [] : $list;
+		return null === $list ? [] : $list;
 	}
 
 	/**
@@ -241,6 +241,7 @@ final class MailChimp_Lists_Query {
 	 * @access public
 	 *
 	 * @param  string $id The MailChimp list ID {@link https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id}.
+	 * @return int|false The number of rows updated, or false on error.
 	 */
 	public function delete( $id = '' ) {
 		global $wpdb;
@@ -254,6 +255,8 @@ final class MailChimp_Lists_Query {
 			self::clean_cache( 'lists' );
 			self::clean_cache( "list{$id}" );
 		}
+
+		return $deleted;
 	}
 
 	/**

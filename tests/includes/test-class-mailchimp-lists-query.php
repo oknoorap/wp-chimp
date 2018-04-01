@@ -18,6 +18,13 @@ use \WP_UnitTestCase;
 class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 
 	/**
+	 * The WordPress Database abstraction
+	 *
+	 * @var wpbd instance
+	 */
+	private $wpdb;
+
+	/**
 	 * The MailChimp_Lists_Query instance
 	 *
 	 * @var WP_Chimp\Storage\MailChimp_Lists_Query
@@ -205,5 +212,24 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 		$this->assertEquals( 'MailChimp List Updated 1.1', $list['name'] );
 		$this->assertEquals( '230', $list['subscribers'] );
 		$this->assertEquals( '1', $list['double_opt_in'] );
+	}
+
+	/**
+	 * Test the method to delete the existing MailChimp list ID in the database
+	 *
+	 * @since 0.1.0
+	 * @see   Storage\MailChimp_Lists_Query()->delete();
+	 *
+	 * @return void
+	 */
+	public function test_delete() {
+
+		$deleted = $this->lists_query->delete( '520524cb3b' );
+		$this->assertEquals( 1, $deleted ); // The affected arrow should only one.
+
+		// Check the data; it should no longer be in the table.
+		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
+		$this->assertTrue( is_array( $list ) );
+		$this->assertEmpty( $list );
 	}
 }
