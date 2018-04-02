@@ -32,8 +32,8 @@ final class MailChimp_Lists_Process extends WP_Background_Process {
 	 *
 	 * @return void
 	 */
-	public function assign_query( WP_Chimp\Storage\MailChimp_Lists_Query $query ) {
-		$this->query = $query;
+	public function assign_query( WP_Chimp\Storage\MailChimp_Lists_Query $lists_query ) {
+		$this->lists_query = $lists_query;
 	}
 
 	/**
@@ -48,7 +48,7 @@ final class MailChimp_Lists_Process extends WP_Background_Process {
 	 * @return mixed
 	 */
 	protected function task( $item ) {
-		$this->query->insert();
+		$this->lists_query->insert();
 		return false; // Actions to perform.
 	}
 
