@@ -211,7 +211,7 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
 		$this->assertEquals( 'MailChimp List Updated 1.1', $list['name'] );
 		$this->assertEquals( '230', $list['subscribers'] );
-		$this->assertEquals( '1', $list['double_opt_in'] );
+		$this->assertEquals( '1', $list['double_optin'] );
 	}
 
 	/**
