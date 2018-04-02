@@ -46,47 +46,47 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 		$this->wpdb        = $GLOBALS['wpdb'];
 		$this->sample_data = [
 			[
-				'list_id'       => '520524cb3b',
-				'name'          => 'MailChimp List 1',
-				'subscribers'   => 100,
-				'double_opt_in' => 0,
-				'synced_at'     => date( 'Y-m-d H:i:s' ),
+				'list_id'      => '520524cb3b',
+				'name'         => 'MailChimp List 1',
+				'subscribers'  => 100,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
 			],
 			[
-				'list_id'       => '320424cb3b',
-				'name'          => 'MailChimp List 2',
-				'subscribers'   => 200,
-				'double_opt_in' => 0,
-				'synced_at'     => date( 'Y-m-d H:i:s' ),
+				'list_id'      => '320424cb3b',
+				'name'         => 'MailChimp List 2',
+				'subscribers'  => 200,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
 			],
 			[
-				'list_id'       => '610424aa1c',
-				'name'          => 'MailChimp List 3',
-				'subscribers'   => 200,
-				'double_opt_in' => 0,
-				'synced_at'     => date( 'Y-m-d H:i:s' ),
+				'list_id'      => '610424aa1c',
+				'name'         => 'MailChimp List 3',
+				'subscribers'  => 200,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
 			],
 			[
-				'list_id'       => '', // Bad Example of empty ID.
-				'name'          => 'MailChimp List 4',
-				'subscribers'   => 400,
-				'double_opt_in' => 0,
-				'synced_at'     => date( 'Y-m-d H:i:s' ),
+				'list_id'      => '',                      // Bad Example of empty ID.
+				'name'         => 'MailChimp List 4',
+				'subscribers'  => 400,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
 			],
 			[
-				'list_id'       => '729404aa1c',
-				'name'          => '', // Bad Example of empty name.
-				'subscribers'   => 500,
-				'double_opt_in' => 0,
-				'synced_at'     => date( 'Y-m-d H:i:s' ),
+				'list_id'      => '729404aa1c',
+				'name'         => '',                      // Bad Example of empty name.
+				'subscribers'  => 500,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
 			],
 			[
-				'list_id'       => '827304a9a2',
-				'name'          => 'MailChimp List 6',
-				'subscribers'   => 600,
-				'double_opt_in' => 0,
-				'synced_at'     => date( 'Y-m-d H:i:s' ),
-				'rand'          => 'Hello World', // Bad Example of empty name.
+				'list_id'      => '827304a9a2',
+				'name'         => 'MailChimp List 6',
+				'subscribers'  => 600,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+				'rand'         => 'Hello World',           // Bad Example of empty name.
 			],
 			[], // Bad example of empty array.
 		];
@@ -182,7 +182,7 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 			'list_id'       => '520524cb3b',
 			'name'          => 'MailChimp List 1',
 			'subscribers'   => 100,
-			'double_opt_in' => 0,
+			'double_optin' => 0,
 		], $list );
 	}
 
@@ -197,10 +197,10 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	public function test_update() {
 
 		$new_data = [
-			'list_id'       => '520524cb3b',
-			'name'          => 'MailChimp List Updated 1.1',
-			'subscribers'   => 230,
-			'double_opt_in' => 1,
+			'list_id'      => '520524cb3b',
+			'name'         => 'MailChimp List Updated 1.1',
+			'subscribers'  => 230,
+			'double_optin' => 1,
 		];
 
 		// Update the list data.
