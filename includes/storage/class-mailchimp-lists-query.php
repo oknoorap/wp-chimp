@@ -12,6 +12,8 @@
 
 namespace WP_Chimp\Storage;
 
+use \WP_Error;
+
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
@@ -45,7 +47,7 @@ final class MailChimp_Lists_Query {
 			'list_id'       => '',
 			'name'          => '',
 			'subscribers'   => 0,
-			'double_opt_in' => 0,
+			'double_optin' => 0,
 			'synced_at'     => '0000-00-00 00:00:00',
 		];
 	}
@@ -77,7 +79,7 @@ final class MailChimp_Lists_Query {
 		if ( false === $lists ) {
 
 			$lists = $wpdb->get_results("
-				SELECT list_id, name, subscribers, double_opt_in
+				SELECT list_id, name, subscribers, double_optin
 				FROM $wpdb->chimp_mailchimp_lists
 			", ARRAY_A );
 
@@ -137,7 +139,7 @@ final class MailChimp_Lists_Query {
 		if ( is_string( $id ) && ! empty( $id ) ) {
 
 			$list = $wpdb->get_row( $wpdb->prepare("
-				SELECT list_id, name, subscribers, double_opt_in
+				SELECT list_id, name, subscribers, double_optin
 				FROM $wpdb->chimp_mailchimp_lists
 				WHERE list_id = %s
 			", [ $id ] ), ARRAY_A );
