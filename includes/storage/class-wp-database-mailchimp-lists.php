@@ -44,7 +44,7 @@ final class WP_Database_MailChimp_Lists extends WP_Database {
 			list_id varchar(20) NOT NULL DEFAULT '',
 			name varchar(200) NOT NULL DEFAULT '',
 			subscribers bigint(20) NOT NULL DEFAULT '0',
-			double_opt_in tinyint(1) NOT NULL DEFAULT '0',
+			double_optin tinyint(1) NOT NULL DEFAULT '0',
 			synced_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY  (id),
 			KEY list_id (list_id)
