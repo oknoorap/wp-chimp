@@ -25,22 +25,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return array
  */
 function sort_mailchimp_data( $raw_data ) {
-	$data = [];
-	return $data;
-}
 
-/**
- * Function to sanitize the data of MailChimp API.
- *
- * This function is typically used be used for sanitize data
- * before adding them to the database.
- *
- * @since  0.1.0
- * @see    WP_Chimp\soret_mailchimp_data
- *
- * @param  array $data The sorted out data of MailChimp API unsantized.
- * @return array The data sanitized
- */
-function sanitize_mailchimp_data( $data ) {
-	return $data;
+	$sorted_data = [];
+	foreach ( $raw_data['lists'] as $key => $list ) {
+		$sorted_data[ $key ] = [
+			'list_id'      => sanitize_key( $list['id'] ),
+			'name'         => sanitize_text_field( $list['name'] ),
+			'subscribers'  => absint( $list['stats']['member_count'] ),
+			'double_optin' => true === $list['double_optin'] ? 1 : 0,
+		];
+	}
+
+	return $sorted_data;
 }
