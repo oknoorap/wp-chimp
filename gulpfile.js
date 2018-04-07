@@ -1,28 +1,68 @@
 /* eslint-env node */
-const gulp = require( 'gulp' );
-const babel = require( 'gulp-babel' );
-const sass = require( 'gulp-sass' );
+
+const buffer       = require( 'vinyl-buffer' );
+const sourceStream = require( 'vinyl-source-stream' );
+const mergeStream  = require( 'merge-stream' );
+const browserify   = require( 'browserify' );
+const babelify     = require( 'babelify' );
+
+const gulp         = require( 'gulp' );
+const babel        = require( 'gulp-babel' );
+const sass         = require( 'gulp-sass' );
 const autoprefixer = require( 'gulp-autoprefixer' );
-const sourcemaps = require( 'gulp-sourcemaps' );
-const mergeStream = require( 'merge-stream' );
+const sourcemaps   = require( 'gulp-sourcemaps' );
+
+/**
+ * ---------------------------------------------------------------
+ * Script tasks
+ *
+ * Define configurations and tasks to handle transpiling,
+ * bundling, and minifying of our JavaScript files.
+ * ---------------------------------------------------------------
+ */
+
+/**
+ * Compile and bundle the 'admin/script.es' which will be loaded
+ * in the administration side of the plugin.
+ */
+gulp.task( 'script-admin', () => {
+
+  let file = './admin/js/admin.es';
+
+  return browserify({
+    'entries': [ file ],
+    'debug': true,
+    'transform': [ babelify ]
+  })
+    .bundle()
+    .on( 'error', function( err ) {
+      console.error( err );
+      this.emit( 'end' );
+    })
+    .pipe( sourceStream( 'admin.js' ) )
+    .pipe( buffer() )
+    .pipe( sourcemaps.init({
+        'loadMaps': true
+      }) )
+    .pipe( sourcemaps.write( './' ) )
+    .pipe( gulp.dest( './admin/js' ) );
+});
+
+gulp.task( 'script', [ 'script-admin' ]); // Combine all the script tasks in a single Gulp command.
+
+/**
+ * ---------------------------------------------------------------
+ * Style tasks
+ *
+ * Define configurations and tasks to convert SCSS to plain CSS
+ * and minify the output.
+ * ---------------------------------------------------------------
+ */
 
 const autoprefixerConfig = {
   browsers: [ 'last 3 versions' ],
   cascade: false
 };
-
-const scriptSources = [
-  {
-    'src': 'blocks/form/*.es',
-    'dest': 'blocks/form'
-  }, {
-    'src': 'admin/js/*.es',
-    'dest': 'admin/js'
-  }, {
-    'src': 'public/js/*.es',
-    'dest': 'public/js'
-  }
-];
 
 const styleSources = [
   {
@@ -37,26 +77,16 @@ const styleSources = [
   }
 ];
 
-gulp.task( 'script', () => {
-
-  var stream = mergeStream();
-  var script = [];
-
-  scriptSources.forEach( ( value, index ) => {
-    script[index] = gulp.src( value.src )
-      .pipe( babel() )
-      .pipe( gulp.dest( value.dest ) );
-
-    stream.add( script[index]);
-  });
-
-  return stream;
-});
-
+/**
+ * Task to compile the SCSS files to CSS.
+ *
+ * We will loop through each files and put the compiled CSS to the
+ * destination directory as listed in `styleSources`
+ */
 gulp.task( 'style', () => {
 
   var stream = mergeStream();
-  var style = [];
+  var style  = [];
 
   styleSources.forEach( ( value, index ) => {
     style[index] = gulp.src( value.src )
@@ -72,19 +102,16 @@ gulp.task( 'style', () => {
   return stream;
 });
 
+/**
+ * ---------------------------------------------------------------
+ * Default tasks
+ *
+ * Define default task that can be called by just running `gulp`
+ * from cli
+ * ---------------------------------------------------------------
+ */
+
 gulp.task( 'default', [ 'script', 'style' ], () => {
-
-  var watchScripts = [];
-  var watchStyles = [];
-
-  scriptSources.forEach( ( value, index ) => {
-    watchScripts[index] = value.src;
-  });
-
-  styleSources.forEach( ( value, index ) => {
-    watchStyles[index] = value.src;
-  });
-
-  gulp.watch( watchScripts, [ 'script' ]);
-  gulp.watch( watchStyles, [ 'style' ]);
+  gulp.watch([ '**/*.es' ], [ 'script' ]);
+  gulp.watch([ '**/*.scss' ], [ 'style' ]);
 });
