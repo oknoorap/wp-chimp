@@ -143,12 +143,8 @@ class Admin_Page {
 					</tr>
 				</thead>
 				<tbody id="wp-chimp-mailchimp-list-data">
-					<tr>
-						<td><code>123</code></td>
-						<td>{{ list.name }}</td>
-						<td>{{ list.subscriber }}</td>
-						<td>{{ list.lastSync }}</td>
-						<td><code>[wp-chimp list-id="{{ list.id }}"]</code></td>
+					<tr class="no-items">
+						<td colspan="5">No MailChimp list found.</td>
 					</tr>
 				</tbody>
 			</table>
