@@ -89,6 +89,8 @@ class Plugin {
 		$this->file        = $file;
 
 		$this->load_dependencies();
+		$this->load_instances();
+
 		$this->set_locale();
 
 		$this->define_admin_hooks();
@@ -157,7 +159,7 @@ class Plugin {
 		 * The class responsible to register the custom API endpoint with the WP-API
 		 * that'll retrieve the MailChimp list.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/endpoints/class-rest-mailchimp-list-controller.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/endpoints/class-rest-mailchimp-lists-controller.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
@@ -181,7 +183,9 @@ class Plugin {
 		 * and the block rendering in the public-facing of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'blocks/class-blocks-form.php';
+	}
 
+	private function load_instances() {
 		$this->loader = new Loader();
 	}
 
@@ -273,9 +277,14 @@ class Plugin {
 	 */
 	private function define_api_hooks() {
 
-		$lists_query = new Storage\MailChimp_Lists_Query();
-		$lists_rest  = new Endpoints\REST_MailChimp_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
-		$lists_rest->register_query( $lists_query );
+		$lists_query   = new Storage\MailChimp_Lists_Query();
+		$lists_process = new Storage\MailChimp_Lists_Process();
+		$lists_rest    = new Endpoints\REST_MailChimp_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
+
+		$lists_process->register_lists_query( $lists_query );
+
+		$lists_rest->register_lists_process( $lists_process );
+		$lists_rest->register_lists_query( $lists_query );
 
 		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' );
 	}

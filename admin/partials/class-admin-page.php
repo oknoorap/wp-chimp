@@ -109,8 +109,11 @@ class Admin_Page {
 
 		// TODO: change the init value.
 		$state = [
-			'apiKey' => (bool) $this->mailchimp_api_key,
-			'init'   => false,
+			'init'      => get_option( 'wp_chimp_mailchimp_list_init', false ),
+			'nonce'     => wp_create_nonce( 'wp-chimp-settings' ),
+			'mailchimp' => [
+				'apiKey' => (bool) $this->mailchimp_api_key,
+			],
 		];
 
 		return wp_json_encode( $state, 0, 3 );
@@ -131,14 +134,13 @@ class Admin_Page {
 		<div class="wrap wp-chimp-wrap" id="wp-chimp-settings" data-state='<?php echo esc_attr( $this->get_state() ); ?>'>
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
-			<?php if ( $this->mailchimp_api_key ) : ?>
-			<table class="widefat striped wp-chimp-table" id="wp-chimp-mailchimp-list">
+			<table class="widefat striped wp-chimp-table" id="wp-chimp-mailchimp-list-table">
 				<thead>
 					<tr>
 						<th scope="col" class="wp-chimp-table__th-id"><?php esc_html_e( 'ID', 'wp-chimp' ); ?></th>
 						<th scope="col" class="wp-chimp-table__th-name"><?php esc_html_e( 'Name', 'wp-chimp' ); ?></th>
 						<th scope="col" class="wp-chimp-table__th-subscribers"><?php esc_html_e( 'Subscribers', 'wp-chimp' ); ?></th>
-						<th scope="col" class="wp-chimp-table__th-last-sync"><?php esc_html_e( 'Last Sync.', 'wp-chimp' ); ?></th>
+						<th scope="col" class="wp-chimp-table__th-double-optin"><?php esc_html_e( 'Double Optin.', 'wp-chimp' ); ?></th>
 						<th scope="col" class="wp-chimp-table__th-shortcode"><?php esc_html_e( 'Shortcode', 'wp-chimp' ); ?></th>
 					</tr>
 				</thead>
@@ -148,7 +150,6 @@ class Admin_Page {
 					</tr>
 				</tbody>
 			</table>
-			<?php endif; ?>
 
 			<h2 class="nav-tab-wrapper">
 				<span class="nav-tab nav-tab-active"><?php echo esc_html( 'MailChimp' ); ?></span>

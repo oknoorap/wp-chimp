@@ -22,8 +22,9 @@ use \WP_REST_Server;
 use \WP_REST_Response;
 use \WP_REST_Controller;
 
+use \WP_Chimp\Storage;
 use \DrewM\MailChimp\MailChimp;
-use WP_Chimp\MailChimp_Lists_Process;
+
 
 /**
  * The class for registering custom API Routes using WP-API.
@@ -147,7 +148,7 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 * @return string The MailChimp API key or an empty string if it has not
 	 *                yet been set.
 	 */
-	static public function get_the_mailchimp_api_key() {
+	public function get_the_mailchimp_api_key() {
 		return get_option( 'wp_chimp_mailchimp_api_key', '' );
 	}
 
@@ -164,8 +165,8 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 * @return bool Return true if the data has been initialised,
 	 *              otherwise, returns false.
 	 */
-	static public function is_initialized() {
-		return get_option( 'wp_chimp_mailchimp_list_init', false );
+	public function is_initialized() {
+		return (bool) get_option( 'wp_chimp_mailchimp_list_init', 0 );
 	}
 
 	/**
@@ -191,8 +192,8 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 		register_rest_route( $this->namespace, $this->rest_base, [
 			[
 				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_item' ],
-				'permission_callback' => [ $this, 'get_item_permissions_check' ],
+				'callback'            => [ $this, 'get_items' ],
+				'permission_callback' => [ $this, 'get_items_permissions_check' ],
 				'args'                => [
 					'context' => $this->get_context_param( [ 'default' => 'view' ] ),
 				],
@@ -200,8 +201,12 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 		]);
 	}
 
-	public function register_query( $query ) {
-		$this->list_query = $query;
+	public function register_lists_query( $query ) {
+		$this->lists_query = $query;
+	}
+
+	public function register_lists_process( $process ) {
+		$this->lists_process = $process;
 	}
 
 	/**
@@ -213,35 +218,11 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 * @param  WP_REST_Request $request The passed parameters in the route.
 	 * @return WP_REST_Response
 	 */
-	public function get_item( $request ) {
-		$data = $this->list_query->query();
+	public function get_items( $request ) {
+		$mailchimp_lists = $this->get_mailchimp_lists();
 		if ( $request instanceof WP_REST_Request ) {
-			return rest_ensure_response( $data );
+			return rest_ensure_response( $mailchimp_lists );
 		}
-	}
-
-	/**
-	 * Prepare a post status object for serialization.
-	 *
-	 * @since  0.1.0
-	 * @access public
-	 *
-	 * @param  stdClass        $object  The original object.
-	 * @param  WP_REST_Request $request The passed parameters in the route.
-	 * @return WP_REST_Response
-	 */
-	public function prepare_item_for_response( $object, $request ) {
-
-		/**
-		 * Filter a status returned from the API.
-		 *
-		 * Allows modification of the status data right before it is returned.
-		 *
-		 * @param WP_REST_Response  $response The response object.
-		 * @param object            $status   The original object.
-		 * @param WP_REST_Request   $request  Request used to generate the response.
-		 */
-		return apply_filters( 'wp_chimp_maichimp_list_rest_prepare', $response, $object, $request );
 	}
 
 	/**
@@ -253,7 +234,7 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return bool
 	 */
-	public function get_item_permissions_check( $request ) {
+	public function get_items_permissions_check( $request ) {
 		return true;
 	}
 
@@ -268,20 +249,29 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 *               It may also return an Exception if the key,
 	 *               added is invalid.
 	 */
-	static private function get_mailchimp_lists() {
+	private function get_mailchimp_lists() {
 
 		$response = [];                                  // Initialize the response with an empty array.
 		$api_key  = $this->get_the_mailchimp_api_key();  // Get the MailChimp API key saved.
-		$is_init  = $this->is_initialized();             // Check if the data is initialised.
+		$is_init  = $this->is_initialized();             // Check if the list data is initialised.
 
 		if ( ! empty( $api_key ) && false === $is_init ) {
 
-			$process  = new MailChimp_Lists_Process();
-			$response = $this->get_mailchimp_remote_lists( $api_key );
+			$lists        = [];
+			$api_response = $this->get_mailchimp_remote_lists( $api_key );
 
-			foreach ( $response as $key => $data ) {
-				$process->push_to_queue( $data );
+			if ( array_key_exists( 'lists', $api_response ) && 0 !== count( $api_response['lists'] ) ) {
+				$lists = \WP_Chimp\sort_mailchimp_data( $api_response['lists'] );
 			}
+
+			if ( 0 !== count( $lists ) ) {
+				foreach ( $lists as $list ) {
+					$this->lists_process->push_to_queue( $list );
+				}
+				$this->lists_process->save()->dispatch();
+			}
+
+			$response = $lists;
 		} else {
 			$response = $this->get_mailchimp_cached_lists();
 		}
@@ -299,7 +289,7 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 * @return mixed Returns an object of the lists, or an Exception
 	 *               if the API key added is invalid.
 	 */
-	static private function get_mailchimp_remote_lists( $api_key ) {
+	private function get_mailchimp_remote_lists( $api_key ) {
 
 		/**
 		 * The MailChimp API wrapper.
@@ -320,7 +310,7 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 * @return mixed Returns an object of the lists, empty array, or an Exception
 	 *               if the API key added is invalid.
 	 */
-	static private function get_mailchimp_cached_lists() {
-		return [];
+	private function get_mailchimp_cached_lists() {
+		return $this->lists_query->query();
 	}
 }

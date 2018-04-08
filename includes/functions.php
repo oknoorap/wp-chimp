@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function sort_mailchimp_data( $raw_data ) {
 
 	$sorted_data = [];
-	foreach ( $raw_data['lists'] as $key => $list ) {
+	foreach ( $raw_data as $key => $list ) {
 		$sorted_data[ $key ] = [
 			'list_id'      => sanitize_key( $list['id'] ),
 			'name'         => sanitize_text_field( $list['name'] ),

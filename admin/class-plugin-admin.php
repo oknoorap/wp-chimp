@@ -107,8 +107,6 @@ class Plugin_Admin {
 
 		if ( 'settings_page_' . $this->plugin_name === $screen->id ) {
 
-			wp_enqueue_script( 'wp-api' );
-
 			/**
 			 * This function is provided for demonstration purposes only.
 			 *
