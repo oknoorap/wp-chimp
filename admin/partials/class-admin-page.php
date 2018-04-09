@@ -64,7 +64,8 @@ class Admin_Page {
 	/**
 	 * The class constructor.
 	 *
-	 * @since 0.1.0
+	 * @since  0.1.0
+	 * @access private
 	 *
 	 * @param string $plugin_name The name of this plugin.
 	 * @param string $version     The version of this plugin.
@@ -73,8 +74,17 @@ class Admin_Page {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
+		$this->options     = $this->get_options();
+	}
 
-		$this->mailchimp_api_key = get_option( 'wp_chimp_mailchimp_api_key', '' );
+	/**
+	 * Undocumented function
+	 *
+	 * @param [type] $query
+	 * @return void
+	 */
+	public function register_lists_query( $query ) {
+		$this->lists_query = $query;
 	}
 
 	/**
@@ -107,12 +117,11 @@ class Admin_Page {
 	 */
 	public function get_state() {
 
-		// TODO: change the init value.
 		$state = [
-			'init'      => get_option( 'wp_chimp_mailchimp_list_init', false ),
 			'nonce'     => wp_create_nonce( 'wp-chimp-settings' ),
 			'mailchimp' => [
-				'apiKey' => (bool) $this->mailchimp_api_key,
+				'listInit' => (bool) $this->options['mailchimp']['list_init'],
+				'apiKey'   => (bool) $this->options['mailchimp']['api_key'],
 			],
 		];
 
@@ -183,7 +192,7 @@ class Admin_Page {
 	 */
 	public function html_field_mailchimp_api_key() {
 	?>
-		<input type="text" name="wp_chimp_mailchimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $this->mailchimp_api_key ); ?>" />
+		<input type="text" name="wp_chimp_mailchimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $this->options['mailchimp']['api_key'] ); ?>" />
 		<p class="description"><?php esc_html_e( 'Add your MailChimp API key' ); ?>. <a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank"><?php esc_html_e( 'How to generate the API key?', 'wp-chimp' ); ?></a></p>
 	<?php
 	}
@@ -197,7 +206,7 @@ class Admin_Page {
 	 * @param  array $links WordPress built-in links (e.g. Activate, Deactivate, and Edit).
 	 * @return array        Action links with the new one added.
 	 */
-	public function register_action_links( $links ) {
+	public function add_action_links( $links ) {
 
 		$markup   = '<a href="' . esc_url( get_admin_url( null, 'options-general.php?page=%2$s' ) ) . '">%1$s</a>';
 		$settings = [
@@ -205,5 +214,46 @@ class Admin_Page {
 		];
 
 		return array_merge( $settings, $links );
+	}
+
+	/**
+	 * Function to get the plugin options required in the Admin page
+	 *
+	 * @since  0.1.0
+	 * @access private
+	 *
+	 * @return array
+	 */
+	private function get_options() {
+
+		return [
+			'mailchimp' => [
+				'api_key'   => get_option( 'wp_chimp_mailchimp_api_key', '' ),
+				'list_init' => get_option( 'wp_chimp_mailchimp_list_init', 0 ),
+			],
+		];
+	}
+
+	/**
+	 * Function to handle option update
+	 *
+	 * @since 0.1.0
+	 * @access public
+	 *
+	 * @param string $option    Option name.
+	 * @param mixed  $old_value The old option value.
+	 * @param mixed  $value     The new option value.
+	 * @return void
+	 */
+	public function updated_option( $option, $old_value, $value ) {
+
+		/**
+		 * Check the MailChimp API key update; if the new API key is
+		 * different we need to reset the initilization.
+		 */
+		if ( 'wp_chimp_mailchimp_api_key' === $option && $value !== $old_value ) {
+			$this->lists_query->truncate();
+			update_option( 'wp_chimp_mailchimp_list_init', 0, false );
+		}
 	}
 }

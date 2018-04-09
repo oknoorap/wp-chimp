@@ -37,7 +37,7 @@ final class MailChimp_Lists_Process extends WP_Background_Process {
 	/**
 	 * Function to assign the MailChimp list
 	 *
-	 * @param mixed $name
+	 * @param MailChimp_Lists_Query $lists_query The MailChimp_Lists_Query class instance.
 	 * @return void
 	 */
 	public function register_lists_query( MailChimp_Lists_Query $lists_query ) {
@@ -71,6 +71,6 @@ final class MailChimp_Lists_Process extends WP_Background_Process {
 	 */
 	protected function complete() {
 		parent::complete();
-		\update_option( 'wp_chimp_mailchimp_list_init', 1 );
+		\update_option( 'wp_chimp_mailchimp_list_init', 1, false );
 	}
 }

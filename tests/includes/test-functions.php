@@ -81,7 +81,7 @@ class Test_Functions extends WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_sort_mailchimp_data() {
-		$data = sort_mailchimp_data( $this->raw_data );
+		$data = sort_mailchimp_data( $this->raw_data['lists'] );
 		$this->assertEquals( [
 			[
 				'list_id'      => '520524cb3b',

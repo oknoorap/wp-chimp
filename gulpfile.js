@@ -11,6 +11,7 @@ const babel        = require( 'gulp-babel' );
 const sass         = require( 'gulp-sass' );
 const autoprefixer = require( 'gulp-autoprefixer' );
 const sourcemaps   = require( 'gulp-sourcemaps' );
+const uglify       = require( 'gulp-uglifyes' );
 
 /**
  * ---------------------------------------------------------------
@@ -41,10 +42,8 @@ gulp.task( 'script-admin', () => {
     })
     .pipe( sourceStream( 'admin.js' ) )
     .pipe( buffer() )
-    .pipe( sourcemaps.init({
-        'loadMaps': true
-      }) )
-    .pipe( sourcemaps.write( './' ) )
+      .pipe( sourcemaps.init({'loadMaps': true}) )
+      .pipe( sourcemaps.write( './' ) )
     .pipe( gulp.dest( './admin/js' ) );
 });
 

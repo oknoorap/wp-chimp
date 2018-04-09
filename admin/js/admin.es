@@ -28,19 +28,18 @@ jQuery( function( $ ) {
     return;
   }
 
-  const settings      = document.getElementById( 'wp-chimp-settings' );
-  const settingsState = JSON.parse( settings.dataset.state );
-
-  const namespace = 'wp-chimp/v1';
+  const settings  = document.getElementById( 'wp-chimp-settings' );
   const tableBody = document.getElementById( 'wp-chimp-mailchimp-list-data' );
+
+  const settingsState = JSON.parse( settings.dataset.state );
+  const namespace     = 'wp-chimp/v1';
 
   if ( 'undefined' !== typeof settingsState.mailchimp.apiKey && true === settingsState.mailchimp.apiKey ) {
     $.ajax({
       'url': `${wpApiSettings.root}${namespace}/lists`
     })
     .done( ( resp ) => {
-      var rows = getTheTableRows( resp );
-      setChildren( tableBody, rows );
+      setChildren( tableBody, getTheTableRows( resp ) );
     });
   }
 });

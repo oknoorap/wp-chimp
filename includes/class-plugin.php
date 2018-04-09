@@ -14,6 +14,16 @@
 
 namespace WP_Chimp;
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
+use \WP_Chimp\Storage\MailChimp_Lists_Process as Lists_Process;
+use \WP_Chimp\Storage\MailChimp_Lists_Query as Lists_Query;
+use \WP_Chimp\Storage\WP_Database_MailChimp_Lists as Lists_Database;
+use \WP_Chimp\Endpoints\REST_MailChimp_Lists_Controller as Lists_REST_Controller;
+
 /**
  * The core plugin class.
  *
@@ -89,7 +99,6 @@ class Plugin {
 		$this->file        = $file;
 
 		$this->load_dependencies();
-		$this->load_instances();
 
 		$this->set_locale();
 
@@ -183,9 +192,7 @@ class Plugin {
 		 * and the block rendering in the public-facing of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'blocks/class-blocks-form.php';
-	}
 
-	private function load_instances() {
 		$this->loader = new Loader();
 	}
 
@@ -215,15 +222,15 @@ class Plugin {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Plugin_Admin( $this->get_plugin_name(), $this->get_version() );
+		$admin_page   = new Admin_Page( $this->get_plugin_name(), $this->get_version() );
+		$admin_menu   = new Admin_Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		$admin_page = new Admin_Page( $this->get_plugin_name(), $this->get_version() );
-		$admin_menu = new Admin_Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
-
-		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
 		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
+		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
+		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
 
 		/**
 		 * Add the Action link for the plugin in the Plugin list screen.
@@ -233,7 +240,7 @@ class Plugin {
 		 *
 		 * @see https://developer.wordpress.org/reference/hooks/prefixplugin_action_links_plugin_file/
 		 */
-		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), $admin_page, 'register_action_links', 10, 2 );
+		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), $admin_page, 'add_action_links', 10, 2 );
 	}
 
 	/**
@@ -260,13 +267,13 @@ class Plugin {
 	 */
 	private function define_database_hooks() {
 
-		$db_mailchimp_list = new Storage\WP_Database_MailChimp_Lists();
+		$lists_db = new Lists_Database();
 
 		// Create or Update the database upon plugin activation.
-		register_activation_hook( $this->file, [ $db_mailchimp_list, 'maybe_upgrade' ] );
+		register_activation_hook( $this->file, [ $lists_db, 'maybe_upgrade' ] );
 
-		$this->loader->add_action( 'switch_blog', $db_mailchimp_list, 'switch_blog' );
-		$this->loader->add_action( 'admin_init', $db_mailchimp_list, 'maybe_upgrade' );
+		$this->loader->add_action( 'switch_blog', $lists_db, 'switch_blog' );
+		$this->loader->add_action( 'admin_init', $lists_db, 'maybe_upgrade' );
 	}
 
 	/**
@@ -277,14 +284,12 @@ class Plugin {
 	 */
 	private function define_api_hooks() {
 
-		$lists_query   = new Storage\MailChimp_Lists_Query();
-		$lists_process = new Storage\MailChimp_Lists_Process();
-		$lists_rest    = new Endpoints\REST_MailChimp_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
+		$lists_process = new Lists_Process();
+		$lists_rest    = new Lists_REST_Controller( $this->get_plugin_name(), $this->get_version() );
 
-		$lists_process->register_lists_query( $lists_query );
-
+		$lists_process->register_lists_query( new Lists_Query() );
 		$lists_rest->register_lists_process( $lists_process );
-		$lists_rest->register_lists_query( $lists_query );
+		$lists_rest->register_lists_query( new Lists_Query() );
 
 		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' );
 	}

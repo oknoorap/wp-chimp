@@ -179,9 +179,9 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 
 		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
 		$this->assertEquals( [
-			'list_id'       => '520524cb3b',
-			'name'          => 'MailChimp List 1',
-			'subscribers'   => 100,
+			'list_id'      => '520524cb3b',
+			'name'         => 'MailChimp List 1',
+			'subscribers'  => 100,
 			'double_optin' => 0,
 		], $list );
 	}
@@ -231,5 +231,22 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
 		$this->assertTrue( is_array( $list ) );
 		$this->assertEmpty( $list );
+	}
+
+	/**
+	 * Test the method to empty the MailChimp list ID in the database
+	 *
+	 * @since 0.1.0
+	 * @see   Storage\MailChimp_Lists_Query()->truncate();
+	 *
+	 * @return void
+	 */
+	public function test_truncate() {
+
+		$emptied = $this->lists_query->truncate();
+		$this->assertTrue( $emptied );
+
+		$saved_data = $this->lists_query->query();
+		$this->assertEquals( 0, count( $saved_data ) );
 	}
 }

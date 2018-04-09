@@ -44,11 +44,11 @@ final class MailChimp_Lists_Query {
 	public function __construct() {
 
 		$this->default_data = [
-			'list_id'       => '',
-			'name'          => '',
-			'subscribers'   => 0,
+			'list_id'      => '',
+			'name'         => '',
+			'subscribers'  => 0,
 			'double_optin' => 0,
-			'synced_at'     => '0000-00-00 00:00:00',
+			'synced_at'    => '0000-00-00 00:00:00',
 		];
 	}
 
@@ -259,6 +259,39 @@ final class MailChimp_Lists_Query {
 		}
 
 		return $deleted;
+	}
+
+	/**
+	 * Function to empty the records in the `*_chimp_mailchimp_lists` table
+	 *
+	 * @since  0.1.0
+	 * @access public
+	 *
+	 * @return int|false Number of rows affected/selected or false on error
+	 */
+	public function truncate() {
+		global $wpdb;
+
+		$emptied = $wpdb->query( "TRUNCATE TABLE $wpdb->chimp_mailchimp_lists" );
+
+		if ( true === $emptied ) {
+
+			self::clean_cache( 'lists' );
+
+			$mailchimp_ids = $this->get_the_ids();
+			foreach ( $mailchimp_ids as $id ) {
+				self::clean_cache( "list{$id}" );
+			}
+		}
+
+		/**
+		 * ...For CREATE, ALTER, TRUNCATE and DROP SQL statements, (which affect
+		 * whole tables instead of specific rows) this function returns
+		 * TRUE on success...
+		 *
+		 * {@link https://codex.wordpress.org/Class_Reference/wpdb#Running_General_Queries}
+		 */
+		return $emptied;
 	}
 
 	/**
