@@ -1,6 +1,26 @@
 'use strict';
 
-import { mount, el } from 'redom';
+import { setChildren, el } from 'redom';
+
+function getTheTableRows( data ) {
+
+  var tableRows = [];
+  for ( let i = 0; i < data.length; i++ ) {
+    tableRows.push( el( 'tr', [
+      el( 'td', [
+        el( 'code', data[i].list_id )
+      ]),
+      el( 'td', data[i].name ),
+      el( 'td', data[i].subscribers ),
+      el( 'td', data[i].double_optin ),
+      el( 'td', [
+        el( 'code', `[wp-chimp list_id="${data[i].list_id}"]` )
+      ])
+    ]) );
+  }
+
+  return tableRows;
+}
 
 jQuery( function( $ ) {
 
@@ -8,15 +28,19 @@ jQuery( function( $ ) {
     return;
   }
 
-  const $settings      = $( '#wp-chimp-settings' );
-  const $settingsState = $settings.data( 'state' );
-  const apiVersion     = 'wp-chimp/v1';
+  const settings      = document.getElementById( 'wp-chimp-settings' );
+  const settingsState = JSON.parse( settings.dataset.state );
 
-  $.ajax({
-    'url': `${wpApiSettings.root}${apiVersion}/lists`
-  })
-  .done( ( resp ) => {
-    console.log( resp );
-  });
+  const namespace = 'wp-chimp/v1';
+  const tableBody = document.getElementById( 'wp-chimp-mailchimp-list-data' );
 
+  if ( 'undefined' !== typeof settingsState.mailchimp.apiKey && true === settingsState.mailchimp.apiKey ) {
+    $.ajax({
+      'url': `${wpApiSettings.root}${namespace}/lists`
+    })
+    .done( ( resp ) => {
+      var rows = getTheTableRows( resp );
+      setChildren( tableBody, rows );
+    });
+  }
 });
