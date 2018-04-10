@@ -9,21 +9,23 @@
  * @subpackage WP_Chimp/database
  */
 
-namespace WP_Chimp\Storage;
+namespace WP_Chimp\Includes\Lists;
+
+use WP_Chimp\Includes\Database;
 
 /**
- * Setup the "chimp_mailchimp_list" database schema
+ * Setup the "chimp_list" database schema
  *
  * @since 0.1.0
  */
-final class WP_Database_MailChimp_Lists extends WP_Database {
+final class Table extends Database {
 
 	/**
 	 * Table name
 	 *
 	 * @var string
 	 */
-	protected $name = 'chimp_mailchimp_lists';
+	protected $name = 'chimp_lists';
 
 	/**
 	 * Database version

@@ -12,7 +12,7 @@
  * @subpackage WP_Chimp/includes
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Includes;
 
 /**
  * Define the internationalization functionality.

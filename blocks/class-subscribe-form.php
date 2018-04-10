@@ -7,14 +7,14 @@
  * @subpackage WP_Chimp/blocks
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Blocks;
 
 /**
  * Register and render MailChimp Form block.
  *
  * @since 0.1.0
  */
-class Blocks_Form {
+final class Subscribe_Form {
 
 	/**
 	 * The directory
@@ -36,13 +36,13 @@ class Blocks_Form {
 	 * Registers all block assets so that they can be enqueued through Gutenberg in
 	 * the corresponding context.
 	 *
-	 * @see https://wordpress.org/gutenberg/handbook/blocks/writing-your-first-block-type/#enqueuing-block-scripts
+	 * {@link https://wordpress.org/gutenberg/handbook/blocks/writing-your-first-block-type/#enqueuing-block-scripts}
 	 */
 	public function form_block_init() {
 
-		$block_js = 'form/block.js';
+		$block_js = 'subscribe-form/block.js';
 		wp_register_script(
-			'wp-chimp-form-block-editor',
+			'wp-chimp-subscribe-form-block-editor',
 			plugins_url( $block_js, __FILE__ ),
 			[
 				'wp-blocks',
@@ -52,26 +52,26 @@ class Blocks_Form {
 			filemtime( "$this->dir/$block_js" )
 		);
 
-		$editor_css = 'form/editor.css';
+		$editor_css = 'subscribe-form/editor.css';
 		wp_register_style(
-			'wp-chimp-form-block-editor',
+			'wp-chimp-subscribe-form-block-editor',
 			plugins_url( $editor_css, __FILE__ ),
 			[ 'wp-blocks' ],
 			filemtime( "$this->dir/$editor_css" )
 		);
 
-		$style_css = 'form/style.css';
+		$style_css = 'subscribe-form/style.css';
 		wp_register_style(
-			'wp-chimp-form-block',
+			'wp-chimp-subscribe-form-block',
 			plugins_url( $style_css, __FILE__ ),
 			[ 'wp-blocks' ],
 			filemtime( "$this->dir/$style_css" )
 		);
 
 		register_block_type( 'wp-chimp/form', [
-			'editor_script'   => 'wp-chimp-form-block-editor',
-			'editor_style'    => 'wp-chimp-form-block-editor',
-			'style'           => 'wp-chimp-form-block',
+			'editor_script'   => 'wp-chimp-subscribe-form-block-editor',
+			'editor_style'    => 'wp-chimp-subscribe-form-block-editor',
+			'style'           => 'wp-chimp-subscribe-form-block',
 			'render_callback' => [ $this, 'render_form' ],
 		] );
 	}
@@ -89,6 +89,6 @@ class Blocks_Form {
 			$return = "<p>{$attributes['mailingList']}</p>";
 		}
 
-		return apply_filters( 'wp_chimp_render_block_form', $return, $attributes );
+		return apply_filters( 'wp_chimp_render_block_subscribe_form', $return, $attributes );
 	}
 }

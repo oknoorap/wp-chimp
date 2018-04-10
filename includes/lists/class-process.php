@@ -11,36 +11,36 @@
  * @subpackage WP_Chimp/admin/partials
  */
 
-namespace WP_Chimp\Storage;
+namespace WP_Chimp\Includes\Lists;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-use \WP_Background_Process;
+use WP_Background_Process;
 
 /**
  * Class that register new menu in the Admin area and load the page.
  *
  * @since 0.1.0
  */
-final class MailChimp_Lists_Process extends WP_Background_Process {
+final class Process extends WP_Background_Process {
 
 	/**
 	 * The unique wp_cron action.
 	 *
 	 * @var string
 	 */
-	protected $action = 'chimp_mailchimp_lists_process';
+	protected $action = 'chimp_lists_process';
 
 	/**
 	 * Function to assign the MailChimp list
 	 *
-	 * @param MailChimp_Lists_Query $lists_query The MailChimp_Lists_Query class instance.
+	 * @param Query $lists_query The Query class instance.
 	 * @return void
 	 */
-	public function register_lists_query( MailChimp_Lists_Query $lists_query ) {
+	public function register_lists_query( Query $lists_query ) {
 		$this->lists_query = $lists_query;
 	}
 
@@ -71,6 +71,6 @@ final class MailChimp_Lists_Process extends WP_Background_Process {
 	 */
 	protected function complete() {
 		parent::complete();
-		\update_option( 'wp_chimp_mailchimp_list_init', 1, false );
+		\update_option( 'wp_chimp_lists_init', 1, false );
 	}
 }

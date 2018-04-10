@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Test_MailChimp_Lists_Query
+ * Class Test_Query
  *
  * @package WP_Chimp\Tests;
  */
@@ -8,14 +8,14 @@
 namespace WP_Chimp;
 
 // Load WP_UnitTestCase.
-use \WP_UnitTestCase;
+use WP_UnitTestCase;
 
 /**
  * The class to test the "Utilities" functions.
  *
  * @since 1.2.3
  */
-class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
+class Test_Query extends WP_UnitTestCase {
 
 	/**
 	 * The WordPress Database abstraction
@@ -25,9 +25,9 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	private $wpdb;
 
 	/**
-	 * The MailChimp_Lists_Query instance
+	 * The Query instance
 	 *
-	 * @var WP_Chimp\Storage\MailChimp_Lists_Query
+	 * @var WP_Chimp\Lists\Query
 	 */
 	private $lists_query;
 
@@ -39,10 +39,10 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$this->lists_db = new Storage\WP_Database_MailChimp_Lists();
+		$this->lists_db = new Storage\WP_Database_Lists();
 		$this->lists_db->maybe_upgrade();
 
-		$this->lists_query = new Storage\MailChimp_Lists_Query();
+		$this->lists_query = new Storage\Query();
 		$this->wpdb        = $GLOBALS['wpdb'];
 		$this->sample_data = [
 			[
@@ -105,15 +105,15 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_check_db_install() {
-		$this->assertEquals( "{$this->wpdb->prefix}chimp_mailchimp_lists", $this->wpdb->chimp_mailchimp_lists );
+		$this->assertEquals( "{$this->wpdb->prefix}chimp_lists", $this->wpdb->chimp_lists );
 	}
 
 	/**
 	 * Test method to insert a new entry to the database.
 	 *
 	 * @since  0.1.0
-	 * @see    Storage\MailChimp_Lists_Query()->insert();
-	 * @see    Storage\MailChimp_Lists_Query()->query();
+	 * @see    Storage\Query()->insert();
+	 * @see    Storage\Query()->query();
 	 *
 	 * @return void
 	 */
@@ -155,7 +155,7 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	 * Test method to get list of the MailChimp IDs
 	 *
 	 * @since  0.1.0
-	 * @see    Storage\MailChimp_Lists_Query()->get_list_ids();
+	 * @see    Storage\Query()->get_list_ids();
 	 *
 	 * @return void
 	 */
@@ -171,7 +171,7 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	 * Test method to get the MailChimp list by the list_id
 	 *
 	 * @since  0.1.0
-	 * @see    Storage\MailChimp_Lists_Query()->get_by_the_id();
+	 * @see    Storage\Query()->get_by_the_id();
 	 *
 	 * @return void
 	 */
@@ -190,7 +190,7 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	 * Test method to update the existing MailChimp list ID in the database
 	 *
 	 * @since  0.1.0
-	 * @see    Storage\MailChimp_Lists_Query()->update();
+	 * @see    Storage\Query()->update();
 	 *
 	 * @return void
 	 */
@@ -218,7 +218,7 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	 * Test the method to delete the existing MailChimp list ID in the database
 	 *
 	 * @since 0.1.0
-	 * @see   Storage\MailChimp_Lists_Query()->delete();
+	 * @see   Storage\Query()->delete();
 	 *
 	 * @return void
 	 */
@@ -237,7 +237,7 @@ class Test_MailChimp_Lists_Query extends WP_UnitTestCase {
 	 * Test the method to empty the MailChimp list ID in the database
 	 *
 	 * @since 0.1.0
-	 * @see   Storage\MailChimp_Lists_Query()->truncate();
+	 * @see   Storage\Query()->truncate();
 	 *
 	 * @return void
 	 */

@@ -11,7 +11,7 @@
  * @subpackage WP_Chimp/admin/partials
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Admin;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -96,7 +96,7 @@ class Admin_Page {
 	 */
 	public function register_page() {
 
-		register_setting( $this->plugin_name, 'wp_chimp_mailchimp_api_key', [
+		register_setting( $this->plugin_name, 'wp_chimp_api_key', [
 			'type'              => 'string',
 			'description'       => 'The MailChimp API key associated with WP-Chimp plugin',
 			'sanitize_callback' => 'sanitize_text_field',
@@ -192,7 +192,7 @@ class Admin_Page {
 	 */
 	public function html_field_mailchimp_api_key() {
 	?>
-		<input type="text" name="wp_chimp_mailchimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $this->options['mailchimp']['api_key'] ); ?>" />
+		<input type="text" name="wp_chimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $this->options['mailchimp']['api_key'] ); ?>" />
 		<p class="description"><?php esc_html_e( 'Add your MailChimp API key' ); ?>. <a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank"><?php esc_html_e( 'How to generate the API key?', 'wp-chimp' ); ?></a></p>
 	<?php
 	}
@@ -228,8 +228,8 @@ class Admin_Page {
 
 		return [
 			'mailchimp' => [
-				'api_key'   => get_option( 'wp_chimp_mailchimp_api_key', '' ),
-				'list_init' => get_option( 'wp_chimp_mailchimp_list_init', 0 ),
+				'api_key'   => get_option( 'wp_chimp_api_key', '' ),
+				'list_init' => get_option( 'wp_chimp_lists_init', 0 ),
 			],
 		];
 	}
@@ -251,9 +251,9 @@ class Admin_Page {
 		 * Check the MailChimp API key update; if the new API key is
 		 * different we need to reset the initilization.
 		 */
-		if ( 'wp_chimp_mailchimp_api_key' === $option && $value !== $old_value ) {
+		if ( 'wp_chimp_api_key' === $option && $value !== $old_value ) {
 			$this->lists_query->truncate();
-			update_option( 'wp_chimp_mailchimp_list_init', 0, false );
+			update_option( 'wp_chimp_lists_init', 0, false );
 		}
 	}
 }

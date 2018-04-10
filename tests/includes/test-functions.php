@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Test_MailChimp_Lists_Query
+ * Class Test_Query
  *
  * @package WP_Chimp\Tests;
  */
@@ -8,7 +8,7 @@
 namespace WP_Chimp;
 
 // Load WP_UnitTestCase.
-use \WP_UnitTestCase;
+use WP_UnitTestCase;
 
 /**
  * The class to test the "Utilities" functions.

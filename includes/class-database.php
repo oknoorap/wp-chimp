@@ -8,10 +8,10 @@
  * @license https://www.gnu.org/licenses/gpl-2.0.html
  *
  * @package    WP_Chimp
- * @subpackage WP_Chimp/includes/storage
+ * @subpackage WP_Chimp/includes/abstract
  */
 
-namespace WP_Chimp\Storage;
+namespace WP_Chimp\Includes;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.1.0
  */
-abstract class WP_Database {
+abstract class Database {
 
 	/**
 	 * Table name, without the global table prefix

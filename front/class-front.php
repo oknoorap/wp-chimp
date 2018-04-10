@@ -6,10 +6,10 @@
  * @since      0.1.0
  *
  * @package    WP_Chimp
- * @subpackage WP_Chimp/public
+ * @subpackage WP_Chimp/Front
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Front;
 
 /**
  * The public-facing functionality of the plugin.
@@ -21,7 +21,7 @@ namespace WP_Chimp;
  * @subpackage WP_Chimp/public
  * @author     Thoriq Firdaus <thoriqoe@gmail.com>
  */
-class Plugin_Public {
+class Front {
 
 	/**
 	 * The ID of this plugin.

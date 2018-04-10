@@ -11,7 +11,7 @@
  * @subpackage WP_Chimp/admin/partials
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Admin;
 
 /**
  * Class that register new menu in the Admin area and load the page.

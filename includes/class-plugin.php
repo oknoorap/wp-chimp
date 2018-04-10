@@ -12,17 +12,16 @@
  * @subpackage WP_Chimp/includes
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Includes;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-use \WP_Chimp\Storage\MailChimp_Lists_Process as Lists_Process;
-use \WP_Chimp\Storage\MailChimp_Lists_Query as Lists_Query;
-use \WP_Chimp\Storage\WP_Database_MailChimp_Lists as Lists_Database;
-use \WP_Chimp\Endpoints\REST_MailChimp_Lists_Controller as Lists_REST_Controller;
+use WP_Chimp\Admin;
+use WP_Chimp\Front;
+use WP_Chimp\Blocks;
 
 /**
  * The core plugin class.
@@ -46,7 +45,7 @@ class Plugin {
 	 *
 	 * @since  0.1.0
 	 * @access protected
-	 * @var    WP_Chimp\Loader $loader Maintains and registers all hooks for the plugin.
+	 * @var    WP_Chimp\Includes\Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -116,83 +115,18 @@ class Plugin {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - WP_Chimp/Loader. Orchestrates the hooks of the plugin.
-	 * - WP_Chimp/Languages. Defines internationalization functionality.
-	 * - WP_Chimp/Plugin_Admin. Defines all hooks for the admin area.
-	 * - WP_Chimp/Plugin_Public. Defines all hooks for the public side of the site.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
 	 * @since 0.1.0
 	 * @access private
 	 */
 	private function load_dependencies() {
 
-		/**
-		 * Helpers and utility functions of the core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/functions.php';
+		// Load the Helpers and utility of the core plugin functions.
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utilities.php';
 
 		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
+		 * Create an instance of the loader which will be used to register the hooks
+		 * with WordPress.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-loader.php';
-
-		/**
-		 * A base WordPress database table class, which facilitates the creation of
-		 * and schema changes to individual database tables.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/storage/class-wp-database.php';
-
-		/**
-		 * Class and methods to handle the `wp_chimp_mailchimp_list` database.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/storage/class-wp-database-mailchimp-lists.php';
-
-		/**
-		 * Class and methods to queue process on storing the MailChimp from the API response
-		 * to the database.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/storage/class-mailchimp-lists-process.php';
-
-		/**
-		 * Class and methods that handle database query and caching of the MailChimp list.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/storage/class-mailchimp-lists-query.php';
-
-		/**
-		 * The class responsible to register the custom API endpoint with the WP-API
-		 * that'll retrieve the MailChimp list.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/endpoints/class-rest-mailchimp-lists-controller.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-languages.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-plugin-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-plugin-public.php';
-
-		/**
-		 * Functions and classes to load Gutenberg "Subscription Form" in the admin,
-		 * and the block rendering in the public-facing of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'blocks/class-blocks-form.php';
-
 		$this->loader = new Loader();
 	}
 
@@ -221,12 +155,14 @@ class Plugin {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Plugin_Admin( $this->get_plugin_name(), $this->get_version() );
-		$admin_page   = new Admin_Page( $this->get_plugin_name(), $this->get_version() );
-		$admin_menu   = new Admin_Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
+		$admin      = new Admin\Admin( $this->get_plugin_name(), $this->get_version() );
+		$admin_page = new Admin\Admin_Page( $this->get_plugin_name(), $this->get_version() );
+		$admin_menu = new Admin\Admin_Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$admin_page->register_lists_query( new Lists\Query() );
+
+		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
 
 		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
 		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
@@ -252,7 +188,7 @@ class Plugin {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Plugin_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Front\Front( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -267,7 +203,7 @@ class Plugin {
 	 */
 	private function define_database_hooks() {
 
-		$lists_db = new Lists_Database();
+		$lists_db = new Lists\Table();
 
 		// Create or Update the database upon plugin activation.
 		register_activation_hook( $this->file, [ $lists_db, 'maybe_upgrade' ] );
@@ -284,12 +220,12 @@ class Plugin {
 	 */
 	private function define_api_hooks() {
 
-		$lists_process = new Lists_Process();
-		$lists_rest    = new Lists_REST_Controller( $this->get_plugin_name(), $this->get_version() );
+		$lists_process = new Lists\Process();
+		$lists_process->register_lists_query( new Lists\Query() );
 
-		$lists_process->register_lists_query( new Lists_Query() );
+		$lists_rest = new Endpoints\REST_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
 		$lists_rest->register_lists_process( $lists_process );
-		$lists_rest->register_lists_query( new Lists_Query() );
+		$lists_rest->register_lists_query( new Lists\Query() );
 
 		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' );
 	}
@@ -303,7 +239,7 @@ class Plugin {
 	 */
 	private function define_blocks_hooks() {
 
-		$blocks_form = new Blocks_Form();
+		$blocks_form = new Blocks\Subscribe_Form();
 
 		$this->loader->add_action( 'init', $blocks_form, 'form_block_init' );
 	}
@@ -332,7 +268,7 @@ class Plugin {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since  0.1.0
-	 * @return WP_Chimp\Loader Orchestrates the hooks of the plugin.
+	 * @return WP_Chimp\Includes\Loader Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

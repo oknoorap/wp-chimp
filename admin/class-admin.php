@@ -9,9 +9,9 @@
  * @subpackage WP_Chimp/admin
  */
 
-namespace WP_Chimp;
+namespace WP_Chimp\Admin;
 
-use DrewM\MailChimp\MailChimp as MailChimp;
+use DrewM\MailChimp\MailChimp;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -23,7 +23,7 @@ use DrewM\MailChimp\MailChimp as MailChimp;
  * @subpackage WP_Chimp/admin
  * @author     Thoriq Firdaus <thoriqoe@gmail.com>
  */
-class Plugin_Admin {
+class Admin {
 
 	/**
 	 * The ID of this plugin.

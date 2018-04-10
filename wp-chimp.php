@@ -31,6 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Load packages installed through Composer.
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -56,7 +57,7 @@ function wp_chimp() {
 	static $plugin;
 
 	if ( is_null( $plugin ) ) {
-		$plugin = new WP_Chimp\Plugin( 'wp-chimp', '0.1.0', __FILE__ );
+		$plugin = new WP_Chimp\Includes\Plugin( 'wp-chimp', '0.1.0', __FILE__ );
 		$plugin->run();
 	}
 

@@ -39,7 +39,8 @@ jQuery( function( $ ) {
       'url': `${wpApiSettings.root}${namespace}/lists`
     })
     .done( ( resp ) => {
-      setChildren( tableBody, getTheTableRows( resp ) );
+      console.log( resp );
+      // setChildren( tableBody, getTheTableRows( resp ) );
     });
   }
 });

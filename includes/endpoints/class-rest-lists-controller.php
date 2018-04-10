@@ -9,29 +9,30 @@
  * @subpackage WP_Chimp/admin/partials/abstract
  */
 
-namespace WP_Chimp\Endpoints;
+namespace WP_Chimp\Includes\Endpoints;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-use \WP_Error;
-use \WP_REST_Request;
-use \WP_REST_Server;
-use \WP_REST_Response;
-use \WP_REST_Controller;
+use WP_Error;
+use WP_REST_Request;
+use WP_REST_Server;
+use WP_REST_Response;
+use WP_REST_Controller;
 
-use \WP_Chimp\Storage;
-use \DrewM\MailChimp\MailChimp;
+use WP_Chimp\Includes\Lists;
+use WP_Chimp\Includes\Utilities;
 
+use DrewM\MailChimp\MailChimp;
 
 /**
  * The class for registering custom API Routes using WP-API.
  *
  * @since 0.1.0
  */
-final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
+final class REST_Lists_Controller extends WP_REST_Controller {
 
 	/**
 	 * The Plugin class instance.
@@ -88,14 +89,14 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	protected $mailchimp_api_key;
 
 	/**
-	 * The MailChimp_Lists_Query instance
+	 * The Query instance
 	 *
-	 * Used for interact with the {$prefix}chimp_mailchimp_lists table,
+	 * Used for interact with the {$prefix}chimp_lists table,
 	 * such as inserting a new row or updating the existing rows.
 	 *
 	 * @since  0.1.0
 	 * @access protected
-	 * @var    Storage\MailChimp_Lists_Query
+	 * @var    Storage\Query
 	 */
 	protected $list_query;
 
@@ -149,7 +150,7 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 *                yet been set.
 	 */
 	public function get_the_mailchimp_api_key() {
-		return get_option( 'wp_chimp_mailchimp_api_key', '' );
+		return get_option( 'wp_chimp_api_key', '' );
 	}
 
 	/**
@@ -166,7 +167,27 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 *              otherwise, returns false.
 	 */
 	public function is_initialized() {
-		return (bool) get_option( 'wp_chimp_mailchimp_list_init', 0 );
+		return (bool) get_option( 'wp_chimp_lists_init', 0 );
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param Lists\Query $query
+	 * @return void
+	 */
+	public function register_lists_query( Lists\Query $query ) {
+		$this->lists_query = $query;
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param Lists\Process $process
+	 * @return void
+	 */
+	public function register_lists_process( Lists\Process $process ) {
+		$this->lists_process = $process;
 	}
 
 	/**
@@ -199,14 +220,6 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 				],
 			],
 		]);
-	}
-
-	public function register_lists_query( $query ) {
-		$this->lists_query = $query;
-	}
-
-	public function register_lists_process( $process ) {
-		$this->lists_process = $process;
 	}
 
 	/**
@@ -255,13 +268,14 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 		$api_key  = $this->get_the_mailchimp_api_key();  // Get the MailChimp API key saved.
 		$is_init  = $this->is_initialized();             // Check if the list data is initialised.
 
-		if ( ! empty( $api_key ) && false === $is_init ) {
+		if ( ! empty( $api_key ) && true === $is_init ) {
 
 			$lists        = [];
 			$api_response = $this->get_mailchimp_remote_lists( $api_key );
 
 			if ( array_key_exists( 'lists', $api_response ) && 0 !== count( $api_response['lists'] ) ) {
-				$lists = \WP_Chimp\sort_mailchimp_data( $api_response['lists'] );
+				update_option( 'wp_chimp_lists_total_items', $api_response['total_items'], false );
+				$lists = Utilities\sort_mailchimp_data( $api_response['lists'] );
 			}
 
 			if ( 0 !== count( $lists ) ) {
@@ -276,7 +290,8 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 			$response = $this->get_mailchimp_cached_lists();
 		}
 
-		return $response;
+		$api_response = $this->get_mailchimp_remote_lists( $api_key );
+		return $api_response;
 	}
 
 	/**
@@ -291,13 +306,10 @@ final class REST_MailChimp_Lists_Controller extends WP_REST_Controller {
 	 */
 	private function get_mailchimp_remote_lists( $api_key ) {
 
-		/**
-		 * The MailChimp API wrapper.
-		 *
-		 * @var \DrewM\MailChimp\MailChimp
-		 */
 		$mailchimp = new MailChimp( $api_key );
-		return $mailchimp->get( 'lists' );
+		return $mailchimp->get( 'lists', [
+			'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin,total_items',
+		] );
 	}
 
 	/**

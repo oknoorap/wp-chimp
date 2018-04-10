@@ -1,7 +1,7 @@
 <?php
 /**
  * The file that defines the class and the methods to query
- * *_chimp_mailchimp_lists table.
+ * *_chimp_lists table.
  *
  * @link       https://wp-chimp.com
  * @since      0.1.0
@@ -10,21 +10,21 @@
  * @subpackage WP_Chimp/includes
  */
 
-namespace WP_Chimp\Storage;
-
-use \WP_Error;
+namespace WP_Chimp\Includes\Lists;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
+use WP_Error;
+
 /**
- * The class to query the *_chimp_mailchimp_lists table
+ * The class to query the *_chimp_lists table
  *
  * @since 0.1.0
  */
-final class MailChimp_Lists_Query {
+final class Query {
 
 	/**
 	 * The columns and its value.
@@ -80,7 +80,7 @@ final class MailChimp_Lists_Query {
 
 			$lists = $wpdb->get_results("
 				SELECT list_id, name, subscribers, double_optin
-				FROM $wpdb->chimp_mailchimp_lists
+				FROM $wpdb->chimp_lists
 			", ARRAY_A );
 
 			wp_cache_add( $cache_key, $lists, 'wp_chimp_lists' );
@@ -108,7 +108,7 @@ final class MailChimp_Lists_Query {
 
 			$results = $wpdb->get_results("
 				SELECT list_id
-				FROM $wpdb->chimp_mailchimp_lists
+				FROM $wpdb->chimp_lists
 			", ARRAY_A );
 
 			$list_ids = [];
@@ -140,7 +140,7 @@ final class MailChimp_Lists_Query {
 
 			$list = $wpdb->get_row( $wpdb->prepare("
 				SELECT list_id, name, subscribers, double_optin
-				FROM $wpdb->chimp_mailchimp_lists
+				FROM $wpdb->chimp_lists
 				WHERE list_id = %s
 			", [ $id ] ), ARRAY_A );
 		}
@@ -181,7 +181,7 @@ final class MailChimp_Lists_Query {
 			return new WP_Error( 'wp_signups_domain_exists', esc_html__( 'That signup already exists.', 'wp-chimp' ), $this );
 		}
 
-		$inserted = $wpdb->insert( $wpdb->chimp_mailchimp_lists, self::sanitize_values( $data ),
+		$inserted = $wpdb->insert( $wpdb->chimp_lists, self::sanitize_values( $data ),
 			[ '%s', '%s', '%d', '%d', '%s' ]
 		);
 
@@ -219,7 +219,7 @@ final class MailChimp_Lists_Query {
 
 		unset( $data['list_id'] ); // Remove the `list_id` from the updated column.
 
-		$updated = $wpdb->update( $wpdb->chimp_mailchimp_lists, self::sanitize_values( $data ),
+		$updated = $wpdb->update( $wpdb->chimp_lists, self::sanitize_values( $data ),
 			[ 'list_id' => $id ],
 			[ '%s', '%d', '%d', '%s' ],
 			[ '%s' ]
@@ -248,7 +248,7 @@ final class MailChimp_Lists_Query {
 	public function delete( $id = '' ) {
 		global $wpdb;
 
-		$deleted = $wpdb->delete( $wpdb->chimp_mailchimp_lists,
+		$deleted = $wpdb->delete( $wpdb->chimp_lists,
 			[ 'list_id' => $id ],
 			[ '%s' ]
 		);
@@ -262,7 +262,7 @@ final class MailChimp_Lists_Query {
 	}
 
 	/**
-	 * Function to empty the records in the `*_chimp_mailchimp_lists` table
+	 * Function to empty the records in the `*_chimp_lists` table
 	 *
 	 * @since  0.1.0
 	 * @access public
@@ -272,7 +272,7 @@ final class MailChimp_Lists_Query {
 	public function truncate() {
 		global $wpdb;
 
-		$emptied = $wpdb->query( "TRUNCATE TABLE $wpdb->chimp_mailchimp_lists" );
+		$emptied = $wpdb->query( "TRUNCATE TABLE $wpdb->chimp_lists" );
 
 		if ( true === $emptied ) {
 
