@@ -12,8 +12,7 @@
 
 namespace WP_Chimp\Includes;
 
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;
 }
 

@@ -143,7 +143,7 @@ class Admin_Page {
 		<div class="wrap wp-chimp-wrap" id="wp-chimp-settings" data-state='<?php echo esc_attr( $this->get_state() ); ?>'>
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
-			<table class="widefat striped wp-chimp-table" id="wp-chimp-mailchimp-list-table">
+			<table class="widefat striped wp-chimp-table" id="wp-chimp-table-lists">
 				<thead>
 					<tr>
 						<th scope="col" class="wp-chimp-table__th-id"><?php esc_html_e( 'ID', 'wp-chimp' ); ?></th>
@@ -153,9 +153,9 @@ class Admin_Page {
 						<th scope="col" class="wp-chimp-table__th-shortcode"><?php esc_html_e( 'Shortcode', 'wp-chimp' ); ?></th>
 					</tr>
 				</thead>
-				<tbody id="wp-chimp-mailchimp-list-data">
-					<tr class="no-items">
-						<td colspan="5">No MailChimp list found.</td>
+				<tbody id="wp-chimp-lists">
+					<tr class="no-items" id="wp-chimp-no-lists">
+						<td colspan="5"><?php esc_html_e( 'No MailChimp list found.', 'wp-chimp' ); ?></td>
 					</tr>
 				</tbody>
 			</table>

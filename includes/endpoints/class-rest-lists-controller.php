@@ -1,18 +1,15 @@
 <?php
 /**
- * A REST controller for
+ * The file that defines a REST controller for '/lists' endpoints.
  *
- * @version 1.4.0
- * @license https://www.gnu.org/licenses/gpl-2.0.html
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/admin/partials/abstract
+ * @link    https://wp-chimp.com
+ * @since   0.1.0
+ * @package WP_Chimp/Includes
  */
 
 namespace WP_Chimp\Includes\Endpoints;
 
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;
 }
 
@@ -28,9 +25,10 @@ use WP_Chimp\Includes\Utilities;
 use DrewM\MailChimp\MailChimp;
 
 /**
- * The class for registering custom API Routes using WP-API.
+ * The class that register the custom '/list' endpoint to WP-API.
  *
- * @since 0.1.0
+ * @since  0.1.0
+ * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
 final class REST_Lists_Controller extends WP_REST_Controller {
 
@@ -173,7 +171,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	/**
 	 * Undocumented function
 	 *
-	 * @param Lists\Query $query
+	 * @param WP_Chimp\Includes\Lists\Query $query
 	 * @return void
 	 */
 	public function register_lists_query( Lists\Query $query ) {
@@ -183,7 +181,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	/**
 	 * Undocumented function
 	 *
-	 * @param Lists\Process $process
+	 * @param WP_Chimp\Includes\Lists\Process $process
 	 * @return void
 	 */
 	public function register_lists_process( Lists\Process $process ) {
@@ -223,7 +221,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Return the '/wp-chimp/v1/lists' route response.
+	 * Function to return the response from '/wp-chimp/v1/lists' endpoints.
 	 *
 	 * @since  0.1.0
 	 * @access public
@@ -232,7 +230,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$mailchimp_lists = $this->get_mailchimp_lists();
+		$mailchimp_lists = $this->get_lists();
 		if ( $request instanceof WP_REST_Request ) {
 			return rest_ensure_response( $mailchimp_lists );
 		}
@@ -262,16 +260,16 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *               It may also return an Exception if the key,
 	 *               added is invalid.
 	 */
-	private function get_mailchimp_lists() {
+	private function get_lists() {
 
 		$response = [];                                  // Initialize the response with an empty array.
 		$api_key  = $this->get_the_mailchimp_api_key();  // Get the MailChimp API key saved.
 		$is_init  = $this->is_initialized();             // Check if the list data is initialised.
 
-		if ( ! empty( $api_key ) && true === $is_init ) {
+		if ( ! empty( $api_key ) && false === $is_init ) {
 
 			$lists        = [];
-			$api_response = $this->get_mailchimp_remote_lists( $api_key );
+			$api_response = $this->get_remote_lists( $api_key );
 
 			if ( array_key_exists( 'lists', $api_response ) && 0 !== count( $api_response['lists'] ) ) {
 				update_option( 'wp_chimp_lists_total_items', $api_response['total_items'], false );
@@ -284,27 +282,25 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 				}
 				$this->lists_process->save()->dispatch();
 			}
-
 			$response = $lists;
 		} else {
-			$response = $this->get_mailchimp_cached_lists();
+			$response = $this->get_local_lists();
 		}
 
-		$api_response = $this->get_mailchimp_remote_lists( $api_key );
-		return $api_response;
+		return $response;
 	}
 
 	/**
 	 * Function to get the list from MailChimp API.
 	 *
-	 * @since 0.1.0
+	 * @since  0.1.0
 	 * @access private
 	 *
-	 * @param string $api_key The MailChimp API key.
+	 * @param  string $api_key The MailChimp API key.
 	 * @return mixed Returns an object of the lists, or an Exception
 	 *               if the API key added is invalid.
 	 */
-	private function get_mailchimp_remote_lists( $api_key ) {
+	private function get_remote_lists( $api_key ) {
 
 		$mailchimp = new MailChimp( $api_key );
 		return $mailchimp->get( 'lists', [
@@ -313,16 +309,32 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Function to get the list from the cache in the local cache
-	 * in the database.
+	 * Function to get the MailChimp list from the cache or the database.
 	 *
-	 * @since 0.1.0
+	 * @since  0.1.0
 	 * @access private
 	 *
-	 * @return mixed Returns an object of the lists, empty array, or an Exception
+	 * @return array Returns an object of the lists, empty array, or an Exception
 	 *               if the API key added is invalid.
 	 */
-	private function get_mailchimp_cached_lists() {
-		return $this->lists_query->query();
+	private function get_local_lists() {
+
+		return [
+			'lists'       => $this->lists_query->query(),
+			'total_items' => $this->get_lists_total_counts(),
+		];
+	}
+
+	/**
+	 * Function to get the number of lists as obtained from the
+	 * MailChimp API response.
+	 *
+	 * @since  0.1.0
+	 * @access private
+	 *
+	 * @return int The lists total items
+	 */
+	private function get_lists_total_counts() {
+		return absint( get_option( 'wp_chimp_lists_total_items', 0 ) );
 	}
 }

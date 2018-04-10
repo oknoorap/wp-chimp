@@ -8,11 +8,43 @@
 
 	&__th-id,
 	&__th-subscribers,
-	&__th-last-sync {
+	&__th-double-optin {
 		width: 100px;
 	}
 
 	&__th-shortcode {
 		width: 280px;
+	}
+}
+
+.wp-chimp-table-data-placeholder {
+
+	&__bar {
+		height: 12px;
+		display: block;
+		width: 100%;
+		margin: 2px 0;
+		background-color: #eaeaea;
+		animation: fade-in-out 0.5s ease-out infinite;
+	}
+
+	@for $i from 0 through 4 {
+
+		$delay: ($i / 10);
+
+		.index-#{$i} {
+			animation-delay: #{$delay}s;
+		}
+	}
+}
+
+@keyframes fade-in-out {
+
+	0% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0.5;
 	}
 }

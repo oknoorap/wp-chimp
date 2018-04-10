@@ -6,10 +6,9 @@
  * @package WP_Chimp\includes
  */
 
-namespace WP_Chimp\Utilities;
+namespace WP_Chimp\Includes\Utilities;
 
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;
 }
 
@@ -41,4 +40,4 @@ if ( ! function_exists( __NAMESPACE__ . 'sort_mailchimp_data' ) ) :
 		return $sorted_data;
 	}
 
-endif; // ! function_exists( 'wp_chimp_sort_mailchimp_data' ).
+endif; // wp_chimp_sort_mailchimp_data.
