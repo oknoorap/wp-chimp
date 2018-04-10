@@ -5,11 +5,9 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/includes
+ * @link    https://wp-chimp.com
+ * @since   0.1.0
+ * @package WP_Chimp/Includes
  */
 
 namespace WP_Chimp\Includes;
@@ -32,10 +30,8 @@ use WP_Chimp\Blocks;
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      0.1.0
- * @package    WP_Chimp
- * @subpackage WP_Chimp/includes
- * @author     Thoriq Firdaus <thoriqoe@gmail.com>
+ * @since  0.1.0
+ * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
 class Plugin {
 
@@ -99,15 +95,13 @@ class Plugin {
 
 		$this->load_dependencies();
 
-		$this->set_locale();
-
+		$this->define_languages_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->define_database_hooks();
-		$this->define_api_hooks();
+		$this->define_endpoints_hooks();
 
-		// Enable Gutenberg blocks if WordPress supports it.
-		if ( function_exists( 'register_block_type' ) ) {
+		if ( function_exists( 'register_block_type' ) ) { // Enable Gutenberg blocks if WordPress supports it.
 			$this->define_blocks_hooks();
 		}
 	}
@@ -120,8 +114,7 @@ class Plugin {
 	 */
 	private function load_dependencies() {
 
-		// Load the Helpers and utility of the core plugin functions.
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utilities.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utilities.php'; // Load the helper and utility functions.
 
 		/**
 		 * Create an instance of the loader which will be used to register the hooks
@@ -139,7 +132,7 @@ class Plugin {
 	 * @since  0.1.0
 	 * @access private
 	 */
-	private function set_locale() {
+	private function define_languages_hooks() {
 
 		$languages = new Languages();
 
@@ -159,6 +152,10 @@ class Plugin {
 		$admin_page = new Admin\Admin_Page( $this->get_plugin_name(), $this->get_version() );
 		$admin_menu = new Admin\Admin_Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
 
+		/**
+		 * Add Lists\Query instance to the Admin\Admin_Page to be able to add, get,
+		 * or delete lists from the database.
+		 */
 		$admin_page->register_lists_query( new Lists\Query() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
@@ -174,7 +171,7 @@ class Plugin {
 		 * !important that the plugin file name is always referring to the plugin main file
 		 * in the plugin's root folder instead of the sub-folders in order for the function to work.
 		 *
-		 * @see https://developer.wordpress.org/reference/hooks/prefixplugin_action_links_plugin_file/
+		 * {@link https://developer.wordpress.org/reference/hooks/prefixplugin_action_links_plugin_file/}
 		 */
 		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), $admin_page, 'add_action_links', 10, 2 );
 	}
@@ -205,8 +202,7 @@ class Plugin {
 
 		$lists_db = new Lists\Table();
 
-		// Create or Update the database upon plugin activation.
-		register_activation_hook( $this->file, [ $lists_db, 'maybe_upgrade' ] );
+		register_activation_hook( $this->file, [ $lists_db, 'maybe_upgrade' ] ); // Create or Update the database on activation.
 
 		$this->loader->add_action( 'switch_blog', $lists_db, 'switch_blog' );
 		$this->loader->add_action( 'admin_init', $lists_db, 'maybe_upgrade' );
@@ -218,16 +214,26 @@ class Plugin {
 	 * @since  0.1.0
 	 * @access private
 	 */
-	private function define_api_hooks() {
+	private function define_endpoints_hooks() {
 
 		$lists_process = new Lists\Process();
-		$lists_process->register_lists_query( new Lists\Query() );
+		$lists_rest    = new Endpoints\REST_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
 
-		$lists_rest = new Endpoints\REST_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
-		$lists_rest->register_lists_process( $lists_process );
+		/**
+		 * Add Lists\Query instance to List\Process and Endpoints\REST_Lists_Controller
+		 * to be able to add, get, or delete lists from the database.
+		 */
+		$lists_process->register_lists_query( new Lists\Query() );
 		$lists_rest->register_lists_query( new Lists\Query() );
 
-		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' );
+		/**
+		 * Add Lists\Process instance to Endpoints\REST_Lists_Controller
+		 * to add background processing when adding lists from the
+		 * MailChimp API response.
+		 */
+		$lists_rest->register_lists_process( $lists_process );
+
+		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' ); // Register the `/lists` API endpoint.
 	}
 
 	/**
@@ -241,7 +247,7 @@ class Plugin {
 
 		$blocks_form = new Blocks\Subscribe_Form();
 
-		$this->loader->add_action( 'init', $blocks_form, 'form_block_init' );
+		$this->loader->add_action( 'init', $blocks_form, 'form_block_init' ); // Register the `subscribe-form` blocks to Gutenberg.
 	}
 
 	/**

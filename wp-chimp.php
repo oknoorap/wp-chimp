@@ -24,20 +24,20 @@
  * Domain Path: /languages
  */
 
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
-	die;
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+	die( 'No script kiddies please!' );
 }
 
-// Load packages installed through Composer.
-require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
-
 /**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
+ * Load the autoloaders that will automatically include the appropriate file
+ * when a Class is instantiated. The `vendor/autoload.php` specifically
+ * will load files from the packages installed through Composer
+ *
+ * {@link http://php.net/manual/en/function.spl-autoload-register.php}
+ * {@link https://getcomposer.org/doc/01-basic-usage.md#autoloading}
  */
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**
  * Begins execution of the plugin.
