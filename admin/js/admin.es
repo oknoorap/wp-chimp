@@ -61,6 +61,7 @@ jQuery( function( $ ) {
       }
     })
     .done( ( resp ) => {
+      console.log( resp.lists );
       setChildren( listContainer, getTableRows( resp.lists ) );
     });
   }

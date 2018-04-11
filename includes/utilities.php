@@ -25,16 +25,24 @@ if ( ! function_exists( __NAMESPACE__ . 'sort_mailchimp_data' ) ) :
 	 * @param  array $raw_data The MailChimp API response.
 	 * @return array
 	 */
-	function sort_mailchimp_data( $raw_data ) {
+	function sort_mailchimp_lists( $raw_data ) {
 
 		$sorted_data = [];
 		foreach ( $raw_data as $key => $list ) {
-			$sorted_data[ $key ] = [
-				'list_id'      => sanitize_key( $list['id'] ),
-				'name'         => sanitize_text_field( $list['name'] ),
-				'subscribers'  => absint( $list['stats']['member_count'] ),
-				'double_optin' => true === $list['double_optin'] ? 1 : 0,
-			];
+
+			$list_id          = isset( $list['id'] ) ? $list['id'] : '';
+			$list_name        = isset( $list['name'] ) ? $list['name'] : '';
+			$list_subscribers = isset( $list['stats'] ) && isset( $list['member_count'] ) ? $list['stats'] : [];
+			$list_optin       = isset( $list['double_optin'] ) ? $list['double_optin'] : 0;
+
+			if ( ! empty( $list_id ) ) {
+				$sorted_data[ $key ] = [
+					'list_id'      => sanitize_key( $list['id'] ),
+					'name'         => sanitize_text_field( $list['name'] ),
+					'subscribers'  => absint( $list['stats']['member_count'] ),
+					'double_optin' => true === $list['double_optin'] ? 1 : 0,
+				];
+			}
 		}
 
 		return $sorted_data;

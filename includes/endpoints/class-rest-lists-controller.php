@@ -271,18 +271,18 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			$lists        = [];
 			$api_response = $this->get_remote_lists( $api_key );
 
-			if ( array_key_exists( 'lists', $api_response ) && 0 !== count( $api_response['lists'] ) ) {
-				update_option( 'wp_chimp_lists_total_items', $api_response['total_items'], false );
-				$lists = Utilities\sort_mailchimp_data( $api_response['lists'] );
-			}
-
-			if ( 0 !== count( $lists ) ) {
-				foreach ( $lists as $list ) {
+			if ( isset( $api_response['lists'] ) && 0 !== count( $api_response['lists'] ) ) {
+				foreach ( $api_response['lists'] as $list ) {
 					$this->lists_process->push_to_queue( $list );
 				}
 				$this->lists_process->save()->dispatch();
 			}
-			$response = $lists;
+
+			$response = [
+				'lists'       => isset( $api_response['lists'] ) ? $api_response['lists'] : [],
+				'total_items' => isset( $api_response['total_items'] ) ? $api_response['total_items'] : 0,
+			];
+
 		} else {
 			$response = $this->get_local_lists();
 		}
@@ -303,9 +303,18 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	private function get_remote_lists( $api_key ) {
 
 		$mailchimp = new MailChimp( $api_key );
-		return $mailchimp->get( 'lists', [
+		$response  = $mailchimp->get( 'lists', [
 			'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin,total_items',
 		] );
+
+		if ( array_key_exists( 'lists', $response ) && 0 !== count( $response['lists'] ) ) {
+			update_option( 'wp_chimp_lists_total_items', $response['total_items'], false );
+		}
+
+		return [
+			'lists'       => Utilities\sort_mailchimp_lists( $response['lists'] ),
+			'total_items' => $response['total_items'],
+		];
 	}
 
 	/**
@@ -321,7 +330,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		return [
 			'lists'       => $this->lists_query->query(),
-			'total_items' => $this->get_lists_total_counts(),
+			'total_items' => $this->get_lists_total_items(),
 		];
 	}
 
@@ -334,7 +343,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @return int The lists total items
 	 */
-	private function get_lists_total_counts() {
+	private function get_lists_total_items() {
 		return absint( get_option( 'wp_chimp_lists_total_items', 0 ) );
 	}
 }
