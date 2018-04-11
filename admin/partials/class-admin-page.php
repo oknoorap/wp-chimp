@@ -18,6 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
+use WP_Chimp\Includes\Utilities;
+
 /**
  * Class that register new menu in the Admin area and load the page.
  *
@@ -154,8 +156,8 @@ class Admin_Page {
 					</tr>
 				</thead>
 				<tbody id="wp-chimp-lists">
-					<tr class="no-items" id="wp-chimp-no-lists">
-						<td colspan="5"><?php esc_html_e( 'No MailChimp list found.', 'wp-chimp' ); ?></td>
+					<tr id="wp-chimp-lists-empty-state">
+						<td colspan="5"></td>
 					</tr>
 				</tbody>
 			</table>

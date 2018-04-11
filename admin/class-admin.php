@@ -67,6 +67,7 @@ class Admin {
 	 * @access private
 	 */
 	private function load_dependencies() {
+
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-admin-menu.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-admin-page.php';
 	}
