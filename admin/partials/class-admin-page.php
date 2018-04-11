@@ -117,13 +117,13 @@ class Admin_Page {
 	 */
 	public function get_state() {
 
-		$state = [
-			'nonce'     => wp_create_nonce( 'wp-chimp-settings' ),
+		$state = Utilities\convert_keys_to_camelcase([
+			'nonce'     => wp_create_nonce( 'wp-chimp-settings' ), // Create a nonce to verify permission in the Settings.
 			'mailchimp' => [
-				'listInit' => (bool) $this->options['mailchimp']['list_init'],
-				'apiKey'   => (bool) $this->options['mailchimp']['api_key'],
+				'lists_init' => (bool) $this->options['mailchimp']['lists_init'],
+				'api_key'    => (bool) $this->options['mailchimp']['api_key'],
 			],
-		];
+		] );
 
 		return wp_json_encode( $state, 0, 3 );
 	}
