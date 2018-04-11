@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;
 }
 
-if ( ! function_exists( __NAMESPACE__ . 'sort_mailchimp_data' ) ) :
+if ( ! function_exists( __NAMESPACE__ . '\\sort_mailchimp_data' ) ) :
 
 	/**
 	 * Function to sort out MailChimp API.
@@ -49,3 +49,32 @@ if ( ! function_exists( __NAMESPACE__ . 'sort_mailchimp_data' ) ) :
 	}
 
 endif; // wp_chimp_sort_mailchimp_data.
+
+if ( ! function_exists( __NAMESPACE__ . '\\convert_keys_to_camelcase' ) ) :
+
+	/**
+	 * Function to transform the array keys to camelCase.
+	 *
+	 * This function will be used to convert associative array that
+	 * will be used in JavaScript.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param  array $inputs Associative array.
+	 * @return array Associative array with the key converted to camelcase
+	 */
+	function convert_keys_to_camelcase( array $inputs ) {
+
+		$inputs_converted = [];
+		foreach ( $inputs as $key => $input ) {
+			$key = lcfirst( implode( '', array_map( 'ucfirst', explode( '_', $key ) ) ) );
+			if ( is_array( $input ) ) {
+				$input = convert_keys_to_camelcase( $input );
+			}
+			$inputs_converted[ $key ] = $input;
+		}
+
+		return $inputs_converted;
+	}
+
+endif; // convert_keys_to_camelcase
