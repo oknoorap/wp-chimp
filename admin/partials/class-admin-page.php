@@ -228,8 +228,8 @@ class Admin_Page {
 
 		return [
 			'mailchimp' => [
-				'api_key'   => get_option( 'wp_chimp_api_key', '' ),
-				'list_init' => get_option( 'wp_chimp_lists_init', 0 ),
+				'api_key'    => get_option( 'wp_chimp_api_key', '' ),
+				'lists_init' => get_option( 'wp_chimp_lists_init', 0 ),
 			],
 		];
 	}
