@@ -287,7 +287,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			$response = $this->get_local_lists();
 		}
 
-		return $response;
+		return Utilities\convert_keys_to_camelcase( $response );
 	}
 
 	/**
