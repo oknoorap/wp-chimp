@@ -58,23 +58,28 @@ function getTableRowPlaceholders() {
   }, tableData );
 }
 
-jQuery( function( $ ) {
+jQuery( function() {
 
-  const settings      = document.getElementById( 'wp-chimp-settings' );
-  const listContainer = document.getElementById( 'wp-chimp-lists' );
+  const wpApiRoot       = wpApiSettings.root.indexOf( '/wp-json/' );
+  const settings        = document.getElementById( 'wp-chimp-settings' );
+  const settingsState   = JSON.parse( settings.dataset.state );
+  const mailChimpApiKey = settingsState.mailchimp.apiKey;
 
-  const settingsState = JSON.parse( settings.dataset.state );
-  const apiNamespace  = 'wp-chimp/v1';
-
-  if ( 'undefined' === typeof wpApiSettings || -1 === wpApiSettings.root.indexOf( '/wp-json/' ) || false === settingsState.mailchimp.apiKey ) {
+  if ( 'undefined' === typeof wpApiSettings || -1 === wpApiRoot || false === mailChimpApiKey ) {
     setChildren( listContainer, getTableRowNoItems() );
     return;
   }
 
-  $.ajax({
+  const listContainer = document.getElementById( 'wp-chimp-lists' );
+  const apiNamespace  = 'wp-chimp/v1';
+
+  jQuery.ajax({
     url: `${wpApiSettings.root}${apiNamespace}/lists`,
+    type: 'GET',
+    headers: {
+      'X-WP-Nonce': wpApiSettings.nonce
+    },
     beforeSend( xhr ) {
-      xhr.setRequestHeader( 'X-WP-Nonce', wpApiSettings.nonce );
       setChildren( listContainer, getTableRowPlaceholders() );
     }
   })
