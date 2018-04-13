@@ -257,29 +257,29 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param array           $list The detail of a MailChimp list (e.g. list_id, name, etc.).
+	 * @param array           $item The detail of a MailChimp list (e.g. list_id, name, etc.).
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object.
 	 */
-	public function prepare_item_for_response( array $list, $request ) {
+	public function prepare_item_for_response( $item, $request ) {
 
 		$data   = [];
 		$schema = $this->get_item_schema();
 
 		if ( ! empty( $schema['properties']['listId'] ) ) {
-			$data['listId'] = wp_strip_all_tags( $list['list_id'], true );
+			$data['listId'] = wp_strip_all_tags( $item['list_id'], true );
 		}
 
 		if ( ! empty( $schema['properties']['name'] ) ) {
-			$data['name'] = wp_strip_all_tags( $list['name'], true );
+			$data['name'] = wp_strip_all_tags( $item['name'], true );
 		}
 
 		if ( ! empty( $schema['properties']['subscribers'] ) ) {
-			$data['subscribers'] = absint( $list['subscribers'] );
+			$data['subscribers'] = absint( $item['subscribers'] );
 		}
 
 		if ( ! empty( $schema['properties']['doubleOptin'] ) ) {
-			$data['doubleOptin'] = absint( $list['double_optin'] );
+			$data['doubleOptin'] = absint( $item['double_optin'] );
 		}
 
 		return rest_ensure_response( $data ); // Wrap the data in a response object.
