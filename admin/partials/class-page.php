@@ -119,13 +119,13 @@ class Page {
 	 */
 	public function get_state() {
 
-		$state = Utilities\convert_keys_to_camelcase([
+		$state = [
 			'nonce'     => wp_create_nonce( 'wp-chimp-settings' ), // Create a nonce to verify permission in the Settings.
 			'mailchimp' => [
-				'lists_init' => (bool) $this->options['mailchimp']['lists_init'],
-				'api_key'    => (bool) $this->options['mailchimp']['api_key'],
+				'listsInit' => (bool) $this->options['mailchimp']['lists_init'],
+				'apiKey'    => (bool) $this->options['mailchimp']['api_key'],
 			],
-		] );
+		];
 
 		return wp_json_encode( $state, 0, 3 );
 	}
