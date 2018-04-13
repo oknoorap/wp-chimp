@@ -11,24 +11,24 @@
  * @subpackage WP_Chimp/admin/partials
  */
 
-namespace WP_Chimp\Admin;
+namespace WP_Chimp\Admin\Partials;
 
 /**
  * Class that register new menu in the Admin area and load the page.
  *
  * @since 0.1.0
  */
-class Admin_Menu {
+class Menu {
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since 0.1.0
-	 * @param string     $plugin_name The name of this plugin.
-	 * @param string     $version     The version of this plugin.
-	 * @param Admin_Page $admin_page  The page attached to the menu.
+	 * @param string $plugin_name The name of this plugin.
+	 * @param string $version     The version of this plugin.
+	 * @param Page   $admin_page  The WP_Chimp\Admin\Partials\Page instance to attache to the menu.
 	 */
-	public function __construct( $plugin_name, $version, Admin_Page $admin_page ) {
+	public function __construct( $plugin_name, $version, Page $admin_page ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;

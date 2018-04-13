@@ -11,7 +11,7 @@
  * @subpackage WP_Chimp/admin/partials
  */
 
-namespace WP_Chimp\Admin;
+namespace WP_Chimp\Admin\Partials;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,7 +25,7 @@ use WP_Chimp\Includes\Utilities;
  *
  * @since 0.1.0
  */
-class Admin_Page {
+class Page {
 
 	/**
 	 * The ID of this plugin.

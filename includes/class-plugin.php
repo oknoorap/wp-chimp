@@ -148,8 +148,8 @@ class Plugin {
 	private function define_admin_hooks() {
 
 		$admin      = new Admin\Admin( $this->get_plugin_name(), $this->get_version() );
-		$admin_page = new Admin\Admin_Page( $this->get_plugin_name(), $this->get_version() );
-		$admin_menu = new Admin\Admin_Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
+		$admin_page = new Admin\Partials\Page( $this->get_plugin_name(), $this->get_version() );
+		$admin_menu = new Admin\Partials\Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
 
 		/**
 		 * Add Lists\Query instance to the Admin\Admin_Page to be able to add, get,
@@ -215,6 +215,7 @@ class Plugin {
 	 */
 	private function define_endpoints_hooks() {
 
+		$lists_query   = new Lists\Query();
 		$lists_process = new Lists\Process();
 		$lists_rest    = new Endpoints\REST_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
 
@@ -222,8 +223,8 @@ class Plugin {
 		 * Add Lists\Query instance to List\Process and Endpoints\REST_Lists_Controller
 		 * to be able to add, get, or delete lists from the database.
 		 */
-		$lists_process->register_lists_query( new Lists\Query() );
-		$lists_rest->register_lists_query( new Lists\Query() );
+		$lists_process->register_lists_query( $lists_query );
+		$lists_rest->register_lists_query( $lists_query );
 
 		/**
 		 * Add Lists\Process instance to Endpoints\REST_Lists_Controller

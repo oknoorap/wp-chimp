@@ -7,6 +7,7 @@ const locale = wpChimpLocaleAdmin;
 function getTableRows( data ) {
 
   var tableRows = [];
+
   for ( let i = 0; i < data.length; i++ ) {
     tableRows.push( el( 'tr', [
       el( 'td', [
@@ -14,9 +15,9 @@ function getTableRows( data ) {
       ]),
       el( 'td', data[i].name ),
       el( 'td', data[i].subscribers ),
-      el( 'td', data[i].doubleOptin ),
+      el( 'td', ( 0 === data[i].doubleOptin ? locale.no : locale.yes ) ),
       el( 'td', [
-        el( 'code', `[wp-chimp list_id="${data[i].list_id}"]` )
+        el( 'code', `[wp-chimp list_id="${data[i].listId}"]` )
       ])
     ]) );
   }
@@ -24,10 +25,10 @@ function getTableRows( data ) {
   return tableRows;
 }
 
-function getTableRowNoItems() {
+function getTableRowNoItems( message ) {
 
   var tableData = [
-    el( 'td', locale.noLists, {
+    el( 'td', message ? message : locale.noLists, {
       'colspan': '5'
     })
   ];
@@ -59,9 +60,6 @@ function getTableRowPlaceholders() {
 
 jQuery( function( $ ) {
 
-  const rowNoItems      = getTableRowNoItems();
-  const rowPlaceholders = getTableRowPlaceholders();
-
   const settings      = document.getElementById( 'wp-chimp-settings' );
   const listContainer = document.getElementById( 'wp-chimp-lists' );
 
@@ -69,17 +67,21 @@ jQuery( function( $ ) {
   const apiNamespace  = 'wp-chimp/v1';
 
   if ( 'undefined' === typeof wpApiSettings || -1 === wpApiSettings.root.indexOf( '/wp-json/' ) || false === settingsState.mailchimp.apiKey ) {
-    setChildren( listContainer, rowNoItems );
+    setChildren( listContainer, getTableRowNoItems() );
     return;
   }
 
   $.ajax({
     url: `${wpApiSettings.root}${apiNamespace}/lists`,
-    beforeSend() {
-      setChildren( listContainer, rowPlaceholders );
+    beforeSend( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', wpApiSettings.nonce );
+      setChildren( listContainer, getTableRowPlaceholders() );
     }
   })
-  .done( ( resp ) => {
-    setChildren( listContainer, getTableRows( resp.lists ) );
+  .done( ( lists ) => {
+    setChildren( listContainer, getTableRows( lists ) );
+  })
+  .fail( ( lists ) => {
+    setChildren( listContainer, getTableRowNoItems( lists.responseJSON.message ) );
   });
 });

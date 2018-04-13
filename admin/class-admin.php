@@ -52,24 +52,8 @@ class Admin {
 	 */
 	public function __construct( $plugin_name, $version ) {
 
-		global $wpdb;
-
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-
-		$this->load_dependencies();
-	}
-
-	/**
-	 * Load the required dependencies for this plugin.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 */
-	private function load_dependencies() {
-
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-admin-menu.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/class-admin-page.php';
 	}
 
 	/**
@@ -138,7 +122,9 @@ class Admin {
 	static private function get_locale_strings() {
 
 		return [
-			'noLists' => __( 'No MailChimp list found', 'wp-chimp' ),
+			'noLists' => __( 'No MailChimp lists found', 'wp-chimp' ),
+			'no'      => __( 'No', 'wp-chimp' ),
+			'yes'     => __( 'Yes', 'wp-chimp' ),
 		];
 	}
 }
