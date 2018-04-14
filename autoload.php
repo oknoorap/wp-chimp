@@ -51,7 +51,7 @@ function autoloader( $class_name ) {
 	}
 
 	// Now build a path to the file using mapping to the file location.
-	$filepath  = trailingslashit( dirname( dirname( __FILE__ ) ) . $namespace );
+	$filepath  = trailingslashit( dirname( __FILE__ ) . $namespace );
 	$filepath .= $file_name;
 
 	// If the file exists in the specified path, then include it.

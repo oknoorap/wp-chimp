@@ -7,19 +7,20 @@
 
 namespace WP_Chimp;
 
-// Load WP_UnitTestCase.
 use WP_UnitTestCase;
+use WP_Chimp\Includes\Lists;
 
 /**
- * The class to test the "Utilities" functions.
+ * The class to test the "WP_Chimp\Includes\Lists\Query" instance.
  *
- * @since 1.2.3
+ * @since 0.1.0
  */
-class Test_Query extends WP_UnitTestCase {
+class Test_Lists_Query extends WP_UnitTestCase {
 
 	/**
 	 * The WordPress Database abstraction
 	 *
+	 * @since 0.1.0
 	 * @var wpbd instance
 	 */
 	private $wpdb;
@@ -27,7 +28,8 @@ class Test_Query extends WP_UnitTestCase {
 	/**
 	 * The Query instance
 	 *
-	 * @var WP_Chimp\Lists\Query
+	 * @since 0.1.0
+	 * @var WP_Chimp\Includes\Lists\Query
 	 */
 	private $lists_query;
 
@@ -39,10 +41,10 @@ class Test_Query extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$this->lists_db = new Storage\WP_Database_Lists();
-		$this->lists_db->maybe_upgrade();
+		$this->lists_table = new Lists\Table();
+		$this->lists_table->maybe_upgrade();
 
-		$this->lists_query = new Storage\Query();
+		$this->lists_query = new Lists\Query();
 		$this->wpdb        = $GLOBALS['wpdb'];
 		$this->sample_data = [
 			[
@@ -91,8 +93,7 @@ class Test_Query extends WP_UnitTestCase {
 			[], // Bad example of empty array.
 		];
 
-		// Insert the data to the table.
-		foreach ( $this->sample_data as $data ) {
+		foreach ( $this->sample_data as $data ) { // Insert the data to the table.
 			$this->lists_query->insert( $data );
 		}
 	}
@@ -100,7 +101,7 @@ class Test_Query extends WP_UnitTestCase {
 	/**
 	 * Test the update method.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
@@ -109,11 +110,24 @@ class Test_Query extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test method to count the number of rows in the table
+	 *
+	 * @since 0.1.0
+	 * @see Lists\Query()->count_rows();
+	 *
+	 * @return void
+	 */
+	public function test_count_rows() {
+		$this->assertEquals( 4, $this->lists_query->count_rows() );
+	}
+
+	/**
 	 * Test method to insert a new entry to the database.
 	 *
-	 * @since  0.1.0
-	 * @see    Storage\Query()->insert();
-	 * @see    Storage\Query()->query();
+	 * @since 0.1.0
+	 * @see self::setUp()
+	 * @see WP_Chimp\Includes\Lists\Query()->insert();
+	 * @see WP_Chimp\Includes\Lists\Query()->query();
 	 *
 	 * @return void
 	 */
@@ -128,7 +142,7 @@ class Test_Query extends WP_UnitTestCase {
 		 * inserted to the table since the 'rand' column will be
 		 * filtered-out before inserting the data to the table.
 		 */
-		$this->assertEquals( 4, count( $saved_data ) );
+		$this->assertCount( 4, $saved_data );
 
 		$saved_data_sorted = [];
 		foreach ( $saved_data as $data ) {
@@ -144,18 +158,29 @@ class Test_Query extends WP_UnitTestCase {
 		$this->assertTrue( array_key_exists( '610424aa1c', $saved_data_sorted ) );
 		$this->assertEquals( 'MailChimp List 3', $saved_data_sorted['610424aa1c'] );
 
-		// Ommitted because the 'name' is empty.
-		$this->assertFalse( array_key_exists( '729404aa1c', $saved_data_sorted ) );
+		$this->assertFalse( array_key_exists( '729404aa1c', $saved_data_sorted ) ); // Ommitted because the 'name' is empty.
 
 		$this->assertTrue( array_key_exists( '827304a9a2', $saved_data_sorted ) );
 		$this->assertEquals( 'MailChimp List 6', $saved_data_sorted['827304a9a2'] );
+
+		$inserted_exists = $this->lists_query->insert([ // Test inserting list id that already exists.
+			'list_id'      => '520524cb3b',
+			'name'         => 'MailChimp List 1',
+			'subscribers'  => 100,
+			'double_optin' => 0,
+			'synced_at'    => date( 'Y-m-d H:i:s' ),
+		]);
+
+		$this->assertInstanceOf( 'WP_Error', $inserted_exists );
+		$this->assertTrue( property_exists( $inserted_exists, 'errors' ) );
+		$this->assertTrue( array_key_exists( 'wp_chimp_list_id_exists', $inserted_exists->errors ) );
 	}
 
 	/**
 	 * Test method to get list of the MailChimp IDs
 	 *
-	 * @since  0.1.0
-	 * @see    Storage\Query()->get_list_ids();
+	 * @since 0.1.0
+	 * @see WP_Chimp\Includes\Lists\Query()->get_list_ids();
 	 *
 	 * @return void
 	 */
@@ -170,14 +195,15 @@ class Test_Query extends WP_UnitTestCase {
 	/**
 	 * Test method to get the MailChimp list by the list_id
 	 *
-	 * @since  0.1.0
-	 * @see    Storage\Query()->get_by_the_id();
+	 * @since 0.1.0
+	 * @see WP_Chimp\Includes\Lists\Query()->get_by_the_id();
 	 *
 	 * @return void
 	 */
 	public function test_get_by_the_id() {
 
 		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
+
 		$this->assertEquals( [
 			'list_id'      => '520524cb3b',
 			'name'         => 'MailChimp List 1',
@@ -189,8 +215,8 @@ class Test_Query extends WP_UnitTestCase {
 	/**
 	 * Test method to update the existing MailChimp list ID in the database
 	 *
-	 * @since  0.1.0
-	 * @see    Storage\Query()->update();
+	 * @since 0.1.0
+	 * @see WP_Chimp\Includes\Lists\Query()->update();
 	 *
 	 * @return void
 	 */
@@ -203,12 +229,12 @@ class Test_Query extends WP_UnitTestCase {
 			'double_optin' => 1,
 		];
 
-		// Update the list data.
-		$updated = $this->lists_query->update( '520524cb3b', $new_data );
+		$updated = $this->lists_query->update( '520524cb3b', $new_data ); // Update the list data.
+
 		$this->assertEquals( 1, $updated );
 
-		// Get the updated data from the list.
-		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
+		$list = $this->lists_query->get_by_the_id( '520524cb3b' ); // Get the updated data from the list.
+
 		$this->assertEquals( 'MailChimp List Updated 1.1', $list['name'] );
 		$this->assertEquals( '230', $list['subscribers'] );
 		$this->assertEquals( '1', $list['double_optin'] );
@@ -218,17 +244,18 @@ class Test_Query extends WP_UnitTestCase {
 	 * Test the method to delete the existing MailChimp list ID in the database
 	 *
 	 * @since 0.1.0
-	 * @see   Storage\Query()->delete();
+	 * @see WP_Chimp\Includes\Lists\Query()->delete();
 	 *
 	 * @return void
 	 */
 	public function test_delete() {
 
-		$deleted = $this->lists_query->delete( '520524cb3b' );
-		$this->assertEquals( 1, $deleted ); // The affected arrow should only one.
+		$deleted = $this->lists_query->delete( '520524cb3b' );  // The affected arrow should only one.
 
-		// Check the data; it should no longer be in the table.
-		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
+		$this->assertEquals( 1, $deleted );
+
+		$list = $this->lists_query->get_by_the_id( '520524cb3b' ); // Check the data; it should no longer be in the table.
+
 		$this->assertTrue( is_array( $list ) );
 		$this->assertEmpty( $list );
 	}
@@ -237,7 +264,7 @@ class Test_Query extends WP_UnitTestCase {
 	 * Test the method to empty the MailChimp list ID in the database
 	 *
 	 * @since 0.1.0
-	 * @see   Storage\Query()->truncate();
+	 * @see WP_Chimp\Includes\Lists\Query()->truncate();
 	 *
 	 * @return void
 	 */

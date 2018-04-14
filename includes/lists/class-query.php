@@ -3,18 +3,17 @@
  * The file that defines the class and the methods to query
  * *_chimp_lists table.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
+ * @link https://wp-chimp.com
+ * @since 0.1.0
  *
- * @package    WP_Chimp
+ * @package WP_Chimp
  * @subpackage WP_Chimp/includes
  */
 
 namespace WP_Chimp\Includes\Lists;
 
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
-	die;
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+	die( 'No script kiddies please!' );
 }
 
 use WP_Error;
@@ -178,7 +177,7 @@ final class Query {
 		$current_id = $this->get_by_the_id( $data['list_id'] );
 
 		if ( ! empty( $current_id ) ) {
-			return new WP_Error( 'wp_signups_domain_exists', esc_html__( 'That signup already exists.', 'wp-chimp' ), $this );
+			return new WP_Error( 'wp_chimp_list_id_exists', esc_html__( 'That MailChimp list ID already exists. Consider using the the update method to update the existing list.', 'wp-chimp' ), $this );
 		}
 
 		$inserted = $wpdb->insert( $wpdb->chimp_lists, self::sanitize_values( $data ),
@@ -186,14 +185,12 @@ final class Query {
 		);
 
 		if ( false === $inserted ) { // If the data is successfully inserted, add to the cache.
-			// Translators: %s is the MailChimp list ID.
-			return new WP_Error( 'wp_signups_insert_list_error', sprintf( esc_html__( 'Inserting the MailChimp list ID %s failed.', 'wp-chimp' ), $data['list_id'] ), $data );
+			/* Translators: %s is the MailChimp list ID. */
+			return new WP_Error( 'wp_chimp_insert_list_error', sprintf( esc_html__( 'Inserting the MailChimp list ID %s failed.', 'wp-chimp' ), $data['list_id'] ), $data );
 		} else {
 			$cache_key = "list:{$data['list_id']}";
 			wp_cache_add( $cache_key, self::sanitize_values( $data ), 'wp_chimp_lists' );
-
-			// Clean cache containing all the lists.
-			self::clean_cache( 'lists' );
+			self::clean_cache( 'lists' ); // Clean cache containing all the lists.
 		}
 
 		return $inserted;
@@ -228,9 +225,7 @@ final class Query {
 		if ( false !== $updated ) { // If the data is updated, update the cache as well.
 			$cache_key = "list:{$id}";
 			wp_cache_set( $cache_key, self::sanitize_values( $data ), 'wp_chimp_lists' );
-
-			// Clean cache containing all the lists.
-			self::clean_cache( 'lists' );
+			self::clean_cache( 'lists' ); // Clean cache containing all the lists.
 		}
 
 		return $updated;
@@ -289,9 +284,21 @@ final class Query {
 		 * whole tables instead of specific rows) this function returns
 		 * TRUE on success...
 		 *
-		 * {@link https://codex.wordpress.org/Class_Reference/wpdb#Running_General_Queries}
+		 * @link https://codex.wordpress.org/Class_Reference/wpdb#Running_General_Queries
 		 */
 		return $emptied;
+	}
+
+	/**
+	 * Function to count the number of rows stored in the tables
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return int The number of rows in the table
+	 */
+	public function count_rows() {
+		global $wpdb;
+		return absint( $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->chimp_lists" ) );
 	}
 
 	/**

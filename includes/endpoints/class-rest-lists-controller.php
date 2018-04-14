@@ -369,6 +369,9 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			$lists = $this->get_remote_lists( $api_key );
 
 			if ( isset( $lists['lists'] ) && 0 !== count( $lists['lists'] ) ) {
+
+				$this->lists_process->set_total_items( $lists['total_items'] );
+
 				foreach ( $lists['lists'] as $list ) {
 					$this->lists_process->push_to_queue( $list );
 				}
@@ -398,7 +401,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin,total_items',
 		] );
 
-		if ( array_key_exists( 'lists', $response ) ) {
+		if ( array_key_exists( 'total_items', $response ) ) {
 			update_option( 'wp_chimp_lists_total_items', absint( $response['total_items'] ), false );
 		}
 

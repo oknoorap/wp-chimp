@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\\sort_mailchimp_data' ) ) :
+if ( ! function_exists( __NAMESPACE__ . '\\sort_mailchimp_lists' ) ) :
 
 	/**
 	 * Function to sort out MailChimp API.

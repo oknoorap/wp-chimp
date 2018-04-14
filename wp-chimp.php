@@ -7,8 +7,8 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link    https://wp-chimp.com
- * @since   0.1.0
+ * @link https://wp-chimp.com
+ * @since 0.1.0
  * @package WP_Chimp
  *
  * @wordpress-plugin
@@ -33,10 +33,10 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
  * when a Class is instantiated. The `vendor/autoload.php` specifically
  * will load files from the packages installed through Composer
  *
- * {@link http://php.net/manual/en/function.spl-autoload-register.php}
- * {@link https://getcomposer.org/doc/01-basic-usage.md#autoloading}
+ * @link http://php.net/manual/en/function.spl-autoload-register.php
+ * @link https://getcomposer.org/doc/01-basic-usage.md#autoloading
  */
-require_once plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**

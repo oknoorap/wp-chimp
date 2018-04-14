@@ -13,7 +13,7 @@
 namespace WP_Chimp\Includes;
 
 if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
-	die;
+	die( 'No script kiddies please!' );
 }
 
 use WP_Chimp\Admin;
