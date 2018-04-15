@@ -50,7 +50,7 @@ require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
  * through the function_exists() function.
  *
  * @since  0.1.0
- * @return WP_Chimp\Plugin The Plugin instance.
+ * @return WP_Chimp\Includes\Plugin The Plugin instance.
  */
 function wp_chimp() {
 

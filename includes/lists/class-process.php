@@ -13,8 +13,7 @@
 
 namespace WP_Chimp\Includes\Lists;
 
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;
 }
 
@@ -45,18 +44,6 @@ final class Process extends WP_Background_Process {
 	}
 
 	/**
-	 * Function to
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param int $total_items The total items of the list registered in MailChimp.
-	 * @return void
-	 */
-	public function set_total_items( $total_items ) {
-		$this->total_items = $total_items;
-	}
-
-	/**
 	 * Task
 	 *
 	 * Override this method to perform any actions required on each
@@ -83,8 +70,6 @@ final class Process extends WP_Background_Process {
 	 */
 	protected function complete() {
 		parent::complete();
-
-		$this->lists_query->count_row();
 
 		update_option( 'wp_chimp_lists_init', 1, false );
 	}

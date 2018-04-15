@@ -1,92 +1,48 @@
 'use strict';
 
-import { setChildren, el } from 'redom';
+import { mount, el, setChildren } from 'redom';
 
-const locale = wpChimpLocaleAdmin;
-
-function getTableRows( data ) {
-
-  var tableRows = [];
-
-  for ( let i = 0; i < data.length; i++ ) {
-    tableRows.push( el( 'tr', [
-      el( 'td', [
-        el( 'code', data[i].listId )
-      ]),
-      el( 'td', data[i].name ),
-      el( 'td', data[i].subscribers ),
-      el( 'td', ( 0 === data[i].doubleOptin ? locale.no : locale.yes ) ),
-      el( 'td', [
-        el( 'code', `[wp-chimp list_id="${data[i].listId}"]` )
-      ])
-    ]) );
-  }
-
-  return tableRows;
-}
-
-function getTableRowNoItems( message ) {
-
-  var tableData = [
-    el( 'td', message ? message : locale.noLists, {
-      'colspan': '5'
-    })
-  ];
-
-  return el( 'tr', {
-    'class': 'no-items',
-    'id': 'wp-chimp-no-lists'
-  }, tableData );
-}
-
-function getTableRowPlaceholders() {
-
-  var tableData = [];
-
-  for ( let i = 0; 5 > i; i++ ) {
-    tableData.push(
-      el( 'td', [
-        el( 'span', '', {
-          'class': `wp-chimp-table-data-placeholder__bar index-${i}`
-        })
-      ])
-    );
-  }
-
-  return el( 'tr', {
-    'class': 'wp-chimp-table-data-placeholder'
-  }, tableData );
-}
+import TableBody from './components/table-body.es';
+import TablePagination from './components/table-pagination.es';
 
 jQuery( function() {
 
-  const wpApiRoot       = wpApiSettings.root.indexOf( '/wp-json/' );
-  const settings        = document.getElementById( 'wp-chimp-settings' );
-  const settingsState   = JSON.parse( settings.dataset.state );
-  const mailChimpApiKey = settingsState.mailchimp.apiKey;
+  const tableBody = new TableBody();
+  mount( document.querySelector( '#wp-chimp-table-lists' ), tableBody );
 
-  if ( 'undefined' === typeof wpApiSettings || -1 === wpApiRoot || false === mailChimpApiKey ) {
-    setChildren( listContainer, getTableRowNoItems() );
+  const wpApiRoot = wpApiSettings.root.indexOf( '/wp-json/' );
+
+  const settings = document.querySelector( '#wp-chimp-settings' );
+  const settingsState = JSON.parse( settings.dataset.state );
+
+  if ( 'undefined' === typeof wpApiSettings || -1 === wpApiRoot || false === settingsState.mailchimp.apiKey ) {
+    tableBody.showEmptyState();
     return;
   }
 
-  const listContainer = document.getElementById( 'wp-chimp-lists' );
-  const apiNamespace  = 'wp-chimp/v1';
-
   jQuery.ajax({
-    url: `${wpApiSettings.root}${apiNamespace}/lists`,
+    url: `${wpApiSettings.root}wp-chimp/v1/lists`,
     type: 'GET',
     headers: {
       'X-WP-Nonce': wpApiSettings.nonce
     },
     beforeSend( xhr ) {
-      setChildren( listContainer, getTableRowPlaceholders() );
+      tableBody.showPlaceholder();
     }
   })
-  .done( ( lists ) => {
-    setChildren( listContainer, getTableRows( lists ) );
+  .done( ( lists, textStatus, request ) => {
+
+    var totalPages = request.getResponseHeader( 'X-WP-Chimp-Lists-TotalPages' );
+    var totalItems = request.getResponseHeader( 'X-WP-Chimp-Lists-Total' );
+
+    if ( 2 >= totalPages ) {
+      let tablePagination = new TablePagination();
+      mount( document.querySelector( '#wp-chimp-lists' ), tablePagination.update( totalPages, totalItems ) );
+    }
+
+    tableBody.update( lists );
   })
-  .fail( ( lists ) => {
-    setChildren( listContainer, getTableRowNoItems( lists.responseJSON.message ) );
+  .fail( () => {
+    tableBody.showEmptyState();
   });
 });

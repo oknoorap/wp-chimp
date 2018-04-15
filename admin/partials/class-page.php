@@ -145,22 +145,19 @@ class Page {
 		<div class="wrap wp-chimp-wrap" id="wp-chimp-settings" data-state='<?php echo esc_attr( $this->get_state() ); ?>'>
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
-			<table class="widefat striped wp-chimp-table" id="wp-chimp-table-lists">
-				<thead>
-					<tr>
-						<th scope="col" class="wp-chimp-table__th-id"><?php esc_html_e( 'ID', 'wp-chimp' ); ?></th>
-						<th scope="col" class="wp-chimp-table__th-name"><?php esc_html_e( 'Name', 'wp-chimp' ); ?></th>
-						<th scope="col" class="wp-chimp-table__th-subscribers"><?php esc_html_e( 'Subscribers', 'wp-chimp' ); ?></th>
-						<th scope="col" class="wp-chimp-table__th-double-optin"><?php esc_html_e( 'Double Optin.', 'wp-chimp' ); ?></th>
-						<th scope="col" class="wp-chimp-table__th-shortcode"><?php esc_html_e( 'Shortcode', 'wp-chimp' ); ?></th>
-					</tr>
-				</thead>
-				<tbody id="wp-chimp-lists">
-					<tr id="wp-chimp-lists-empty-state">
-						<td colspan="5"></td>
-					</tr>
-				</tbody>
-			</table>
+			<div id="wp-chimp-lists">
+				<table class="widefat striped wp-chimp-table" id="wp-chimp-table-lists">
+					<thead>
+						<tr>
+							<th scope="col" class="wp-chimp-table__th-id"><?php esc_html_e( 'ID', 'wp-chimp' ); ?></th>
+							<th scope="col" class="wp-chimp-table__th-name"><?php esc_html_e( 'Name', 'wp-chimp' ); ?></th>
+							<th scope="col" class="wp-chimp-table__th-subscribers"><?php esc_html_e( 'Subscribers', 'wp-chimp' ); ?></th>
+							<th scope="col" class="wp-chimp-table__th-double-optin"><?php esc_html_e( 'Double Optin.', 'wp-chimp' ); ?></th>
+							<th scope="col" class="wp-chimp-table__th-shortcode"><?php esc_html_e( 'Shortcode', 'wp-chimp' ); ?></th>
+						</tr>
+					</thead>
+				</table>
+			</div>
 
 			<h2 class="nav-tab-wrapper">
 				<span class="nav-tab nav-tab-active"><?php echo esc_html( 'MailChimp' ); ?></span>

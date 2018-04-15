@@ -3,13 +3,45 @@
  * included in this file.
  */
 
+#wp-chimp-lists {
+	margin: 20px 0;
+}
 
-#wp-chimp-lists-empty-state {
+#wp-chimp-table-lists {
+	margin: 10px 0;
+}
+
+#wp-chimp-table-lists-empty {
 	height: 35px;
 }
 
+#wp-chimp-table-pagination {
+	display: flex;
+	justify-content: flex-end;
+	float: none;
+	margin: 0;
+	align-items: center;
+
+	span {
+		margin: 0 4px;
+	}
+
+	.prev-page,
+	.next-page {
+		cursor: pointer;
+		display: inline-block;
+		min-width: 17px;
+		border: 1px solid #ccc;
+		padding: 3px 5px 7px;
+		background: #e5e5e5;
+		font-size: 16px;
+		line-height: 1;
+		font-weight: 400;
+		text-align: center;
+	}
+}
+
 .wp-chimp-table {
-	margin: 30px 0;
 
 	&__th-id,
 	&__th-subscribers,
