@@ -28,16 +28,33 @@
 
 	.prev-page,
 	.next-page {
-		cursor: pointer;
 		display: inline-block;
 		min-width: 17px;
 		border: 1px solid #ccc;
 		padding: 3px 5px 7px;
-		background: #e5e5e5;
 		font-size: 16px;
 		line-height: 1;
 		font-weight: 400;
 		text-align: center;
+		color: #0073aa;
+		cursor: pointer;
+
+		&:hover {
+			border-color: #5b9dd9;
+			color: #fff;
+			background: #00a0d2;
+			box-shadow: none;
+			outline: 0;
+		}
+
+		&.inactive,
+		&.inactive:hover {
+			cursor: default;
+			height: 16px;
+			border-color: #ddd;
+			background: #f7f7f7;
+			color: #a0a5aa;
+		}
 	}
 }
 

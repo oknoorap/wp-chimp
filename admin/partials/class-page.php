@@ -123,8 +123,7 @@ class Page {
 		$state = [
 			'nonce'     => wp_create_nonce( 'wp-chimp-settings' ), // Create a nonce to verify permission in the Settings.
 			'mailchimp' => [
-				'listsInit' => (bool) $this->options['mailchimp']['lists_init'],
-				'apiKey'    => (bool) $this->options['mailchimp']['api_key'],
+				'apiKey' => (bool) $this->options['mailchimp']['api_key'],
 			],
 		];
 
@@ -228,8 +227,7 @@ class Page {
 
 		return [
 			'mailchimp' => [
-				'api_key'    => get_option( 'wp_chimp_api_key', '' ),
-				'lists_init' => get_option( 'wp_chimp_lists_init', 0 ),
+				'api_key' => get_option( 'wp_chimp_api_key', '' ),
 			],
 		];
 	}
@@ -254,7 +252,7 @@ class Page {
 		if ( 'wp_chimp_api_key' === $option && $value !== $old_value ) {
 
 			$this->lists_query->truncate(); // Remove the old lists from the table.
-			update_option( 'wp_chimp_lists_init', 0, false );
+			update_option( 'wp_chimp_lists_init', 0 );
 
 			$response = [];
 			if ( ! empty( $value ) ) {
@@ -263,11 +261,11 @@ class Page {
 					'fields' => 'total_items',
 				]);
 			} else {
-				update_option( 'wp_chimp_lists_total_items', 0, false );
+				update_option( 'wp_chimp_lists_total_items', 0 );
 			}
 
 			if ( isset( $response['total_items'] ) ) {
-				update_option( 'wp_chimp_lists_total_items', $response['total_items'], false );
+				update_option( 'wp_chimp_lists_total_items', $response['total_items'] );
 			}
 		}
 	}

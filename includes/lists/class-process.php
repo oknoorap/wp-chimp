@@ -44,7 +44,7 @@ final class Process extends WP_Background_Process {
 	}
 
 	public function processing() {
-		update_option( 'wp_chimp_lists_init', 2, false );
+		update_option( 'wp_chimp_lists_init', 2 );
 	}
 
 	/**
@@ -75,6 +75,6 @@ final class Process extends WP_Background_Process {
 	protected function complete() {
 		parent::complete();
 
-		update_option( 'wp_chimp_lists_init', 1, false );
+		update_option( 'wp_chimp_lists_init', 1 );
 	}
 }
