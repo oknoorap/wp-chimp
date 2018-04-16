@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_Chimp\Includes\Utilities;
+use DrewM\MailChimp\MailChimp;
 
 /**
  * Class that register new menu in the Admin area and load the page.
@@ -251,8 +252,23 @@ class Page {
 		 * different we need to reset the initilization.
 		 */
 		if ( 'wp_chimp_api_key' === $option && $value !== $old_value ) {
-			$this->lists_query->truncate();
+
+			$this->lists_query->truncate(); // Remove the old lists from the table.
 			update_option( 'wp_chimp_lists_init', 0, false );
+
+			$response = [];
+			if ( ! empty( $value ) ) {
+				$mailchimp = new MailChimp( $value );
+				$response  = $mailchimp->get( 'lists', [
+					'fields' => 'total_items',
+				]);
+			} else {
+				update_option( 'wp_chimp_lists_total_items', 0, false );
+			}
+
+			if ( isset( $response['total_items'] ) ) {
+				update_option( 'wp_chimp_lists_total_items', $response['total_items'], false );
+			}
 		}
 	}
 }

@@ -164,13 +164,22 @@ class Plugin {
 		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
 		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
 
+		// add_action( 'admin_init', function() {
+		// 	$request  = new \WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
+		// 	$request  = $request->set_query_params([
+		// 		'page' => 2,
+		// 	]);
+		// 	$response = rest_do_request( $request );
+		// 	var_dump( $response->get_data() );
+		// } );
+
 		/**
 		 * Add the Action link for the plugin in the Plugin list screen.
 		 *
 		 * !important that the plugin file name is always referring to the plugin main file
 		 * in the plugin's root folder instead of the sub-folders in order for the function to work.
 		 *
-		 * {@link https://developer.wordpress.org/reference/hooks/prefixplugin_action_links_plugin_file/}
+		 * @link https://developer.wordpress.org/reference/hooks/prefixplugin_action_links_plugin_file/
 		 */
 		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), $admin_page, 'add_action_links', 10, 2 );
 	}

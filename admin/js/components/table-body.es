@@ -1,4 +1,4 @@
-import { list, setChildren, el } from 'redom';
+import { mount, el, list, setChildren } from 'redom';
 
 class TableRow {
   constructor() {
@@ -25,16 +25,17 @@ class TableRow {
 
 class TableBody {
   constructor() {
-    this.el   = el( 'tbody', {
-      'id': 'wp-chimp-table-lists-body'
-    });
-    this.list = list( this.el, TableRow );
+
+    this.el     = el( 'tbody', { 'id': 'wp-chimp-table-lists-body' });
+    this.list   = list( this.el, TableRow );
     this.locale = wpChimpLocaleAdmin;
+
+    mount( document.querySelector( '#wp-chimp-table-lists' ), this );
   }
   update( data ) {
     this.list.update( data );
   }
-  showEmptyState() {
+  mountEmptyState() {
     var empty = [
       el( 'td', this.locale.noLists, {
         'colspan': '5'
@@ -42,7 +43,7 @@ class TableBody {
     ];
     setChildren( this.el, el( 'tr', empty ) );
   }
-  showPlaceholder() {
+  mountPlaceholder() {
     var placeholder = [];
     for ( let i = 0; 5 > i; i++ ) {
       placeholder.push( el( 'td', [

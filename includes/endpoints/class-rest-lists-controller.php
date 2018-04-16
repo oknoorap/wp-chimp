@@ -233,21 +233,23 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	public function get_items( $request ) {
 
+		$page  = isset( $request['page'] ) ? $request['page'] : 1;
 		$lists = $this->get_lists( [
-			'offset' => self::get_lists_offset( $request['page'] ),
+			'offset' => self::get_lists_offset( $page ),
 		] );
 
-		$total_items = $lists['total_items'];
+		$total_items = self::get_lists_total_items();
 		$total_pages = ceil( $total_items / self::get_lists_per_page() );
 
 		$items = [];
-		foreach ( $lists['lists'] as $key => $list ) {
+		foreach ( $lists as $key => $list ) {
 			$data    = $this->prepare_item_for_response( $list, $request );
 			$items[] = $this->prepare_response_for_collection( $data );
 		}
 
 		$response = rest_ensure_response( $items );
 
+		$response->header( 'X-WP-Chimp-Lists-Page', absint( $page ) );
 		$response->header( 'X-WP-Chimp-Lists-Total', absint( $total_items ) );
 		$response->header( 'X-WP-Chimp-Lists-TotalPages', absint( $total_pages ) );
 
@@ -363,19 +365,11 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	private function get_lists( array $args ) {
 
-		$api_key = self::get_the_mailchimp_api_key();  // Get the MailChimp API key saved.
-		$is_init = self::is_lists_init();              // Check if the list data is initialised.
+		$api_key = self::get_the_mailchimp_api_key(); // Get the MailChimp API key saved.
 		$lists   = [];
 
-		if ( ! empty( $api_key ) && false === $is_init ) {
+		if ( ! empty( $api_key ) && false === self::is_lists_init() ) {
 			$lists = $this->get_remote_lists( $api_key, $args );
-
-			if ( isset( $lists['lists'] ) && 0 !== count( $lists['lists'] ) ) {
-				foreach ( $lists['lists'] as $list ) {
-					$this->lists_process->push_to_queue( $list );
-				}
-				$this->lists_process->save()->dispatch();
-			}
 		} else {
 			$lists = $this->get_local_lists( $args );
 		}
@@ -393,13 +387,12 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return mixed Returns an object of the lists, or an Exception if the API key added
 	 *               is invalid.
 	 */
-	private function get_remote_lists( $api_key, array $args ) {
+	private function get_remote_lists( $api_key, array $args = [] ) {
 
 		$lists    = [];
 		$api_args = [
-			'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin,total_items',
-			'count'  => self::get_lists_per_page(),
-			'offset' => isset( $args['offset'] ) ? absint( $args['offset'] ) : 0,
+			'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin',
+			'count'  => self::get_lists_total_items(),
 		];
 
 		$mailchimp = new MailChimp( $api_key );
@@ -407,17 +400,17 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		if ( $mailchimp->success() ) {
 
-			if ( array_key_exists( 'total_items', $response ) ) {
-				update_option( 'wp_chimp_lists_total_items', absint( $response['total_items'] ), false );
-			}
+			$lists = Utilities\sort_mailchimp_lists( $response['lists'] );
 
-			$lists = [
-				'lists'       => Utilities\sort_mailchimp_lists( $response['lists'] ),
-				'total_items' => absint( $response['total_items'] ),
-			];
+			if ( 0 !== count( $lists ) ) {
+				foreach ( $lists as $list ) {
+					$this->lists_process->push_to_queue( $list );
+				}
+				$this->lists_process->save()->dispatch();
+			}
 		}
 
-		return $lists;
+		return self::remote_lists_response( $lists, $args );
 	}
 
 	/**
@@ -430,11 +423,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *               if the API key added is invalid.
 	 */
 	private function get_local_lists( $args ) {
-
-		return [
-			'lists'       => $this->lists_query->query( $args ),
-			'total_items' => self::get_lists_total_items(),
-		];
+		return $this->lists_query->query( $args );
 	}
 
 	/**
@@ -503,5 +492,25 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		$offset = ( $page - 1 ) * self::get_lists_per_page();
 		return absint( $offset );
+	}
+
+	/**
+	 * Function to filter the lists output for WP-API response.
+	 *
+	 * Ensure that the output follows the parameter passsed in the endpoint
+	 * query strings.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $lists The remote lists retrieved from MailChimp API.
+	 * @param array $args The arguments passed in the endpoint query strings.
+	 * @return array The filtered MailChimp lists.
+	 */
+	static protected function remote_lists_response( array $lists, array $args ) {
+
+		$offset = isset( $args['offset'] ) ? absint( $args['offset'] ) : 0;
+		$count  = self::get_lists_per_page();
+
+		return array_slice( $lists, $offset, $count );
 	}
 }

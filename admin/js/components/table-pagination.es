@@ -1,45 +1,68 @@
 import { setChildren, el } from 'redom';
 
 class TablePagination {
-  constructor() {
+  constructor( tableBody, tableRequest ) {
+    this.tableBody = tableBody;
+    this.tableRequest = tableRequest;
     this.el = el( 'div', {
       'id': 'wp-chimp-table-pagination',
       'class': 'tablenav-pages'
     });
   }
-  update( totalPages, totalItems  ) {
+  update( totalPages, totalItems ) {
+
+    this.totalPages = totalPages;
+    this.totalItems = totalItems;
+
     setChildren( this.el, [
-      this.getTotalItems( totalItems ),
-      this.getPaginationLinks( totalPages )
+      this.getTotalItems(),
+      this.getPaginationLinks()
     ]);
 
     return this.el;
   }
-  getPaginationLinks( totalPages ) {
+  getPaginationLinks() {
     return el( 'span', {
       'class': 'pagination-links'
     }, [
       this.getPrevButton(),
-      this.getPaginationInput( totalPages ),
+      this.getPaginationInput(),
       this.getNextButton()
     ]);
   }
-  getTotalItems( totalItems ) {
+  getTotalItems() {
     return el( 'span', {
       'class': 'displaying-num'
-    }, `${totalItems} items` );
+    }, `${this.totalItems} items` );
   }
   getPrevButton() {
-    return el( 'span', {
-      'class': 'prev-page'
+
+    var elem = el( 'span', {
+      'id': 'wp-chimp-table-pagination-prev',
+      'class': 'prev-page',
+      'data-page': 1
     }, '‹' );
+
+    elem.addEventListener( 'click', this.paginationActions.bind( this ) );
+
+    this.elPrevButton = elem;
+    return elem;
   }
   getNextButton() {
-    return el( 'span', {
-      'class': 'next-page'
+
+    var elem = el( 'span', {
+      'id': 'wp-chimp-table-pagination-next',
+      'class': 'next-page',
+      'data-page': 2
     }, '›' );
+
+    elem.addEventListener( 'click', this.paginationActions.bind( this ) );
+
+    this.elNextButton = elem;
+    return elem;
   }
-  getPaginationInput( totalPages ) {
+  getPaginationInput() {
+
     return el( 'span', {
       'class': 'paging-input'
     }, [
@@ -61,9 +84,14 @@ class TablePagination {
         'of',
         el( 'span', {
           'class': 'total-pages'
-        }, totalPages )
+        }, this.totalPages )
       ])
     ]);
+  }
+  paginationActions( event ) {
+    this.tableRequest.request({
+      'page': event.target.dataset.page
+    });
   }
 }
 
