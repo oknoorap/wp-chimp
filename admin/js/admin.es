@@ -1,23 +1,20 @@
 'use strict';
 
+import { getApiStatus, getMailChimpApiStatus } from './components/utilities.es';
 import TableBody from './components/table-body.es';
 import TableRequest from './components/table-request.es';
 
 document.addEventListener( 'DOMContentLoaded', () => {
 
   const tableBody = new TableBody();
-  if ( 'undefined' === typeof wpApiSettings || 'undefined' === typeof wpApiSettings.root ) {
-    tableBody.mountEmptyState();
-  }
 
   const settings = document.querySelector( '#wp-chimp-settings' );
   const settingsState = JSON.parse( settings.dataset.state );
 
-  if ( -1 === wpApiSettings.root.indexOf( '/wp-json/' ) || false === settingsState.mailchimp.apiKey ) {
+  if ( true !== getApiStatus() || true !== getMailChimpApiStatus( settingsState ) ) {
     tableBody.mountEmptyState();
-    return;
+  } else {
+    const tableRequest = new TableRequest( tableBody );
+    tableRequest.request();
   }
-
-  const tableRequest = new TableRequest( tableBody );
-  tableRequest.request();
 });

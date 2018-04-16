@@ -123,7 +123,8 @@ class Page {
 		$state = [
 			'nonce'     => wp_create_nonce( 'wp-chimp-settings' ), // Create a nonce to verify permission in the Settings.
 			'mailchimp' => [
-				'apiKey' => (bool) $this->options['mailchimp']['api_key'],
+				'apiKey'       => (bool) $this->options['mailchimp']['api_key'],
+				'apiKeyStatus' => $this->options['mailchimp']['api_key_status'],
 			],
 		];
 
@@ -227,7 +228,8 @@ class Page {
 
 		return [
 			'mailchimp' => [
-				'api_key' => get_option( 'wp_chimp_api_key', '' ),
+				'api_key'        => get_option( 'wp_chimp_api_key', '' ),
+				'api_key_status' => get_option( 'wp_chimp_api_key_status', false ),
 			],
 		];
 	}
@@ -254,32 +256,42 @@ class Page {
 			$this->lists_query->truncate(); // Remove the old lists from the table.
 			update_option( 'wp_chimp_lists_init', 0 );
 
+			$validity = 'valid'; // Assumes that the API key is valid, until proven otherwise.
 			$response = [];
+
 			if ( ! empty( $value ) ) {
+
 				try {
 					$mailchimp = new MailChimp( $value );
 				} catch ( \Exception $e ) {
 					add_settings_error( 'wp-chimp-invalid-api-key', '401', $e->getMessage() );
+					$validity = 'invalid';
 				}
 
 				if ( null !== $mailchimp ) {
 					$response = $mailchimp->get( 'lists', [
 						'fields' => 'total_items',
 					]);
+				} else {
+					$validity = 'invalid';
 				}
 
 				if ( isset( $response['status'] ) ) {
-					$format  = '%s: <span class="wp-chimp-api-status-detail">%s</span>';
-					$message = sprintf( $format, $response['title'], $response['detail'] );
+
+					$format   = '%s: <span class="wp-chimp-api-status-detail">%s</span>';
+					$message  = sprintf( $format, $response['title'], $response['detail'] );
+					$validity = 'invalid';
+
 					add_settings_error( 'wp-chimp-api-status', $response['status'], $message );
 				}
 			} else {
-				update_option( 'wp_chimp_lists_total_items', 0 );
+				$validity = 'invalid';
 			}
 
-			if ( isset( $response['total_items'] ) ) {
-				update_option( 'wp_chimp_lists_total_items', $response['total_items'] );
-			}
+			$total_items = isset( $response['total_items'] ) ? $response['total_items'] : 0;
+
+			update_option( 'wp_chimp_lists_total_items', $total_items );
+			update_option( 'wp_chimp_api_key_status', $validity );
 		}
 	}
 }

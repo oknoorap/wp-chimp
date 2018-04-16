@@ -17,8 +17,7 @@ class TableRequest {
   }
 
   request( args = {}) {
-
-    if ( args.hasOwnProperty( 'page' ) && 2 >= args.page ) {
+    if ( args.hasOwnProperty( 'page' ) ) {
       this.configs.data.page = parseInt( args.page, 10 );
     }
 

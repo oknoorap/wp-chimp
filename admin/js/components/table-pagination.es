@@ -11,7 +11,7 @@ class TablePagination {
   }
   update( totalPages, totalItems ) {
 
-    this.currPage   = 1; // Default to page 1.
+    this.currentPage   = 1; // Default to page 1.
     this.totalPages = parseInt( totalPages, 10 );
     this.totalItems = parseInt( totalItems, 10 );
 
@@ -66,21 +66,23 @@ class TablePagination {
   }
   getPaginationInput() {
 
-    return el( 'span', {
+    var elemInput = el( 'input', {
+      'id': 'current-page-selector',
+      'class': 'current-page',
+      'value': 1,
+      'size': 3,
+      'aria-describedby': 'table-paging',
+      'type': 'text'
+    });
+
+    var elem = el( 'span', {
       'class': 'paging-input'
     }, [
       el( 'label', {
         'class': 'screen-reader-text',
         'for': 'current-page-selector'
       }, 'Current Page' ),
-      el( 'input', {
-        'id': 'current-page-selector',
-        'class': 'current-page',
-        'value': 1,
-        'size': 3,
-        'aria-describedby': 'table-paging',
-        'type': 'text'
-      }),
+      elemInput,
       el( 'span', {
         'class': 'tablenav-paging-text'
       }, [
@@ -90,28 +92,42 @@ class TablePagination {
         }, this.totalPages )
       ])
     ]);
+
+    elem.addEventListener( 'keypress', this.paginationActions.bind( this ) );
+
+    this.paginationInput = elem;
+
+    return elem;
   }
   paginationActions( event ) {
 
-    var targetPage = parseInt( event.target.dataset.page, 10 );
-    if ( targetPage === this.currPage || targetPage > this.totalPages || 1 > targetPage ) {
+    var targetPage;
+    var keyCode = event.which || event.keyCode;
+
+    if ( 13 === keyCode ) {
+      targetPage = parseInt( event.target.value, 10 );
+    } else {
+      targetPage = parseInt( event.target.dataset.page, 10 );
+    }
+
+    if ( ! Number.isInteger( targetPage ) ) {
       return;
     }
 
     this.tableRequest.request({ 'page': targetPage });
-    this.currPage = targetPage;
+    this.currentPage = targetPage;
 
     this.toggleButtonState();
   }
   toggleButtonState() {
 
-    if ( 1 === this.currPage ) {
+    if ( 1 === this.currentPage ) {
       this.prevButton.classList.add( 'inactive' );
     } else {
       this.prevButton.classList.remove( 'inactive' );
     }
 
-    if ( this.totalPages === this.currPage ) {
+    if ( this.currentPage >= this.totalPages ) {
       this.nextButton.classList.add( 'inactive' );
     } else {
       this.nextButton.classList.remove( 'inactive' );
