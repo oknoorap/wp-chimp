@@ -256,10 +256,23 @@ class Page {
 
 			$response = [];
 			if ( ! empty( $value ) ) {
-				$mailchimp = new MailChimp( $value );
-				$response  = $mailchimp->get( 'lists', [
-					'fields' => 'total_items',
-				]);
+				try {
+					$mailchimp = new MailChimp( $value );
+				} catch ( \Exception $e ) {
+					add_settings_error( 'wp-chimp-invalid-api-key', '401', $e->getMessage() );
+				}
+
+				if ( null !== $mailchimp ) {
+					$response = $mailchimp->get( 'lists', [
+						'fields' => 'total_items',
+					]);
+				}
+
+				if ( isset( $response['status'] ) ) {
+					$format  = '%s: <span class="wp-chimp-api-status-detail">%s</span>';
+					$message = sprintf( $format, $response['title'], $response['detail'] );
+					add_settings_error( 'wp-chimp-api-status', $response['status'], $message );
+				}
 			} else {
 				update_option( 'wp_chimp_lists_total_items', 0 );
 			}
