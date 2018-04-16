@@ -1,14 +1,11 @@
 'use strict';
 
-import { mount, el, setChildren } from 'redom';
-
 import TableBody from './components/table-body.es';
 import TableRequest from './components/table-request.es';
 
 document.addEventListener( 'DOMContentLoaded', () => {
 
   const tableBody = new TableBody();
-
   if ( 'undefined' === typeof wpApiSettings || 'undefined' === typeof wpApiSettings.root ) {
     tableBody.mountEmptyState();
   }

@@ -43,6 +43,10 @@ final class Process extends WP_Background_Process {
 		$this->lists_query = $lists_query;
 	}
 
+	public function processing() {
+		update_option( 'wp_chimp_lists_init', 2, false );
+	}
+
 	/**
 	 * Task
 	 *

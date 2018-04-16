@@ -368,7 +368,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		$api_key = self::get_the_mailchimp_api_key(); // Get the MailChimp API key saved.
 		$lists   = [];
 
-		if ( ! empty( $api_key ) && false === self::is_lists_init() ) {
+		if ( ! empty( $api_key ) && 1 !== self::is_lists_init() ) {
 			$lists = $this->get_remote_lists( $api_key, $args );
 		} else {
 			$lists = $this->get_local_lists( $args );
@@ -399,15 +399,20 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		$response  = $mailchimp->get( 'lists', $api_args );
 
 		if ( $mailchimp->success() ) {
-
 			$lists = Utilities\sort_mailchimp_lists( $response['lists'] );
+		}
 
-			if ( 0 !== count( $lists ) ) {
-				foreach ( $lists as $list ) {
-					$this->lists_process->push_to_queue( $list );
-				}
-				$this->lists_process->save()->dispatch();
+		/**
+		 * Make sure to only kick-in the "background processing" when it hasn't
+		 * been instantiated yet. While it is in progress, it should not
+		 * dispatch another new processing.
+		 */
+		if ( 0 !== count( $lists ) && 0 === self::is_lists_init() ) {
+			foreach ( $lists as $list ) {
+				$this->lists_process->push_to_queue( $list );
 			}
+			$this->lists_process->processing();
+			$this->lists_process->save()->dispatch();
 		}
 
 		return self::remote_lists_response( $lists, $args );
@@ -452,7 +457,8 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *              otherwise, returns false.
 	 */
 	static private function is_lists_init() {
-		return (bool) get_option( 'wp_chimp_lists_init', 0 );
+		$init = get_option( 'wp_chimp_lists_init', 0 );
+		return absint( $init );
 	}
 
 	/**

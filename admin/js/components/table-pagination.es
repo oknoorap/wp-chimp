@@ -11,8 +11,9 @@ class TablePagination {
   }
   update( totalPages, totalItems ) {
 
-    this.totalPages = totalPages;
-    this.totalItems = totalItems;
+    this.currPage   = 1; // Default to page 1.
+    this.totalPages = parseInt( totalPages, 10 );
+    this.totalItems = parseInt( totalItems, 10 );
 
     setChildren( this.el, [
       this.getTotalItems(),
@@ -39,13 +40,14 @@ class TablePagination {
 
     var elem = el( 'span', {
       'id': 'wp-chimp-table-pagination-prev',
-      'class': 'prev-page',
+      'class': 'prev-page inactive',
       'data-page': 1
     }, '‹' );
 
     elem.addEventListener( 'click', this.paginationActions.bind( this ) );
 
-    this.elPrevButton = elem;
+    this.prevButton = elem;
+
     return elem;
   }
   getNextButton() {
@@ -58,7 +60,8 @@ class TablePagination {
 
     elem.addEventListener( 'click', this.paginationActions.bind( this ) );
 
-    this.elNextButton = elem;
+    this.nextButton = elem;
+
     return elem;
   }
   getPaginationInput() {
@@ -89,9 +92,30 @@ class TablePagination {
     ]);
   }
   paginationActions( event ) {
-    this.tableRequest.request({
-      'page': event.target.dataset.page
-    });
+
+    var targetPage = parseInt( event.target.dataset.page, 10 );
+    if ( targetPage === this.currPage || targetPage > this.totalPages || 1 > targetPage ) {
+      return;
+    }
+
+    this.tableRequest.request({ 'page': targetPage });
+    this.currPage = targetPage;
+
+    this.toggleButtonState();
+  }
+  toggleButtonState() {
+
+    if ( 1 === this.currPage ) {
+      this.prevButton.classList.add( 'inactive' );
+    } else {
+      this.prevButton.classList.remove( 'inactive' );
+    }
+
+    if ( this.totalPages === this.currPage ) {
+      this.nextButton.classList.add( 'inactive' );
+    } else {
+      this.nextButton.classList.remove( 'inactive' );
+    }
   }
 }
 
