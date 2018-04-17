@@ -253,45 +253,49 @@ class Page {
 		 */
 		if ( 'wp_chimp_api_key' === $option && $value !== $old_value ) {
 
-			$this->lists_query->truncate(); // Remove the old lists from the table.
+			$this->lists_query->truncate(); // Remove all entries from the `_chimp_lists` table.
+			$total_items = $this->get_lists_total_items( $value );
+
 			update_option( 'wp_chimp_lists_init', 0 );
+			update_option( 'wp_chimp_lists_total_items', $total_items );
+			update_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
+		}
+	}
 
-			$validity = 'valid'; // Assumes that the API key is valid, until proven otherwise.
-			$response = [];
+	/**
+	 * Function to get the total item of the lists registered in
+	 * the MailChimp account.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $api_key The MailChimp API key value.
+	 * @return integer|null The number of total items, or null if it is not set.
+	 */
+	private function get_lists_total_items( $api_key ) {
 
-			if ( ! empty( $value ) ) {
+		if ( ! empty( $api_key ) ) {
 
-				try {
-					$mailchimp = new MailChimp( $value );
-				} catch ( \Exception $e ) {
-					add_settings_error( 'wp-chimp-invalid-api-key', '401', $e->getMessage() );
-					$validity = 'invalid';
-				}
-
-				if ( null !== $mailchimp ) {
-					$response = $mailchimp->get( 'lists', [
-						'fields' => 'total_items',
-					]);
-				} else {
-					$validity = 'invalid';
-				}
-
-				if ( isset( $response['status'] ) ) {
-
-					$format   = '%s: <span class="wp-chimp-api-status-detail">%s</span>';
-					$message  = sprintf( $format, $response['title'], $response['detail'] );
-					$validity = 'invalid';
-
-					add_settings_error( 'wp-chimp-api-status', $response['status'], $message );
-				}
-			} else {
-				$validity = 'invalid';
+			try {
+				$mailchimp = new MailChimp( $api_key );
+			} catch ( \Exception $e ) {
+				add_settings_error( 'wp-chimp-invalid-api-key', '401', $e->getMessage() );
 			}
 
-			$total_items = isset( $response['total_items'] ) ? $response['total_items'] : 0;
+			if ( is_object( $mailchimp ) && $mailchimp instanceof MailChimp ) {
+				$response = $mailchimp->get( 'lists', [
+					'fields' => 'total_items',
+				]);
+			}
 
-			update_option( 'wp_chimp_lists_total_items', $total_items );
-			update_option( 'wp_chimp_api_key_status', $validity );
+			if ( isset( $response['status'] ) ) {
+
+				$format  = '%s: <span class="wp-chimp-api-status-detail">%s</span>';
+				$message = sprintf( $format, $response['title'], $response['detail'] );
+
+				add_settings_error( 'wp-chimp-api-status', $response['status'], $message );
+			}
 		}
+
+		return isset( $response['total_items'] ) ? absint( $response['total_items'] ) : null;
 	}
 }
