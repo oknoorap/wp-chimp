@@ -149,29 +149,42 @@ class TablePagination {
     });
   }
 
-  update( request ) {
-
-    var totalPages  = request.getResponseHeader( 'X-WP-Chimp-Lists-TotalPages' );
-    var totalItems  = request.getResponseHeader( 'X-WP-Chimp-Lists-Total' );
-    var currentPage = request.getResponseHeader( 'X-WP-Chimp-Lists-Page' );
+  /**
+   * Function to update the pagination UI.
+   *
+   * @since 0.1.0
+   *
+   * @param {integer} currentPage
+   * @param {integer} totalPages
+   * @param {integer} totalItems
+   */
+  update( currentPage, totalPages, totalItems ) {
 
     if ( 1 >= totalPages ) {
       return;
     }
 
     if ( null === document.querySelector( '#wp-chimp-table-pagination' ) ) {
-      mount(
-        document.querySelector( '#wp-chimp-lists' ),
-        this.render( totalPages, totalItems )
-      );
+      mount( document.querySelector( '#wp-chimp-lists' ), this.render( totalPages, totalItems ) );
     }
 
     currentPage = parseInt( currentPage, 10 );
 
     this.toggleActive( this.prevButton, 1 === currentPage, currentPage );
     this.toggleActive( this.nextButton, currentPage >= this.totalPages, currentPage );
+
+    this.inputField.value = currentPage;
   }
 
+  /**
+   * Function to toggle the active state of the pagination button.
+   *
+   * @since 0.1.0
+   *
+   * @param {Element} elem
+   * @param {boolean} state
+   * @param {integer} currentPage
+   */
   toggleActive( elem, state, currentPage ) {
 
     var elemId    = elem.getAttribute( 'id' );

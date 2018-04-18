@@ -17,6 +17,11 @@ class TableRequest {
     this.bindEvents();
   }
 
+  /**
+   * Bind the pagination elements to an Event.
+   *
+   * @since 0.1.0
+   */
   bindEvents() {
 
     this.tablePagination.prevButton.addEventListener( 'click', this.actions.bind( this ) );
@@ -30,7 +35,7 @@ class TableRequest {
    *
    * @since 0.1.0
    *
-   * @param event
+   * @param {Event} event
    */
   actions( event ) {
 
@@ -43,15 +48,18 @@ class TableRequest {
       targetPage = parseInt( event.target.dataset.page, 10 );
     }
 
-    if ( ! Number.isInteger( targetPage ) ) { // The targetPage could be NaN. So, check it.
-      return;
+    if ( Number.isInteger( targetPage ) || 1 <= targetPage ) { // The targetPage could be NaN. So, check it.
+      this.request({ 'page': targetPage });
     }
-
-    this.request({
-      'page': targetPage
-    });
   }
 
+  /**
+   * Make a request to the WP-API to pull the lists.
+   *
+   * @since 0.1.0
+   *
+   * @param {Object} args The extra arguments to pass in to the Ajax config.
+   */
   request( args = {}) {
 
     if ( args.hasOwnProperty( 'page' ) ) {
@@ -64,17 +72,40 @@ class TableRequest {
       .fail( this.onFailed.bind( this ) );
   }
 
+  /**
+   * The function to be called if the request succeeds.
+   *
+   * @since 0.1.0
+   *
+   * @param {Object} lists
+   * @param {string} textStatus
+   * @param {jqXHR} request The jQuery XMLHttpRequest (jqXHR) object returned by $.ajax()
+   */
   onSuccess( lists, textStatus, request ) {
 
     if ( 0 === lists.length ) {
       this.tableBody.mountEmptyState();
     } else {
+
+      let totalPages  = request.getResponseHeader( 'X-WP-Chimp-Lists-TotalPages' );
+      let totalItems  = request.getResponseHeader( 'X-WP-Chimp-Lists-Total' );
+      let currentPage = request.getResponseHeader( 'X-WP-Chimp-Lists-Page' );
+
+      totalPages  = parseInt( totalPages, 10 );
+      totalItems  = parseInt( totalItems, 10 );
+      currentPage = parseInt( currentPage, 10 );
+
       this.tableBody.update( lists );
-      this.tablePagination.update( request );
+      this.tablePagination.update( currentPage, totalPages, totalItems );
     }
   }
 
-  onFailed( lists, textStatus ) {
+  /**
+   * The function to be called if the request fails.
+   *
+   * @since 0.1.0
+   */
+  onFailed() {
     this.tableBody.mountEmptyState();
   }
 }
