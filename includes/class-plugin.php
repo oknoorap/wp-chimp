@@ -162,16 +162,9 @@ class Plugin {
 
 		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
 		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
-		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $admin_page, 'enqueue_scripts', 30, 3 );
 
-		// add_action( 'admin_init', function() {
-		// 	$request  = new \WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
-		// 	$request  = $request->set_query_params([
-		// 		'page' => 2,
-		// 	]);
-		// 	$response = rest_do_request( $request );
-		// 	var_dump( $response->get_data() );
-		// } );
+		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
 
 		/**
 		 * Add the Action link for the plugin in the Plugin list screen.

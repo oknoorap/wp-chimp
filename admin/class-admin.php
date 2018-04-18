@@ -104,9 +104,9 @@ class Admin {
 			 * class.
 			 */
 			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', [ 'jquery', 'wp-api' ], $this->version );
-			wp_localize_script( $this->plugin_name, 'wpChimpLocaleAdmin', self::get_locale_strings() ); // Add translateable strings in the admin page.
 
 			wp_enqueue_script( $this->plugin_name );
+			wp_localize_script( $this->plugin_name, 'wpChimpLocaleAdmin', self::get_locale_strings(), 'before' );
 		}
 	}
 
