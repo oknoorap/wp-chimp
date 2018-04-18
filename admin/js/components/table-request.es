@@ -1,5 +1,18 @@
+/**
+ * The Class to make a request to wp-chimp API enpoint
+ *
+ * @since 0.1.0
+ */
 class TableRequest {
 
+  /**
+   * The Class constructor.
+   *
+   * @since 0.1.0
+   *
+   * @param {TableBody} tableBody
+   * @param {TablePagination} tablePagination
+   */
   constructor( tableBody, tablePagination ) {
 
     this.tableBody = tableBody;
