@@ -1,10 +1,9 @@
-import { mount } from 'redom';
-import TablePagination from './table-pagination.es';
-
 class TableRequest {
-  constructor( tableBody ) {
+
+  constructor( tableBody, tablePagination ) {
 
     this.tableBody = tableBody;
+    this.tablePagination = tablePagination;
     this.configs = {
       url: `${wpApiSettings.root}wp-chimp/v1/lists`,
       type: 'GET',
@@ -14,9 +13,47 @@ class TableRequest {
       beforeSend: this.tableBody.mountPlaceholder(),
       data: {}
     };
+
+    this.bindEvents();
+  }
+
+  bindEvents() {
+
+    this.tablePagination.prevButton.addEventListener( 'click', this.actions.bind( this ) );
+    this.tablePagination.nextButton.addEventListener( 'click', this.actions.bind( this ) );
+    this.tablePagination.inputField.addEventListener( 'keypress', this.actions.bind( this ) );
+  }
+
+  /**
+   * The addEventListener callback when the button is clicked, or when the input
+   * field value is changed.
+   *
+   * @since 0.1.0
+   *
+   * @param event
+   */
+  actions( event ) {
+
+    var targetPage;
+    var keyCode = event.which || event.keyCode;
+
+    if ( 13 === keyCode ) {
+      targetPage = parseInt( event.target.value, 10 );
+    } else {
+      targetPage = parseInt( event.target.dataset.page, 10 );
+    }
+
+    if ( ! Number.isInteger( targetPage ) ) { // The targetPage could be NaN. So, check it.
+      return;
+    }
+
+    this.request({
+      'page': targetPage
+    });
   }
 
   request( args = {}) {
+
     if ( args.hasOwnProperty( 'page' ) ) {
       this.configs.data.page = parseInt( args.page, 10 );
     }
@@ -28,30 +65,17 @@ class TableRequest {
   }
 
   onSuccess( lists, textStatus, request ) {
+
     if ( 0 === lists.length ) {
       this.tableBody.mountEmptyState();
     } else {
       this.tableBody.update( lists );
-
-      if ( null === document.querySelector( '#wp-chimp-table-pagination' ) ) {
-        let totalPages = request.getResponseHeader( 'X-WP-Chimp-Lists-TotalPages' );
-        let totalItems = request.getResponseHeader( 'X-WP-Chimp-Lists-Total' );
-        let currPage   = request.getResponseHeader( 'X-WP-Chimp-Lists-Page' );
-
-        this.loadPagination( totalPages, totalItems, currPage );
-      }
+      this.tablePagination.update( request );
     }
   }
 
-  onFailed() {
+  onFailed( lists, textStatus ) {
     this.tableBody.mountEmptyState();
-  }
-
-  loadPagination( totalPages, totalItems, currPage ) {
-    if ( 2 >= totalPages ) {
-      let tablePagination = new TablePagination( this.tableBody, this );
-      mount( document.querySelector( '#wp-chimp-lists' ), tablePagination.update( totalPages, totalItems ) );
-    }
   }
 }
 

@@ -1,88 +1,131 @@
-import { setChildren, el } from 'redom';
+import { el, mount, setChildren } from 'redom';
 
+/**
+ * The Class to render the pagination for the table.
+ *
+ * @since 0.1.0
+ */
 class TablePagination {
-  constructor( tableBody, tableRequest ) {
-    this.tableBody = tableBody;
-    this.tableRequest = tableRequest;
+
+  constructor() {
+
     this.el = el( 'div', {
       'id': 'wp-chimp-table-pagination',
       'class': 'tablenav-pages'
     });
-  }
-  update( totalPages, totalItems ) {
 
-    this.currentPage   = 1; // Default to page 1.
-    this.totalPages = parseInt( totalPages, 10 );
-    this.totalItems = parseInt( totalItems, 10 );
+    this.nextButton = this.getNextButton();
+    this.prevButton = this.getPrevButton();
+    this.inputField = this.getInputField();
+  }
+
+  /**
+   * Render and append the pagination element.
+   *
+   * @since 0.1.0
+   *
+   * @param {string} totalPages
+   * @param {string} totalItems
+   * @return {Element}
+   */
+  render( totalPages, totalItems ) {
+
+    this.currentPage = 1;                           // Default to page 1.
+    this.totalPages  = parseInt( totalPages, 10 );  // Turn it into integer.
+    this.totalItems  = parseInt( totalItems, 10 );  // Turn it into integer.
 
     setChildren( this.el, [
-      this.getTotalItems(),
-      this.getPaginationLinks()
+      this.renderTotalItem(),
+      this.renderPagination()
     ]);
 
     return this.el;
   }
-  getPaginationLinks() {
-    return el( 'span', {
-      'class': 'pagination-links'
-    }, [
-      this.getPrevButton(),
+
+  /**
+   * Render the elements that make up the pagination.
+   *
+   * These include the "prev button", the "next button", and the
+   * input field allowing to jump up to the preferred page
+   * number.
+   *
+   * @since 0.1.0
+   *
+   * @return {Element}
+   */
+  renderPagination() {
+
+    return el( 'span', { 'class': 'pagination-links' }, [
+      this.prevButton,
       this.getPaginationInput(),
-      this.getNextButton()
+      this.nextButton
     ]);
   }
-  getTotalItems() {
+
+  /**
+   * Render the element showing the total items in the list.
+   *
+   * @since 0.1.0
+   *
+   * @return {Element}
+   */
+  renderTotalItem() {
+
     return el( 'span', {
       'class': 'displaying-num'
     }, `${this.totalItems} items` );
   }
+
+  /**
+   * Get the "Previous" button element.
+   *
+   * @since 0.1.0
+   *
+   * @return {Element}
+   */
   getPrevButton() {
 
-    var elem = el( 'span', {
+    return el( 'span', {
       'id': 'wp-chimp-table-pagination-prev',
-      'class': 'prev-page inactive',
-      'data-page': 1
+      'class': 'prev-page inactive'
     }, '‹' );
-
-    elem.addEventListener( 'click', this.paginationActions.bind( this ) );
-
-    this.prevButton = elem;
-
-    return elem;
   }
+
+  /**
+   * Get the "Next" button element.
+   *
+   * @since 0.1.0
+   *
+   * @returns {Element}
+   */
   getNextButton() {
 
-    var elem = el( 'span', {
+    return el( 'span', {
       'id': 'wp-chimp-table-pagination-next',
-      'class': 'next-page',
-      'data-page': 2
+      'class': 'next-page'
     }, '›' );
-
-    elem.addEventListener( 'click', this.paginationActions.bind( this ) );
-
-    this.nextButton = elem;
-
-    return elem;
   }
+
+  /**
+   * Get the pagination "Input" field.
+   *
+   * This input element will allow the user to jump up to the preferred page
+   * quickly.
+   *
+   * @since 0.1.0
+   *
+   * @returns {Element}
+   */
   getPaginationInput() {
 
-    var elemInput = el( 'input', {
-      'id': 'current-page-selector',
-      'class': 'current-page',
-      'value': 1,
-      'size': 3,
-      'aria-describedby': 'table-paging',
-      'type': 'text'
-    });
-
-    var elem = el( 'span', {
+    return el( 'span', {
       'class': 'paging-input'
     }, [
       el( 'label', {
         'class': 'screen-reader-text',
         'for': 'current-page-selector'
       }, 'Current Page' ),
-      elemInput,
+      this.inputField,
       el( 'span', {
         'class': 'tablenav-paging-text'
       }, [
@@ -92,46 +135,55 @@ class TablePagination {
         }, this.totalPages )
       ])
     ]);
-
-    elem.addEventListener( 'keypress', this.paginationActions.bind( this ) );
-
-    this.paginationInput = elem;
-
-    return elem;
   }
-  paginationActions( event ) {
 
-    var targetPage;
-    var keyCode = event.which || event.keyCode;
+  getInputField() {
 
-    if ( 13 === keyCode ) {
-      targetPage = parseInt( event.target.value, 10 );
-    } else {
-      targetPage = parseInt( event.target.dataset.page, 10 );
-    }
+    return el( 'input', {
+      'id': 'current-page-selector',
+      'class': 'current-page',
+      'value': 1,
+      'size': 3,
+      'aria-describedby': 'table-paging',
+      'type': 'text'
+    });
+  }
 
-    if ( ! Number.isInteger( targetPage ) ) {
+  update( request ) {
+
+    var totalPages  = request.getResponseHeader( 'X-WP-Chimp-Lists-TotalPages' );
+    var totalItems  = request.getResponseHeader( 'X-WP-Chimp-Lists-Total' );
+    var currentPage = request.getResponseHeader( 'X-WP-Chimp-Lists-Page' );
+
+    if ( 1 >= totalPages ) {
       return;
     }
 
-    this.tableRequest.request({ 'page': targetPage });
-    this.currentPage = targetPage;
+    if ( null === document.querySelector( '#wp-chimp-table-pagination' ) ) {
+      mount(
+        document.querySelector( '#wp-chimp-lists' ),
+        this.render( totalPages, totalItems )
+      );
+    }
 
-    this.toggleButtonState();
+    currentPage = parseInt( currentPage, 10 );
+
+    this.toggleActive( this.prevButton, 1 === currentPage, currentPage );
+    this.toggleActive( this.nextButton, currentPage >= this.totalPages, currentPage );
   }
-  toggleButtonState() {
 
-    if ( 1 === this.currentPage ) {
-      this.prevButton.classList.add( 'inactive' );
+  toggleActive( elem, state, currentPage ) {
+
+    var elemId    = elem.getAttribute( 'id' );
+    var increment = 'wp-chimp-table-pagination-next' === elemId ? currentPage + 1 : currentPage - 1;
+
+    if ( true === state ) {
+      elem.classList.add( 'inactive' );
     } else {
-      this.prevButton.classList.remove( 'inactive' );
+      elem.classList.remove( 'inactive' );
     }
 
-    if ( this.currentPage >= this.totalPages ) {
-      this.nextButton.classList.add( 'inactive' );
-    } else {
-      this.nextButton.classList.remove( 'inactive' );
-    }
+    elem.dataset.page = state ? 0 : increment;
   }
 }
 
