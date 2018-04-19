@@ -107,6 +107,14 @@ class Admin {
 
 			wp_enqueue_script( $this->plugin_name );
 			wp_localize_script( $this->plugin_name, 'wpChimpLocaleAdmin', self::get_locale_strings(), 'before' );
+
+			$screen->add_help_tab([
+				'id'       => "{$this->plugin_name}-overview",
+				'title'    => __( 'Overview', 'wp-chimp' ),
+				'callback' => [ __NAMESPACE__ . '\\Partials\\Page', 'html_help_tab_overview' ],
+			]);
+
+			$screen->set_help_sidebar( Partials\Page::html_help_tab_sidebar() );
 		}
 	}
 
