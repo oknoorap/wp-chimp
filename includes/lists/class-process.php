@@ -51,6 +51,8 @@ final class Process extends WP_Background_Process {
 	 * in the next pass through. Or, return false to remove the
 	 * item from the queue.
 	 *
+	 * @since 0.1.0
+	 *
 	 * @param mixed $item Queue item to iterate over.
 	 * @return mixed
 	 */
@@ -67,6 +69,10 @@ final class Process extends WP_Background_Process {
 	 *
 	 * Override if applicable, but ensure that the below actions are
 	 * performed, or, call parent::complete().
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
 	 */
 	protected function complete() {
 		parent::complete();
