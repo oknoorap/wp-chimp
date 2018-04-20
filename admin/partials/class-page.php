@@ -180,37 +180,6 @@ class Page {
 	}
 
 	/**
-	 * Render the content of the "Overview" section in the Help tab in the "Settings" page.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return void
-	 */
-	static public function html_help_tab_overview() {
-		?>
-		<p><?php esc_html_e( 'This screen will show a table of the Lists registered in your MailChimp account.', 'wp-chimp' ); ?></p>
-		<p><?php esc_html_e( 'You will need to add the MailChimp API key on the provided input field on this screen. Make sure that it\'s a valid API key and that the status is "Enabled". Once the API key is added and validated, it will retrieve all the MailChimp Lists to along with a number of related data such such as the ID, the name, the number of subscribers, and whether the List is double-optin.', 'wp-chimp' ); ?></p>
-		<p><?php esc_html_e( 'In addition, it will also show the WordPress shortcode of each MailChimp list in which you can copy and paste it to display a MailChimp subcription form for the List selected within the post or the page content.', 'wp-chimp' ); ?></p>
-	<?php
-	}
-
-	/**
-	 * Render the content of the sidebar in the Help tab in the "Settings" page.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string
-	 */
-	static public function html_help_tab_sidebar() {
-
-		$content  = '<p><strong>' . esc_html__( 'For more information:', 'wp-chimp' ) . '</strong></p>';
-		$content .= '<p><a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank">' . esc_html__( 'About MailChimp API keys', 'wp-chimp' ) . '</a></p>';
-		$content .= '<p><a href="https://codex.wordpress.org/Shortcode" target="_blank">' . esc_html__( 'About WordPress Shortcode', 'wp-chimp' ) . '</a></p>';
-
-		return $content;
-	}
-
-	/**
 	 * Add the action link in Plugin list screen.
 	 *
 	 * @since 0.1.0

@@ -165,6 +165,7 @@ class Plugin {
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin_page, 'enqueue_scripts', 30, 3 );
 
 		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
+		$this->loader->add_action( 'current_screen', $admin_menu, 'add_help_tabs' );
 
 		/**
 		 * Add the Action link for the plugin in the Plugin list screen.

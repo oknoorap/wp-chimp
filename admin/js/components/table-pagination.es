@@ -173,7 +173,7 @@ class TablePagination {
     this.toggleActive( this.prevButton, 1 === currentPage, currentPage );
     this.toggleActive( this.nextButton, currentPage >= this.totalPages, currentPage );
 
-    this.inputField.value = currentPage;
+    this.inputField.value = 1 > currentPage ? 1 : currentPage;
   }
 
   /**

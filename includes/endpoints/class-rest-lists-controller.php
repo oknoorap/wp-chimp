@@ -233,7 +233,14 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	public function get_items( $request ) {
 
-		$page  = isset( $request['page'] ) ? $request['page'] : 1;
+		/**
+		 * Get the page number passed to the endpoint request,
+		 * ensure that the page is not 0 or negative number.
+		 *
+		 * @var int
+		 */
+		$page = isset( $request['page'] ) && 1 >= absint( $request['page'] ) ? absint( $request['page'] ) : 1;
+
 		$lists = $this->get_lists( [
 			'offset' => self::get_lists_offset( $page ),
 		] );

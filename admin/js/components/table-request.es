@@ -76,7 +76,8 @@ class TableRequest {
   request( args = {}) {
 
     if ( args.hasOwnProperty( 'page' ) ) {
-      this.configs.data.page = parseInt( args.page, 10 );
+      let page = parseInt( args.page, 10 );
+      this.configs.data.page = 1 > page ? 1 : page;
     }
 
     jQuery

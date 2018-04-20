@@ -1,4 +1,5 @@
 import { mount, el, list, setChildren } from 'redom';
+import { __ } from '@wordpress/i18n';
 
 /**
  * The Class to render the table row (`tr`) and data (`td`) elements.
@@ -9,7 +10,6 @@ class TableRow {
 
   constructor() {
     this.el = el( 'tr' );
-    this.locale = wpChimpLocaleAdmin;
   }
 
   /**
@@ -40,7 +40,7 @@ class TableRow {
       ]),
       el( 'td', list.name ),
       el( 'td', list.subscribers ),
-      el( 'td', ( 0 === list.doubleOptin ? this.locale.no : this.locale.yes ) ),
+      el( 'td', ( 0 === list.doubleOptin ? __( 'No', 'wp-chimp' ) : __( 'Yes', 'wp-chimp' ) ) ),
       el( 'td', [
         el( 'code', `[wp-chimp list_id="${list.listId}"]` )
       ])
@@ -57,9 +57,8 @@ class TableBody {
 
   constructor() {
 
-    this.el     = el( 'tbody', { 'id': 'wp-chimp-table-lists-body' });
-    this.list   = list( this.el, TableRow );
-    this.locale = wpChimpLocaleAdmin;
+    this.el   = el( 'tbody', { 'id': 'wp-chimp-table-lists-body' });
+    this.list = list( this.el, TableRow );
 
     mount( document.querySelector( '#wp-chimp-table-lists' ), this );
   }
@@ -83,7 +82,9 @@ class TableBody {
   mountEmptyState() {
 
     setChildren( this.el, el( 'tr', [
-      el( 'td', this.locale.noLists, { 'colspan': '5' })
+      el( 'td', __( 'No MailChimp lists found', 'wp-chimp' ), {
+        'colspan': '5'
+      })
     ]) );
   }
 
