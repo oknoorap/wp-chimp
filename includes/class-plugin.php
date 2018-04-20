@@ -133,9 +133,10 @@ class Plugin {
 	 */
 	private function define_languages_hooks() {
 
-		$languages = new Languages();
+		$languages = new Languages( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'plugins_loaded', $languages, 'load_plugin_textdomain' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $languages, 'enqueue_scripts', 30, 3 );
 	}
 
 	/**
@@ -149,7 +150,7 @@ class Plugin {
 
 		$admin      = new Admin\Admin( $this->get_plugin_name(), $this->get_version() );
 		$admin_page = new Admin\Partials\Page( $this->get_plugin_name(), $this->get_version() );
-		$admin_menu = new Admin\Partials\Menu( $this->get_plugin_name(), $this->get_version(), $admin_page );
+		$admin_menu = new Admin\Partials\Menu( $this->get_plugin_name(), $this->get_version() );
 
 		/**
 		 * Add Lists\Query instance to the Admin\Admin_Page to be able to add, get,

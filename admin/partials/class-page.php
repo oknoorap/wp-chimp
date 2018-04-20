@@ -118,7 +118,7 @@ class Page {
 	 *
 	 * @return void
 	 */
-	public function render_form() {
+	static public function render_form() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		} ?>

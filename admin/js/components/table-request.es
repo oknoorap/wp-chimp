@@ -15,6 +15,7 @@ class TableRequest {
    */
   constructor( tableBody, tablePagination ) {
 
+    this.currentPage = 1;
     this.tableBody = tableBody;
     this.tablePagination = tablePagination;
     this.configs = {
@@ -61,7 +62,7 @@ class TableRequest {
       targetPage = parseInt( event.target.dataset.page, 10 );
     }
 
-    if ( Number.isInteger( targetPage ) || 1 <= targetPage ) { // The targetPage could be NaN. So, check it.
+    if ( Number.isInteger( targetPage ) && 1 <= targetPage && this.currentPage !== targetPage ) { // The targetPage should not be a NaN.
       this.request({ 'page': targetPage });
     }
   }
@@ -111,6 +112,8 @@ class TableRequest {
 
       this.tableBody.update( lists );
       this.tablePagination.update( currentPage, totalPages, totalItems );
+
+      this.currentPage = currentPage;
     }
   }
 

@@ -106,25 +106,6 @@ class Admin {
 			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', [ 'jquery', 'wp-api' ], $this->version );
 
 			wp_enqueue_script( $this->plugin_name );
-			wp_localize_script( $this->plugin_name, 'wpChimpLocaleAdmin', self::get_locale_strings(), 'before' );
 		}
-	}
-
-	/**
-	 * Function to set and get the translatable strings in the admin
-	 * area of the plugin.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 *
-	 * @return array The list of translatebale strings.
-	 */
-	static private function get_locale_strings() {
-
-		return [
-			'noLists' => __( 'No MailChimp lists found', 'wp-chimp' ),
-			'no'      => __( 'No', 'wp-chimp' ),
-			'yes'     => __( 'Yes', 'wp-chimp' ),
-		];
 	}
 }

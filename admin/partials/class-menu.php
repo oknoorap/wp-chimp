@@ -26,13 +26,11 @@ class Menu {
 	 * @since 0.1.0
 	 * @param string $plugin_name The name of this plugin.
 	 * @param string $version     The version of this plugin.
-	 * @param Page   $admin_page  The WP_Chimp\Admin\Partials\Page instance to attache to the menu.
 	 */
-	public function __construct( $plugin_name, $version, Page $admin_page ) {
+	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-		$this->admin_page  = $admin_page;
 	}
 
 	/**
@@ -45,7 +43,7 @@ class Menu {
 		$menu_title = __( 'Chimp', 'wp-chimp' );
 		$page_title = __( 'Chimp Settings', 'wp-chimp' );
 
-		add_options_page( $page_title, $menu_title, 'manage_options', $this->plugin_name, [ $this->admin_page, 'render_form' ] );
+		add_options_page( $page_title, $menu_title, 'manage_options', $this->plugin_name, [ __NAMESPACE__ . '\\Page', 'render_form' ] );
 	}
 
 	/**
