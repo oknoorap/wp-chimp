@@ -42,7 +42,7 @@ final class Subscribe_Form {
 
 		$block_js = 'subscribe-form/block.js';
 		wp_register_script(
-			'wp-chimp-subscribe-form-block-editor',
+			'wp-chimp-subscribe-form-editor',
 			plugins_url( $block_js, __FILE__ ),
 			[
 				'wp-blocks',
@@ -54,7 +54,7 @@ final class Subscribe_Form {
 
 		$editor_css = 'subscribe-form/editor.css';
 		wp_register_style(
-			'wp-chimp-subscribe-form-block-editor',
+			'wp-chimp-subscribe-form-editor',
 			plugins_url( $editor_css, __FILE__ ),
 			[ 'wp-blocks' ],
 			filemtime( "$this->dir/$editor_css" )
@@ -62,16 +62,16 @@ final class Subscribe_Form {
 
 		$style_css = 'subscribe-form/style.css';
 		wp_register_style(
-			'wp-chimp-subscribe-form-block',
+			'wp-chimp-subscribe-form',
 			plugins_url( $style_css, __FILE__ ),
 			[ 'wp-blocks' ],
 			filemtime( "$this->dir/$style_css" )
 		);
 
-		register_block_type( 'wp-chimp/form', [
-			'editor_script'   => 'wp-chimp-subscribe-form-block-editor',
-			'editor_style'    => 'wp-chimp-subscribe-form-block-editor',
-			'style'           => 'wp-chimp-subscribe-form-block',
+		register_block_type( 'wp-chimp/subscribe-form', [
+			'editor_script'   => 'wp-chimp-subscribe-form-editor',
+			'editor_style'    => 'wp-chimp-subscribe-form-editor',
+			'style'           => 'wp-chimp-subscribe-form',
 			'render_callback' => [ $this, 'render_form' ],
 		] );
 	}

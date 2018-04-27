@@ -66,7 +66,9 @@ class Languages {
 	public function enqueue_scripts() {
 
 		$locale = self::get_jed_locale_data();
+
 		wp_add_inline_script( $this->plugin_name, 'var wpChimpLocaleConfigs = ' . json_encode( $locale ), 'before' );
+		wp_add_inline_script( 'wp-chimp-subscribe-form-editor', 'var wpChimpLocaleConfigs = ' . json_encode( $locale ), 'before' );
 	}
 
 	/**

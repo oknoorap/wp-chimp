@@ -47,7 +47,26 @@ gulp.task( 'script-admin', () => {
     .pipe( gulp.dest( './admin/js' ) );
 });
 
-gulp.task( 'script', [ 'script-admin' ]); // Combine all the script tasks in a single Gulp command.
+gulp.task( 'script-block-form', () => {
+
+  return browserify({
+    'entries': [ './blocks/subscribe-form/block.es' ],
+    'debug': true,
+    'transform': [ babelify ]
+  })
+    .bundle()
+    .on( 'error', function( err ) {
+      console.error( err );
+      this.emit( 'end' );
+    })
+    .pipe( sourceStream( 'block.js' ) )
+    .pipe( buffer() )
+      .pipe( sourcemaps.init({'loadMaps': true}) )
+      .pipe( sourcemaps.write( './' ) )
+    .pipe( gulp.dest( './blocks/subscribe-form' ) );
+});
+
+gulp.task( 'script', [ 'script-admin', 'script-block-form' ]); // Combine all the script tasks in a single Gulp command.
 
 /**
  * ---------------------------------------------------------------
@@ -65,8 +84,8 @@ const autoprefixerConfig = {
 
 const styleSources = [
   {
-    'src': 'blocks/form/*.scss',
-    'dest': 'blocks/form'
+    'src': 'blocks/subscribe-form/*.scss',
+    'dest': 'blocks/subscribe-form'
   }, {
     'src': 'admin/css/*.scss',
     'dest': 'admin/css'

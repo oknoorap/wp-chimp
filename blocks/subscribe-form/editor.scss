@@ -1,11 +1,70 @@
-/**
- * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
- */
-.wp-block-wp-chimp-form {
+$gray           : #a8bece;
+$gray-light     : #e9eff3;
+$gray-lighter   : #f9fbfc;
+$gray-dark      : #3d596d;
+$gray-darker    : #2e4453;
+$color-primary  : #d54e21;
+$color-secondary: #0087be;
 
-	&__select-list {
-		width: 220px;
+.wp-block-wp-chimp-subscribe-form {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	padding: 2.2em 1.6em 1.6em;
+	background-color: $gray-lighter;
+	position: relative;
+	overflow: hidden;
+
+	&:before {
+		top: 0;
+		left: 0;
+		content: "";
+		position: absolute;
+		display: block;
+		height: 0.6em;
+		width: 100%;
+		background: $color-primary;
+		background: repeating-linear-gradient(-45deg, $color-primary 0, $color-primary 12px, transparent 10px, transparent 20px, $color-secondary 20px, $color-secondary 32px, transparent 30px, transparent 40px);
+		backface-visibility: hidden;
+		border-bottom: 0;
+    }
+
+	&__heading {
+		color: $gray-darker;
+	}
+
+	&__sub-heading {
+		color: $gray-dark;
+	}
+
+	&__heading,
+	&__sub-heading,
+	&__field,
+	&__button {
+		display: block;
+		width: 100%;
+		margin: 0;
+	}
+
+	&__inputs {
+		margin-top: 1em;
+	}
+	&__field,
+	&__button {
+		border-radius: 3px;
+		font-size: 0.86em;
+		padding: 1em;
+	}
+
+	&__field {
+		border: 1px solid $gray-light;
+		background-color: #fff;
+		color: $gray;
+	}
+
+	&__button {
+		background-color: $color-primary;
+		margin-top: 0.6em;
+		color: #fff;
+		text-align: center;
+		font-weight: 600;
 	}
 }

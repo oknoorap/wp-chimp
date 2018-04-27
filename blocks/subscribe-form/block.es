@@ -1,22 +1,28 @@
 ( function( wp ) {
 
-  const { __ } = wp.i18n;
+  const { setLocaleData, __ } = wp.i18n;
   const { registerBlockType } = wp.blocks;
-  const { createElement } = wp.element;
-  const { SelectControl, Placeholder } = wp.components;
+  const { createElement: el } = wp.element;
+
+  /**
+   * Creates a new Jed instance with specified locale data configuration for the plugin.
+   *
+   * @see https://www.npmjs.com/package/@wordpress/i18n
+   */
+  setLocaleData( wpChimpLocaleConfigs, 'wp-chimp' );
 
   /**
    * Every block starts by registering a new block type definition.
    *
    * @see https://wordpress.org/gutenberg/handbook/block-api/
    */
-  registerBlockType( 'wp-chimp/form', {
+  registerBlockType( 'wp-chimp/subscribe-form', {
 
     /**
      * This is the display title for your block, which can be translated with `i18n` functions.
      * The block inserter will show this name.
      */
-    title: __( 'MailChimp Form' ),
+    title: __( 'MailChimp Form', 'wp-chimp' ),
 
     /**
      * The icon shown in the Gutenberg block list.
@@ -47,14 +53,7 @@
      *
      * @type {Array}
      */
-    keywords: [ __( 'form' ), __( 'subscription' ), __( 'subscribe' ) ],
-
-    // Block Attributes
-    attributes: {
-      mailingList: {
-        type: 'string'
-      }
-    },
+    keywords: [ __( 'form', 'wp-chimp' ), __( 'subscription', 'wp-chimp' ), __( 'subscribe', 'wp-chimp' ) ],
 
     /**
      * The edit function describes the structure of your block in the context of the editor.
@@ -66,41 +65,40 @@
      * @return {Element}       Element to render.
      */
     edit({ className, attributes, setAttributes }) {
-      const { mailingList } = attributes;
 
-      /**
-       * Set the selected MailChimp list
-       *
-       * @param  {string} value The MailChimp list ID.
-       * @return {void}
-       */
-      function onSelectOption( value ) {
-        setAttributes({
-          mailingList: value
-        });
-      }
+      return el( 'div', {
+        key: 'subscribe-form-container',
+        className: className
+      }, [
+        el( 'h3', {
+          key: 'subscribe-form-heading',
+          className: `${className}__heading`,
+          contentEditable: true
+        }, __( 'Get notified of our next update right to your inbox', 'wp-chimp' ) ),
 
-      return [
-        createElement( Placeholder, {
-          key: 'placeholder',
-          icon: 'feedback',
-          label: __( 'MailChimp Form' ),
-          instructions: __( 'Select the MailChimp list that you would like to use on this form.' )
+        el( 'p', {
+          key: 'subscribe-form-sub-heading',
+          className: `${className}__sub-heading`,
+          contentEditable: true
+        }, __( 'Subscribe to our newsletter', 'wp-chimp' ) ),
+
+        el( 'div', {
+          key: 'subscribe-form-inputs',
+          className: `${className}__inputs`
         }, [
-          createElement( SelectControl, {
-            className: `${className}__select-list`,
-            value: mailingList,
-            options: [ {
-              value: '1',
-              label: 'List 1'
-            }, {
-              value: '2',
-              label: 'List 2'
-            } ],
-            onChange: onSelectOption
-          })
+          el( 'div', {
+            key: 'subscribe-form-field',
+            className: `${className}__field`,
+            contentEditable: true
+          }, __( 'Enter your email address', 'wp-chimp' ) ),
+          el( 'div', {
+            key: 'subscribe-form-button',
+            className: `${className}__button`,
+            contentEditable: true
+          }, __( 'Subscribe', 'wp-chimp' ) )
+
         ])
-      ];
+      ]);
     },
 
     /**
