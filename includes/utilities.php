@@ -50,7 +50,39 @@ if ( ! function_exists( __NAMESPACE__ . '\\sort_mailchimp_lists' ) ) :
 
 endif; // wp_chimp_sort_mailchimp_data.
 
-if ( ! function_exists( __NAMESPACE__ . '\\convert_keys_to_camelcase' ) ) :
+if ( ! function_exists( __NAMESPACE__ . '\\from_snake_to_camel' ) ) :
+
+	/**
+	 * Convert string from snake_case to camelCase
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $string The string to convert in camelCase format.
+	 * @return string The converted string in snake_case
+	 */
+	function from_snake_to_camel( $string ) {
+		return lcfirst( implode( '', array_map( 'ucfirst', explode( '_', $string ) ) ) );
+	}
+
+endif;
+
+if ( ! function_exists( __NAMESPACE__ . '\\defrom_snake_to_camel' ) ) :
+
+	/**
+	 * Convert string from camelCase to snake_case
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $string The string to convert in camelCase format.
+	 * @return string The converted string in snake_case
+	 */
+	function from_camel_to_snake( $string ) {
+		return strtolower(preg_replace(['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'], '$1_$2', $string));
+	}
+
+endif;
+
+if ( ! function_exists( __NAMESPACE__ . '\\convert_keys_to_camel_case' ) ) :
 
 	/**
 	 * Function to transform the array keys to camelCase.
@@ -63,13 +95,13 @@ if ( ! function_exists( __NAMESPACE__ . '\\convert_keys_to_camelcase' ) ) :
 	 * @param  array $inputs Associative array.
 	 * @return array Associative array with the key converted to camelcase
 	 */
-	function convert_keys_to_camelcase( array $inputs ) {
+	function convert_keys_to_camel_case( array $inputs ) {
 
 		$inputs_converted = [];
 		foreach ( $inputs as $key => $input ) {
-			$key = lcfirst( implode( '', array_map( 'ucfirst', explode( '_', $key ) ) ) );
+			$key = from_snake_to_camel( $key );
 			if ( is_array( $input ) ) {
-				$input = convert_keys_to_camelcase( $input );
+				$input = convert_keys_to_camel_case( $input );
 			}
 			$inputs_converted[ $key ] = $input;
 		}
@@ -77,4 +109,33 @@ if ( ! function_exists( __NAMESPACE__ . '\\convert_keys_to_camelcase' ) ) :
 		return $inputs_converted;
 	}
 
-endif; // convert_keys_to_camelcase
+endif;
+
+if ( ! function_exists( __NAMESPACE__ . '\\convert_keys_to_snake_case' ) ) :
+
+	/**
+	 * Function to transform the array keys to snake_case.
+	 *
+	 * This function will be used to convert associative array that
+	 * will be used in PHP.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param  array $inputs Associative array.
+	 * @return array Associative array with the key converted to camelcase
+	 */
+	function convert_keys_to_snake_case( array $inputs ) {
+
+		$inputs_converted = [];
+		foreach ( $inputs as $key => $input ) {
+			$key = from_camel_to_snake( $key );
+			if ( is_array( $input ) ) {
+				$input = convert_keys_to_snake_case( $input );
+			}
+			$inputs_converted[ $key ] = $input;
+		}
+
+		return $inputs_converted;
+	}
+
+endif;

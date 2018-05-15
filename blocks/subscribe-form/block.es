@@ -19,22 +19,6 @@ const { RichText } = wp.blocks;
 setLocaleData( wpChimpLocaleConfigs, 'wp-chimp' );
 
 /**
- *
- */
-const TOOLBAR_CONTROLS = [
-  {
-    icon: 'visibility',
-    title: __( 'Preview the Form', 'wp-chimp' ),
-    controlView: 'form-preview'
-  },
-  {
-    icon: 'index-card',
-    title: __( 'Select a List', 'wp-chimp' ),
-    controlView: 'select-list'
-  }
-];
-
-/**
  * Every block starts by registering a new block type definition.
  *
  * @see https://wordpress.org/gutenberg/handbook/block-api/
@@ -113,7 +97,10 @@ registerBlockType( 'wp-chimp/subscribe-form', {
    * @return {Element}       Element to render.
    */
   edit( props ) {
-    const { className, attributes, setAttributes } = props;
+
+    props.className = 'wp-chimp-subscription-form';
+    const { className } = props;
+
     return [
       el( BlockControls, {
         key: 'form-controls',
@@ -129,7 +116,7 @@ registerBlockType( 'wp-chimp/subscribe-form', {
    *
    * @see https://wordpress.org/gutenberg/handbook/block-edit-save/#save
    *
-   * @return {Element} Element to render.
+   * @return {null} Element to render.
    */
   save() {
     return null;

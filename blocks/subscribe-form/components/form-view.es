@@ -11,7 +11,9 @@ class FormView extends Component {
     const { className, attributes, setAttributes } = this.props;
     const { headingText, subHeadingText, inputEmailPlaceholder, buttonText } = attributes;
 
-    return el( 'div', { className }, [
+    return el( 'div', {
+        className: `wp-chimp-block ${className}`
+      }, [
       el( RichText, {
         key: 'form-heading',
         format: 'string',
@@ -35,7 +37,7 @@ class FormView extends Component {
           key: 'form-input-email',
           format: 'string',
           tagName: 'div',
-          className: `${className}__field`,
+          className: `${className}__email-field`,
           value: inputEmailPlaceholder,
           isSelected: false,
           onChange: ( text ) => setAttributes({ inputEmailPlaceholder: text })

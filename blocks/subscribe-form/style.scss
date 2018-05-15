@@ -1,12 +1,12 @@
 @import "variables";
 
-.wp-block-wp-chimp-subscribe-form {
-
+.wp-chimp-subscription-form {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	padding: 2.2em 1.6em 1.6em;
 	background-color: $gray-lighter;
 	position: relative;
 	overflow: hidden;
+	line-height: 1.8;
 
 	&::before {
 		top: 0;
@@ -21,46 +21,72 @@
 		backface-visibility: hidden;
 		border-bottom: 0;
 	}
+}
 
-	&__heading {
-		color: $gray-darker;
-	}
+.wp-chimp-block {
 
-	&__sub-heading {
-		color: $gray-dark;
-	}
+	.wp-chimp-subscription-form {
 
-	&__heading,
-	&__sub-heading,
-	&__field,
-	&__button {
-		display: block;
-		width: 100%;
-		margin: 0;
-	}
+		&__heading {
+			font-weight: 600;
+			color: $gray-darker;
+		}
 
-	&__inputs {
-		margin-top: 1em;
-	}
+		&__sub-heading {
+			color: $gray-dark;
+		}
 
-	&__field,
-	&__button {
-		border-radius: 3px;
-		font-size: 0.86em;
-		padding: 1em;
-	}
+		&__heading,
+		&__sub-heading,
+		&__email-field,
+		&__button {
+			display: block;
+			width: 100%;
+			margin: 0;
+		}
 
-	&__field {
-		border: 1px solid $gray-light;
-		background-color: #fff;
-		color: $gray;
-	}
+		&__inputs {
+			margin-top: 1em;
+		}
 
-	&__button {
-		background-color: $color-primary;
-		margin-top: 0.6em;
-		color: #fff;
-		text-align: center;
-		font-weight: 600;
+		&__email-field,
+		&__button {
+			border-radius: 3px;
+			font-size: 0.86em;
+			padding: 1em;
+		}
+
+		&__email-field {
+			border: 1px solid $gray-light;
+			background-color: #fff;
+		}
+
+		&__button {
+			background-color: $color-primary;
+			margin-top: 0.6em;
+			color: #fff;
+			text-align: center;
+			font-weight: 600;
+		}
+
+		// Higlight the button when on Hover.
+		// This style is targetting the front-end view of the subscription form.
+		input[type="email"] {
+
+			&:focus {
+				border: 1px solid $gray;
+			}
+
+			&::placeholder {
+				color: $gray;
+			}
+		}
+
+		button {
+
+			&:hover {
+				background-color: darken($color-primary, 5%);
+			}
+		}
 	}
 }

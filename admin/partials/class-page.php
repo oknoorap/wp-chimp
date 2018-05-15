@@ -279,7 +279,7 @@ class Page {
 		foreach ( $options['mailchimp'] as $key => $value ) {
 			$state['mailchimp'][ $key ] = 'api_key' === $key ? (bool) $value : $value;
 		}
-		$state = Utilities\convert_keys_to_camelcase( $state );
+		$state = Utilities\convert_keys_to_camel_case( $state );
 
 		wp_add_inline_script( $this->plugin_name, 'var wpChimpSettingsState = ' . wp_json_encode( $state ), 'before' );
 	}

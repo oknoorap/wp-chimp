@@ -9,6 +9,11 @@
 
 namespace WP_Chimp\Blocks;
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Register and render MailChimp Form block.
  *
@@ -72,7 +77,7 @@ final class Subscribe_Form {
 			'editor_script'   => 'wp-chimp-subscribe-form-editor',
 			'editor_style'    => 'wp-chimp-subscribe-form-editor',
 			'style'           => 'wp-chimp-subscribe-form',
-			'render_callback' => [ $this, 'render_form' ],
+			'render_callback' => 'WP_Chimp\\Includes\\Functions\\render_subscription_form' ,
 		] );
 	}
 

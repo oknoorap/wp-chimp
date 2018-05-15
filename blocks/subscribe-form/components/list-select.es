@@ -13,9 +13,7 @@ class ListSelect extends Component {
     const { listId } = attributes;
 
     if ( lists.isLoading || 'undefined' === typeof lists.data ) {
-      return el( 'div', {
-        className: `${className}__select-list`
-      }, el( Spinner ) );
+      return el( 'div', { className: `${className}__select-list` }, el( Spinner ) );
     }
 
     let options = lists.data.map( object => {

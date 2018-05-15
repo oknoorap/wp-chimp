@@ -44,6 +44,8 @@ class Languages {
 	 */
 	public function __construct( $plugin_name, $version ) {
 
+		__( 'Subscribe to our newsletter', 'wp-chimp' );
+
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 	}
@@ -81,7 +83,7 @@ class Languages {
 	static private function get_jed_locale_data() {
 
 		$translations = get_translations_for_domain( self::DOMAIN );
-		$locale       = [
+		$locale = [
 			'' => [
 				'domain' => self::DOMAIN,
 				'lang'   => is_admin() ? get_user_locale() : get_locale(),

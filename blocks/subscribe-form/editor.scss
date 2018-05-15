@@ -1,6 +1,10 @@
 @import "variables";
 
-.wp-block-wp-chimp-subscribe-form {
+.wp-chimp-subscription-form {
+
+	&__email-field {
+		color: $gray;
+	}
 
 	&__select-list {
 		margin: 0;
