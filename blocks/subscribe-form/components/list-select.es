@@ -39,5 +39,5 @@ class ListSelect extends Component {
 }
 
 export default withAPIData( () => {
-  return { lists: '/wp-chimp/v1/lists' };
+  return { lists: '/wp-chimp/v1/lists?context=block' };
 })( ListSelect );

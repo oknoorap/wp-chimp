@@ -54,22 +54,30 @@ final class Query {
 	/**
 	 * Function to get all MailChimp list from the table.
 	 *
-	 * @since  0.1.0
-	 * @access public
+	 * @since 0.1.0
 	 *
+	 * @param array $args {
+	 *		The query arguments.
+	 * 		@type integer $count  The number of lists to retrieve.
+	 *  	@type integer $offset The number of lists to displace or pass over.
+	 * }
 	 * @return array An associative array of the MailChimp list ID.
 	 *               Or, an empty array if the table is empty.
 	 */
 	public function query( array $args = [] ) {
 		global $wpdb;
 
-		$offset = isset( $args['offset'] ) ? $args['offset'] : 0;
-		$lists  = $wpdb->get_results( $wpdb->prepare("
+		$args = wp_parse_args( $args, [
+			'count'  => 10,
+			'offset' => 0
+		]);
+
+		$lists = $wpdb->get_results( $wpdb->prepare("
 			SELECT list_id, name, subscribers, double_optin
 			FROM $wpdb->chimp_lists
-			LIMIT 10
+			LIMIT %d
 			OFFSET %d
-		", [ $offset ] ), ARRAY_A );
+		", [ $args['count'], $args['offset'] ] ), ARRAY_A );
 
 		return $lists;
 	}

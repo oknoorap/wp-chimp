@@ -98,7 +98,7 @@ registerBlockType( 'wp-chimp/subscribe-form', {
    */
   edit( props ) {
 
-    props.className = 'wp-chimp-subscription-form';
+    props.className = 'wp-chimp-subscribe-form';
     const { className } = props;
 
     return [

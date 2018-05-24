@@ -77,7 +77,7 @@ final class Subscribe_Form {
 			'editor_script'   => 'wp-chimp-subscribe-form-editor',
 			'editor_style'    => 'wp-chimp-subscribe-form-editor',
 			'style'           => 'wp-chimp-subscribe-form',
-			'render_callback' => 'WP_Chimp\\Includes\\Functions\\render_subscription_form' ,
+			'render_callback' => 'WP_Chimp\\Includes\\Functions\\render_subscribe_form' ,
 		] );
 	}
 

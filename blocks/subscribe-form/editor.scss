@@ -1,9 +1,22 @@
 @import "variables";
 
-.wp-chimp-subscription-form {
+.wp-chimp-subscribe-form {
+
+	margin: 0;
 
 	&__email-field {
 		color: $gray;
+	}
+
+	&__heading,
+	&__sub-heading,
+	&__email-field,
+	&__button {
+
+		&:focus {
+			outline: 1px solid $gray;
+			outline-offset: 3px;
+		}
 	}
 
 	&__select-list {

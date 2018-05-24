@@ -194,23 +194,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
 		]);
-
-		/**
-		 * Register the '/lists/all' route.
-		 *
-		 * @example http://wp-chimp.local/wp-json/wp-chimp/v1/lists/all
-		 *
-		 * @uses WP_REST_Server
-		 */
-		register_rest_route( $this->namespace, "{$this->rest_base}/all", [
-			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_items_all' ],
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-				'args'                => $this->get_collection_params(),
-			],
-			'schema' => [ $this, 'get_public_item_schema' ],
-		]);
 	}
 
 	/**
@@ -247,20 +230,34 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	public function get_items( $request ) {
 
-		/**
-		 * Get the page number passed to the endpoint request,
-		 * ensure that the page is not 0 or negative number.
-		 *
-		 * @var int
-		 */
-		$page = isset( $request['page'] ) && 0 < absint( $request['page'] ) ? absint( $request['page'] ) : 1;
+		$page = null;
+		$total_items = null;
+		$total_pages = null;
 
-		$lists = $this->get_lists( [
-			'offset' => self::get_lists_offset( $page ),
-		] );
+		$lists = [];
 
-		$total_items = self::get_lists_total_items();
-		$total_pages = ceil( $total_items / self::get_lists_per_page() );
+		if ( isset( $request['context'] ) && 'block' === $request['context'] ) {
+
+			$total_items = $this->get_lists_total_items();
+			$lists = $this->get_local_lists([ 'count' => $total_items ]);
+
+		} else {
+
+			/**
+			 * Get the page number passed to the endpoint request,
+			 * ensure that the page is not 0 or negative number.
+			 *
+			 * @var int
+			 */
+			$page = isset( $request['page'] ) && 0 < absint( $request['page'] ) ? absint( $request['page'] ) : 1;
+
+			$lists = $this->get_lists( [
+				'offset' => self::get_lists_offset( $page ),
+			] );
+
+			$total_items = self::get_lists_total_items();
+			$total_pages = ceil( $total_items / self::get_lists_per_page() );
+		}
 
 		$items = [];
 		foreach ( $lists as $key => $list ) {
@@ -270,38 +267,17 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		$response = rest_ensure_response( $items );
 
-		$response->header( 'X-WP-Chimp-Lists-Page', absint( $page ) );
-		$response->header( 'X-WP-Chimp-Lists-Total', absint( $total_items ) );
-		$response->header( 'X-WP-Chimp-Lists-TotalPages', absint( $total_pages ) );
-
-		return $response;
-	}
-
-	/**
-	 * Function to return the response from '/lists/all' endpoints.
-	 *
-	 * @since  0.1.0
-	 * @access public
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object.
-	 */
-	public function get_items_all( $request ) {
-
-		/**
-		 * Get the lists from local database.
-		 */
-		$lists = $this->get_local_lists( $args );
-		$total_items = count( $lists );
-
-		$items = [];
-		foreach ( $lists as $key => $list ) {
-			$data    = $this->prepare_item_for_response( $list, $request );
-			$items[] = $this->prepare_response_for_collection( $data );
+		if ( $page ) {
+			$response->header( 'X-WP-Chimp-Lists-Page', absint( $page ) );
 		}
 
-		$response = rest_ensure_response( $items );
-		$response->header( 'X-WP-Chimp-Lists-Total', absint( $total_items ) );
+		if ( $total_items ) {
+			$response->header( 'X-WP-Chimp-Lists-Total', absint( $total_items ) );
+		}
+
+		if ( $total_pages ) {
+			$response->header( 'X-WP-Chimp-Lists-TotalPages', absint( $total_pages ) );
+		}
 
 		return $response;
 	}
@@ -355,6 +331,10 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 				'default'           => 1,
 				'sanitize_callback' => 'absint',
 			],
+			'context' => $this->get_context_param( [
+				'default' => 'view',
+				'enum'    => [ 'view', 'block' ]
+			] ),
 		];
 	}
 
@@ -415,8 +395,11 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	private function get_lists( array $args ) {
 
-		$api_key = self::get_the_mailchimp_api_key(); // Get the MailChimp API key saved.
 		$lists   = [];
+		$api_key = self::get_the_mailchimp_api_key();  // Get the MailChimp API key saved.
+		$args    = wp_parse_args( $args, [
+			'count' => $this->get_lists_per_page()
+		]);
 
 		if ( ! empty( $api_key ) && 1 !== self::is_lists_init() ) {
 			$lists = $this->get_remote_lists( $api_key, $args );

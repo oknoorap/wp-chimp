@@ -2,7 +2,7 @@
 
 const wp = window.wp || {};
 const { Component, createElement: el } = wp.element;
-const { RichText } = wp.blocks;
+const { RichText } = wp.editor;
 
 class FormView extends Component {
 
