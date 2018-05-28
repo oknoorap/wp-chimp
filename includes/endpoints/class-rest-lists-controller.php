@@ -230,26 +230,30 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	public function get_items( $request ) {
 
-		$page = null;
+		$lists = [];
+
 		$total_items = null;
 		$total_pages = null;
 
-		$lists = [];
+		$context = $request->get_param( 'context' );
+		$page    = $request->get_param( 'page' );
 
-		if ( isset( $request['context'] ) && 'block' === $request['context'] ) {
+		if ( 'block' === $context ) {
 
 			$total_items = $this->get_lists_total_items();
-			$lists = $this->get_local_lists([ 'count' => $total_items ]);
+			$local_lists = $this->get_local_lists([
+				'count' => $total_items
+			]);
+
+			foreach ( $local_lists as $key => $value ) {
+
+				unset( $value['subscribers'] );
+				unset( $value['double_optin'] );
+
+				$lists[ $key ] = $value;
+			}
 
 		} else {
-
-			/**
-			 * Get the page number passed to the endpoint request,
-			 * ensure that the page is not 0 or negative number.
-			 *
-			 * @var int
-			 */
-			$page = isset( $request['page'] ) && 0 < absint( $request['page'] ) ? absint( $request['page'] ) : 1;
 
 			$lists = $this->get_lists( [
 				'offset' => self::get_lists_offset( $page ),
@@ -295,20 +299,21 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		$data   = [];
 		$schema = $this->get_item_schema();
+		$props  = $schema['properties'];
 
-		if ( ! empty( $schema['properties']['listId'] ) ) {
+		if ( ! empty( $props['listId'] ) && isset( $item['list_id'] ) ) {
 			$data['listId'] = wp_strip_all_tags( $item['list_id'], true );
 		}
 
-		if ( ! empty( $schema['properties']['name'] ) ) {
+		if ( ! empty( $props['name'] ) && isset( $item['name'] ) ) {
 			$data['name'] = wp_strip_all_tags( $item['name'], true );
 		}
 
-		if ( ! empty( $schema['properties']['subscribers'] ) ) {
+		if ( ! empty( $props['subscribers'] ) && isset( $item['subscribers'] ) ) {
 			$data['subscribers'] = absint( $item['subscribers'] );
 		}
 
-		if ( ! empty( $schema['properties']['doubleOptin'] ) ) {
+		if ( ! empty( $props['doubleOptin'] ) && isset( $item['double_optin'] ) ) {
 			$data['doubleOptin'] = absint( $item['double_optin'] );
 		}
 
@@ -328,7 +333,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			'page' => [
 				'description'       => __( 'Current page of the collection.', 'wp-chimp' ),
 				'type'              => 'integer',
-				'default'           => 1,
 				'sanitize_callback' => 'absint',
 			],
 			'context' => $this->get_context_param( [

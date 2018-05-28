@@ -66,7 +66,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\from_snake_to_camel' ) ) :
 
 endif;
 
-if ( ! function_exists( __NAMESPACE__ . '\\defrom_snake_to_camel' ) ) :
+if ( ! function_exists( __NAMESPACE__ . '\\from_camel_to_snake' ) ) :
 
 	/**
 	 * Convert string from camelCase to snake_case

@@ -14,6 +14,29 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 
 use WP_Chimp\Includes\Utilities;
 
+if ( ! function_exists(  __NAMESPACE__ . '\\get_subscribe_form_locale' ) ) :
+
+	/**
+	 * Function to return default translatable strings for the "Subscribe Form"
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return array Lists of translatable strings.
+	 */
+	function get_subscribe_form_locale() {
+
+		return [
+			'title' => __( 'MailChimp Form', 'wp-chimp' ),
+			'description' => __( 'Display a MailChimp sign-up form.', 'wp-chimp' ),
+			'heading_text' => __( 'Subscribe', 'wp-chimp' ),
+			'sub_heading_text' => __( 'Get notified of our next update right to your inbox', 'wp-chimp' ),
+			'input_email_placeholder' => __( 'Enter your email address', 'wp-chimp' ),
+			'button_text' => __( 'Submit' ),
+		];
+	}
+
+endif;
+
 if ( ! function_exists( __NAMESPACE__ . '\\render_subscribe_form' ) ) :
 
 	/**
@@ -24,25 +47,22 @@ if ( ! function_exists( __NAMESPACE__ . '\\render_subscribe_form' ) ) :
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param  array $attributes The Block attributes.
+	 * @param  array $attributes The attributes to assign to the .
 	 * @return null|string Associative array with the key converted to camelcase,
 	 *                     otherwise 'null' if the list ID is not present.
 	 */
 	function render_subscribe_form( array $attributes ) {
 
-		$attributes = Utilities\convert_keys_to_snake_case( $attributes );
-		$attributes = wp_parse_args( $attributes, [
+		$defaults = array_merge( [
 			'list_id' => '',
-			'heading_text' => __( 'Subscribe to our newsletter', 'wp-chimp' ),
-			'sub_heading_text' => __( 'Get notified of our next update right to your inbox', 'wp-chimp' ),
-			'input_email_placeholder' => __( 'Enter your email address', 'wp-chimp' ),
-			'button_text' => __( 'Subscribe', 'wp-chimp' )
-		]);
+		], get_subscribe_form_locale() );
+
+		$attributes = Utilities\convert_keys_to_snake_case( $attributes );
+		$attributes = wp_parse_args( $attributes, $defaults );
 
 		if ( ! is_string( $attributes['list_id'] ) || empty( $attributes['list_id'] ) ) {
 			return;
 		}
-
 		ob_start();
 		?>
 
@@ -55,7 +75,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\render_subscribe_form' ) ) :
 			</div>
 		</div>
 
-		<?php ;
+		<?php
 		$subscription_form = ob_get_contents();
 		ob_end_clean();
 

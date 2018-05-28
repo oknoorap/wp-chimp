@@ -4,19 +4,12 @@ import ListSelect from './components/list-select.es';
 import FormView from './components/form-view.es';
 
 const wp = window.wp || {};
+const { subscribeForm: locale } = wpChimpL10n;
 
-const { setLocaleData, __ } = wp.i18n;
 const { registerBlockType, BlockControls } = wp.blocks;
 const { createElement: el } = wp.element;
 const { Toolbar } = wp.components;
 const { RichText } = wp.blocks;
-
-/**
- * Creates a new Jed instance with specified locale data configuration for the plugin.
- *
- * @see https://www.npmjs.com/package/@wordpress/i18n
- */
-setLocaleData( wpChimpLocaleConfigs, 'wp-chimp' );
 
 /**
  * Every block starts by registering a new block type definition.
@@ -29,7 +22,7 @@ registerBlockType( 'wp-chimp/subscribe-form', {
    * This is the display title for your block, which can be translated with `i18n` functions.
    * The block inserter will show this name.
    */
-  title: __( 'MailChimp Form', 'wp-chimp' ),
+  title: locale.title,
 
   /**
    * The icon shown in the Gutenberg block list.
@@ -71,19 +64,19 @@ registerBlockType( 'wp-chimp/subscribe-form', {
     },
 		headingText: {
       type: 'string',
-      default: __( 'Subscribe to our newsletter', 'wp-chimp' )
+      default: locale.headingText
     },
 		subHeadingText: {
       type: 'string',
-      default: __( 'Get notified of our next update right to your inbox', 'wp-chimp' )
+      default: locale.subHeadingText
     },
 		inputEmailPlaceholder: {
       type: 'string',
-      default: __( 'Enter your email address', 'wp-chimp' )
+      default: locale.inputEmailPlaceholder
     },
 		buttonText: {
       type: 'string',
-      default: __( 'Subscribe', 'wp-chimp' )
+      default: locale.buttonText
     }
 	},
 

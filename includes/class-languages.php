@@ -14,6 +14,9 @@
 
 namespace WP_Chimp\Includes;
 
+use WP_Chimp\Includes\Functions;
+use WP_Chimp\Includes\Utilities;
+
 /**
  * Define the internationalization functionality.
  *
@@ -67,10 +70,24 @@ class Languages {
 	 */
 	public function enqueue_scripts() {
 
-		$locale = self::get_jed_locale_data();
+		/**
+		 * The translatable strings for the Subscribe Form.
+		 *
+		 * @var array
+		 */
+		$subscribe_form_locale = [
+			'subscribe_form' => Functions\get_subscribe_form_locale()
+		];
 
-		wp_add_inline_script( $this->plugin_name, 'var wpChimpLocaleConfigs = ' . json_encode( $locale ), 'before' );
-		wp_add_inline_script( 'wp-chimp-subscribe-form-editor', 'var wpChimpLocaleConfigs = ' . json_encode( $locale ), 'before' );
+		/**
+		 * The translatable strings with the keys converted to camelCase
+		 *
+		 * @var array
+		 */
+		$locale = Utilities\convert_keys_to_camel_case( $subscribe_form_locale );
+
+		wp_localize_script( $this->plugin_name, 'wpChimpL10n', $locale );
+		wp_localize_script( 'wp-chimp-subscribe-form-editor', 'wpChimpL10n', $locale );
 	}
 
 	/**

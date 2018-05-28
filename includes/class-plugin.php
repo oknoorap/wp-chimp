@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 use WP_Chimp\Admin;
 use WP_Chimp\Front;
 use WP_Chimp\Blocks;
+use WP_Chimp\Widgets;
 
 /**
  * The core plugin class.
@@ -99,6 +100,7 @@ class Plugin {
 		$this->define_public_hooks();
 		$this->define_database_hooks();
 		$this->define_endpoints_hooks();
+		$this->define_widgets_hooks();
 
 		if ( function_exists( 'register_block_type' ) ) { // Enable Gutenberg blocks if WordPress supports it.
 			$this->define_blocks_hooks();
@@ -253,6 +255,13 @@ class Plugin {
 		$blocks_form = new Blocks\Subscribe_Form();
 
 		$this->loader->add_action( 'init', $blocks_form, 'form_block_init' ); // Register the `subscribe-form` blocks to Gutenberg.
+	}
+
+	private function define_widgets_hooks() {
+
+		$widgets = new Widgets\Widgets();
+
+		$this->loader->add_action( 'widgets_init', $widgets, 'register' );
 	}
 
 	/**
