@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_Widget;
+use WP_REST_Request;
 use WP_Chimp\Includes\Functions;
 use WP_Chimp\Includes\Utilities;
 
@@ -35,97 +36,102 @@ final class Subscribe_Form extends WP_Widget {
 	 */
 	public function __construct() {
 
+		$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
+		$request->set_query_params(array(
+			'context' => 'block',
+		));
+		$response = rest_do_request( $request );
+
 		$this->locale = Functions\get_subscribe_form_locale();
+		$this->lists  = Utilities\convert_keys_to_snake_case( $response->get_data() );
+
+		$this->defaults = array_merge( [
+			'list_id' => $this->lists[0]['list_id'],
+		], $this->locale );
 
 		$options = [
-			'classname' => 'wp-chimp-subscribe-form',
+			'classname'   => 'wp-chimp-subscribe-form-widget',
 			'description' => $this->locale['description'],
 		];
 		parent::__construct( 'wp-chimp-subscribe-form', $this->locale['title'], $options );
 	}
 
 	/**
-	 * Outputs the content of the widget
+	 * Echoes the widget content.
 	 *
-	 * @param array $args
-	 * @param array $instance
+	 * @param array $args Display arguments including 'before_title', 'after_title', 'before_widget', and 'after_widget'.
+	 * @param array $instance The settings for the particular instance of the widget.
 	 */
 	public function widget( $args, $instance ) {
 
+		$title = apply_filters( 'widget_title', $instance['title'] );
+
+		echo $args['before_widget'];
+		echo $args['before_title'] . $title . $args['after_title'];
+
+		echo Functions\render_subscribe_form( $instance );
+		?>
+
+	<?php
+		echo $args['after_widget'];
 	}
 
 	/**
-	 * Outputs the options form on admin
+	 * Outputs the settings update form.
 	 *
-	 * @param array $instance The widget options
+	 * @param array $instance Current settings.
 	 */
 	public function form( $instance ) {
-
-		$instance = wp_parse_args( (array) $instance, $this->locale );
-
-		$request  = new \WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
-		$request->set_query_params(array(
-			'context' => 'block'
-		));
-
-		$response = rest_do_request( $request );
-		$data     = $response->get_data();
-		$lists    = Utilities\convert_keys_to_snake_case( $data );
-
-		if ( ! isset( $instance['list_id'] ) || empty( $instance['list_id'] ) ) {
-			$instance['list_id'] = $lists[0]['list_id'];
-		}
+		$options = wp_parse_args( $instance, $this->defaults );
 		?>
-		<style>
-			.wp-chimp-list-select {
-				padding: 10px;
-				background: #f7f7f7;
-				border-radius: 3px;
-				display: flex;
-				align-items: center;
-			}
-			.wp-chimp-list-select .dashicons-index-card {
-				margin-right: 10px;
-			}
-		</style>
+
 		<p class="wp-chimp-list-select">
-			<span class="dashicons dashicons-index-card"></span>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'list_id' ) ); ?>">
+				<span class="dashicons dashicons-index-card"></span>
+				<span class="screen-reader-text"><?php esc_html_e( 'List_ID', 'wp-chimp' ); ?></span>
+			</label>
 			<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'list_id' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'list_id' ) ); ?>">
-			<?php foreach ( $lists as $key => $list ) : ?>
-				<option value="<?php echo $list['list_id'] ?>"><?php echo $list['name']; ?></option>
+
+			<?php
+			foreach ( $this->lists as $key => $list ) :
+				$selected = $options['list_id'];
+				$current  = $list['list_id'];
+			?>
+				<option value="<?php echo esc_attr( $list['list_id'] ); ?>" <?php selected( $selected, $current, true ); ?>><?php echo esc_html( $list['name'] ); ?></option>
 			<?php endforeach; ?>
+
 			</select>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'heading_text' ) ); ?>"><?php esc_attr_e( 'Heading Text:', 'wp-chimp' ); ?></label>
-			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'heading_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'heading_text' ) ); ?>" type="text" value="<?php echo esc_attr( $instance['heading_text'] ); ?>">
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'heading_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'heading_text' ) ); ?>" type="text" value="<?php echo esc_attr( $options['heading_text'] ); ?>">
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'sub_heading_text' ) ); ?>"><?php esc_attr_e( 'Sub-heading Text:', 'wp-chimp' ); ?></label>
-			<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'sub_heading_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sub_heading_text' ) ); ?>" rows="2"><?php echo esc_html( $instance['sub_heading_text'] ); ?></textarea>
+			<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'sub_heading_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sub_heading_text' ) ); ?>" rows="2"><?php echo esc_html( $options['sub_heading_text'] ); ?></textarea>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'input_email_placeholder' ) ); ?>"><?php esc_attr_e( 'Input Email Placeholder:', 'wp-chimp' ); ?></label>
-			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'input_email_placeholder' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'input_email_placeholder' ) ); ?>" type="text" value="<?php echo esc_attr( $instance['input_email_placeholder'] ); ?>">
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'input_email_placeholder' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'input_email_placeholder' ) ); ?>" type="text" value="<?php echo esc_attr( $options['input_email_placeholder'] ); ?>">
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'button_text' ) ); ?>"><?php esc_attr_e( 'Button Text:', 'wp-chimp' ); ?></label>
-			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'button_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'button_text' ) ); ?>" type="text" value="<?php echo esc_attr( $instance['button_text'] ); ?>">
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'button_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'button_text' ) ); ?>" type="text" value="<?php echo esc_attr( $options['button_text'] ); ?>">
 		</p>
 
 	<?php
 	}
 
 	/**
-	 * Processing widget options on save
+	 * Updates a particular instance of a widget.
 	 *
-	 * @param array $new_instance The new options
-	 * @param array $old_instance The previous options
+	 * @param array $new_instance New settings for this instance as input by the user via `WP_Widget::form()`.
+	 * @param array $old_instance Old settings for this instance.
 	 *
-	 * @return array
+	 * @return array Settings to save or bool false to cancel saving.
 	 */
 	public function update( $new_instance, $old_instance ) {
-
+		return wp_parse_args( $new_instance, $this->defaults );
 	}
 }
 

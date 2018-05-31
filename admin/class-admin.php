@@ -65,7 +65,7 @@ class Admin {
 
 		$screen = get_current_screen();
 
-		if ( 'settings_page_' . $this->plugin_name === $screen->id ) {
+		if ( 'settings_page_' . $this->plugin_name === $screen->id || 'widgets' === $screen->id ) {
 			/**
 			 * This function is provided for demonstration purposes only.
 			 *

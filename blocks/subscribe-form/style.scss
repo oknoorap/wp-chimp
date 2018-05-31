@@ -23,18 +23,18 @@
 		backface-visibility: hidden;
 		border-bottom: 0;
 	}
-}
-
-.wp-chimp-block {
 
 	.wp-chimp-subscribe-form {
 
 		&__heading {
+			font-size: 1.2em;
 			font-weight: 600;
 			color: $gray-darker;
 		}
 
 		&__sub-heading {
+			font-size: 0.9em;
+			line-height: 1.6;
 			color: $gray-dark;
 		}
 
@@ -70,25 +70,25 @@
 			text-align: center;
 			font-weight: 600;
 		}
+	}
 
-		// Higlight the button when on Hover.
-		// This style is targetting the front-end view of the subscription form.
-		input[type="email"] {
+	// Higlight the button when on Hover.
+	// This style is targetting the front-end view of the subscription form.
+	input[type="email"] {
 
-			&:focus {
-				border: 1px solid $gray;
-			}
-
-			&::placeholder {
-				color: $gray;
-			}
+		&:focus {
+			border: 1px solid $gray;
 		}
 
-		button {
+		&::placeholder {
+			color: $gray;
+		}
+	}
 
-			&:hover {
-				background-color: darken($color-primary, 5%);
-			}
+	button {
+
+		&:hover {
+			background-color: darken($color-primary, 5%);
 		}
 	}
 }

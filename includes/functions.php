@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 
 use WP_Chimp\Includes\Utilities;
 
-if ( ! function_exists(  __NAMESPACE__ . '\\get_subscribe_form_locale' ) ) :
+if ( ! function_exists( __NAMESPACE__ . '\\get_subscribe_form_locale' ) ) :
 
 	/**
 	 * Function to return default translatable strings for the "Subscribe Form"
@@ -51,7 +51,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\render_subscribe_form' ) ) :
 	 * @return null|string Associative array with the key converted to camelcase,
 	 *                     otherwise 'null' if the list ID is not present.
 	 */
-	function render_subscribe_form( array $attributes ) {
+	function render_subscribe_form( array $attributes, $before = '', $after = '' ) {
 
 		$defaults = array_merge( [
 			'list_id' => '',
@@ -66,12 +66,12 @@ if ( ! function_exists( __NAMESPACE__ . '\\render_subscribe_form' ) ) :
 		ob_start();
 		?>
 
-		<div class="wp-chimp-block wp-chimp-subscribe-form" data-list-id="<?php echo esc_attr( $attributes['list_id'] ); ?>">
-			<h3 class="wp-chimp-subscribe-form__heading"><?php echo esc_html( $attributes['heading_text'] ) ?></h3>
-			<p class="wp-chimp-subscribe-form__sub-heading"><?php echo esc_html( $attributes['sub_heading_text'] ) ?></p>
+		<div class="wp-chimp-subscribe-form" data-list-id="<?php echo esc_attr( $attributes['list_id'] ); ?>">
+			<h3 class="wp-chimp-subscribe-form__heading"><?php echo esc_html( $attributes['heading_text'] ); ?></h3>
+			<p class="wp-chimp-subscribe-form__sub-heading"><?php echo esc_html( $attributes['sub_heading_text'] ); ?></p>
 			<div class="wp-chimp-subscribe-form__inputs">
-				<input class="wp-chimp-subscribe-form__email-field" type="email" placeholder="<?php echo esc_html( $attributes['input_email_placeholder'] ) ?>">
-				<button class="wp-chimp-subscribe-form__button"><?php echo esc_html( $attributes['button_text'] ) ?></button>
+				<input class="wp-chimp-subscribe-form__email-field" type="email" placeholder="<?php echo esc_html( $attributes['input_email_placeholder'] ); ?>">
+				<button class="wp-chimp-subscribe-form__button"><?php echo esc_html( $attributes['button_text'] ); ?></button>
 			</div>
 		</div>
 
@@ -79,7 +79,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\render_subscribe_form' ) ) :
 		$subscription_form = ob_get_contents();
 		ob_end_clean();
 
-		return $subscription_form;
+		return $before . $subscription_form . $after;
 	}
 
 endif;

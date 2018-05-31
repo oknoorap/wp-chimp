@@ -242,7 +242,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 			$total_items = $this->get_lists_total_items();
 			$local_lists = $this->get_local_lists([
-				'count' => $total_items
+				'count' => $total_items,
 			]);
 
 			foreach ( $local_lists as $key => $value ) {
@@ -252,7 +252,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 				$lists[ $key ] = $value;
 			}
-
 		} else {
 
 			$lists = $this->get_lists( [
@@ -330,14 +329,14 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	public function get_collection_params() {
 
 		return [
-			'page' => [
+			'page'    => [
 				'description'       => __( 'Current page of the collection.', 'wp-chimp' ),
 				'type'              => 'integer',
 				'sanitize_callback' => 'absint',
 			],
 			'context' => $this->get_context_param( [
 				'default' => 'view',
-				'enum'    => [ 'view', 'block' ]
+				'enum'    => [ 'view', 'block' ],
 			] ),
 		];
 	}
@@ -402,7 +401,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		$lists   = [];
 		$api_key = self::get_the_mailchimp_api_key();  // Get the MailChimp API key saved.
 		$args    = wp_parse_args( $args, [
-			'count' => $this->get_lists_per_page()
+			'count' => $this->get_lists_per_page(),
 		]);
 
 		if ( ! empty( $api_key ) && 1 !== self::is_lists_init() ) {
