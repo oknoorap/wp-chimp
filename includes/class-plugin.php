@@ -17,9 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 }
 
 use WP_Chimp\Admin;
-use WP_Chimp\Front;
-use WP_Chimp\Blocks;
-use WP_Chimp\Widgets;
+use WP_Chimp\Subscribe_Form;
 
 /**
  * The core plugin class.
@@ -97,14 +95,9 @@ class Plugin {
 
 		$this->define_languages_hooks();
 		$this->define_admin_hooks();
-		$this->define_public_hooks();
 		$this->define_database_hooks();
 		$this->define_endpoints_hooks();
-		$this->define_widgets_hooks();
-
-		if ( function_exists( 'register_block_type' ) ) { // Enable Gutenberg blocks if WordPress supports it.
-			$this->define_blocks_hooks();
-		}
+		$this->define_subscribe_form_hooks();
 	}
 
 	/**
@@ -244,24 +237,18 @@ class Plugin {
 	}
 
 	/**
-	 * Register all of the hooks related to the Gutenberg block functionality
-	 * of the plugin.
+	 * Register all of the hooks to register the Subscribe Form.
 	 *
 	 * @since  0.1.0
 	 * @access private
 	 */
-	private function define_blocks_hooks() {
+	private function define_subscribe_form_hooks() {
 
-		$blocks_form = new Blocks\Subscribe_Form();
+		$subscribe_form = new Subscribe_Form\Subscribe_Form();
 
-		$this->loader->add_action( 'init', $blocks_form, 'form_block_init' ); // Register the `subscribe-form` blocks to Gutenberg.
-	}
-
-	private function define_widgets_hooks() {
-
-		$widgets = new Widgets\Widgets();
-
-		$this->loader->add_action( 'widgets_init', $widgets, 'register' );
+		$this->loader->add_action( 'init', $subscribe_form, 'register_scripts' );
+		$this->loader->add_action( 'init', $subscribe_form, 'register_block' );
+		$this->loader->add_action( 'widgets_init', $subscribe_form, 'register_widget' );
 	}
 
 	/**

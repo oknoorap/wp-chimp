@@ -49,7 +49,7 @@ npm-debug.log
 *.js
 *.map
 
-# Dist direcotories #
+# Dist directories #
 #####################
 /dist
 /dist-*

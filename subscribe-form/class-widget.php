@@ -6,7 +6,7 @@
  * @subpackage WP_Chimp/widgets
  */
 
-namespace WP_Chimp\Widgets;
+namespace WP_Chimp\Subscribe_Form;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,7 +19,7 @@ use WP_Chimp\Includes\Functions;
 use WP_Chimp\Includes\Utilities;
 
 /**
- * Class to define the Subscribe Form widget.
+ * Class to define the "Subscribe Form" widget.
  *
  * Define functionality of the widget both in the front-end,
  * and in the back-end.
@@ -27,7 +27,7 @@ use WP_Chimp\Includes\Utilities;
  * @since  0.1.0
  * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
-final class Subscribe_Form extends WP_Widget {
+final class Widget extends WP_Widget {
 
 	/**
 	 * Specifies the classname and description, instantiates the widget,
@@ -36,33 +36,48 @@ final class Subscribe_Form extends WP_Widget {
 	 */
 	public function __construct() {
 
-		$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
-		$request->set_query_params(array(
-			'context' => 'block',
-		));
-		$response = rest_do_request( $request );
-
-		$this->locale = Functions\get_subscribe_form_locale();
-		$this->lists  = Utilities\convert_keys_to_snake_case( $response->get_data() );
-
+		$this->locale   = Functions\get_subscribe_form_locale();
+		$this->lists    = $this->get_lists();
 		$this->defaults = array_merge( [
 			'list_id' => $this->lists[0]['list_id'],
 		], $this->locale );
 
-		$options = [
+		parent::__construct( 'wp-chimp-subscribe-form', $this->locale['title'], [
 			'classname'   => 'wp-chimp-subscribe-form-widget',
 			'description' => $this->locale['description'],
-		];
-		parent::__construct( 'wp-chimp-subscribe-form', $this->locale['title'], $options );
+		] );
+	}
+
+	/**
+	 * Function to get all the MailChimp lists from the database.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return array
+	 */
+	private function get_lists() {
+
+		$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
+		$request->set_query_params( [
+			'context' => 'block',
+		] );
+
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+
+		return Utilities\convert_keys_to_snake_case( $data );
 	}
 
 	/**
 	 * Echoes the widget content.
 	 *
+	 * @since 0.1.0
+	 *
 	 * @param array $args Display arguments including 'before_title', 'after_title', 'before_widget', and 'after_widget'.
 	 * @param array $instance The settings for the particular instance of the widget.
 	 */
 	public function widget( $args, $instance ) {
+		self::enqueue_scripts();
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
@@ -78,6 +93,8 @@ final class Subscribe_Form extends WP_Widget {
 
 	/**
 	 * Outputs the settings update form.
+	 *
+	 * @since 0.1.0
 	 *
 	 * @param array $instance Current settings.
 	 */
@@ -125,6 +142,8 @@ final class Subscribe_Form extends WP_Widget {
 	/**
 	 * Updates a particular instance of a widget.
 	 *
+	 * @since 0.1.0
+	 *
 	 * @param array $new_instance New settings for this instance as input by the user via `WP_Widget::form()`.
 	 * @param array $old_instance Old settings for this instance.
 	 *
@@ -132,6 +151,20 @@ final class Subscribe_Form extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		return wp_parse_args( $new_instance, $this->defaults );
+	}
+
+	/**
+	 * Function to load the styles and scripts for the widget.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	static private function enqueue_scripts() {
+
+		if ( ! wp_script_is( 'wp-chimp-subscribe-form', 'enqueued' ) ) {
+			wp_enqueue_style( 'wp-chimp-subscribe-form' );
+		}
 	}
 }
 

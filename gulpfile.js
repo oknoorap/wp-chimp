@@ -47,10 +47,10 @@ gulp.task( 'script-admin', () => {
     .pipe( gulp.dest( './admin/js' ) );
 });
 
-gulp.task( 'script-block-form', () => {
+gulp.task( 'script-subscribe-form-block', () => {
 
   return browserify({
-    'entries': [ './blocks/subscribe-form/block.es' ],
+    'entries': [ './subscribe-form/assets/block.es' ],
     'debug': true,
     'transform': [ babelify ]
   })
@@ -63,10 +63,10 @@ gulp.task( 'script-block-form', () => {
     .pipe( buffer() )
       .pipe( sourcemaps.init({'loadMaps': true}) )
       .pipe( sourcemaps.write( './' ) )
-    .pipe( gulp.dest( './blocks/subscribe-form' ) );
+    .pipe( gulp.dest( './subscribe-form/assets' ) );
 });
 
-gulp.task( 'script', [ 'script-admin', 'script-block-form' ]); // Combine all the script tasks in a single Gulp command.
+gulp.task( 'script', [ 'script-admin', 'script-subscribe-form-block' ]);
 
 /**
  * ---------------------------------------------------------------
@@ -84,14 +84,11 @@ const autoprefixerConfig = {
 
 const styleSources = [
   {
-    'src': 'blocks/subscribe-form/*.scss',
-    'dest': 'blocks/subscribe-form'
+    'src': 'subscribe-form/assets/*.scss',
+    'dest': 'subscribe-form/assets'
   }, {
     'src': 'admin/css/*.scss',
     'dest': 'admin/css'
-  }, {
-    'src': 'public/css/*.scss',
-    'dest': 'public/css'
   }
 ];
 
