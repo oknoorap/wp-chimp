@@ -47,8 +47,6 @@ class Languages {
 	 */
 	public function __construct( $plugin_name, $version ) {
 
-		__( 'Subscribe to our newsletter', 'wp-chimp' );
-
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 	}
@@ -75,8 +73,8 @@ class Languages {
 		 *
 		 * @var array
 		 */
-		$subscribe_form_locale = [
-			'subscribe_form' => Functions\get_subscribe_form_locale()
+		$subscription_form_locale = [
+			'subscription_form' => Functions\get_subscription_form_locale(),
 		];
 
 		/**
@@ -84,37 +82,9 @@ class Languages {
 		 *
 		 * @var array
 		 */
-		$locale = Utilities\convert_keys_to_camel_case( $subscribe_form_locale );
+		$locale = Utilities\convert_keys_to_camel_case( $subscription_form_locale );
 
 		wp_localize_script( $this->plugin_name, 'wpChimpL10n', $locale );
-		wp_localize_script( 'wp-chimp-subscribe-form-editor', 'wpChimpL10n', $locale );
-	}
-
-	/**
-	 * Returns Jed-formatted localization data.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return array
-	 */
-	static private function get_jed_locale_data() {
-
-		$translations = get_translations_for_domain( self::DOMAIN );
-		$locale = [
-			'' => [
-				'domain' => self::DOMAIN,
-				'lang'   => is_admin() ? get_user_locale() : get_locale(),
-			],
-		];
-
-		if ( ! empty( $translations->headers['Plural-Forms'] ) ) {
-			$locale['']['plural_forms'] = $translations->headers['Plural-Forms'];
-		}
-
-		foreach ( $translations->entries as $msgid => $entry ) {
-			$locale[ $msgid ] = $entry->translations;
-		}
-
-		return $locale;
+		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', $locale );
 	}
 }

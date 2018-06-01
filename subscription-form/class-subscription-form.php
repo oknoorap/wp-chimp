@@ -1,13 +1,13 @@
 <?php
 
-namespace WP_Chimp\Subscribe_Form;
+namespace WP_Chimp\Subscription_Form;
 
 /**
  * Register and render MailChimp Form block.
  *
  * @since 0.1.0
  */
-final class Subscribe_Form {
+final class Subscription_Form {
 
 	/**
 	 * The directory
@@ -40,7 +40,7 @@ final class Subscribe_Form {
 
 		$block_js = 'assets/block.js';
 		wp_register_script(
-			'wp-chimp-subscribe-form-editor',
+			'wp-chimp-subscription-form-editor',
 			plugins_url( $block_js, __FILE__ ),
 			[
 				'wp-blocks',
@@ -52,7 +52,7 @@ final class Subscribe_Form {
 
 		$editor_css = 'assets/editor.css';
 		wp_register_style(
-			'wp-chimp-subscribe-form-editor',
+			'wp-chimp-subscription-form-editor',
 			plugins_url( $editor_css, __FILE__ ),
 			[ 'wp-blocks' ],
 			filemtime( "$this->dir/$editor_css" )
@@ -60,7 +60,7 @@ final class Subscribe_Form {
 
 		$style_css = 'assets/style.css';
 		wp_register_style(
-			'wp-chimp-subscribe-form',
+			'wp-chimp-subscription-form',
 			plugins_url( $style_css, __FILE__ ),
 			[ 'wp-blocks' ],
 			filemtime( "$this->dir/$style_css" )
@@ -78,11 +78,11 @@ final class Subscribe_Form {
 
 		if ( function_exists( 'register_block_type' ) ) {
 
-			register_block_type( 'wp-chimp/subscribe-form', [
-				'editor_script'   => 'wp-chimp-subscribe-form-editor',
-				'editor_style'    => 'wp-chimp-subscribe-form-editor',
-				'style'           => 'wp-chimp-subscribe-form',
-				'render_callback' => 'WP_Chimp\\Includes\\Functions\\render_subscribe_form' ,
+			register_block_type( 'wp-chimp/subscription-form', [
+				'editor_script'   => 'wp-chimp-subscription-form-editor',
+				'editor_style'    => 'wp-chimp-subscription-form-editor',
+				'style'           => 'wp-chimp-subscription-form',
+				'render_callback' => 'WP_Chimp\\Includes\\Functions\\render_subscription_form',
 			] );
 		}
 	}

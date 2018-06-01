@@ -6,7 +6,7 @@
  * @subpackage WP_Chimp/widgets
  */
 
-namespace WP_Chimp\Subscribe_Form;
+namespace WP_Chimp\Subscription_Form;
 
 // If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,14 +36,14 @@ final class Widget extends WP_Widget {
 	 */
 	public function __construct() {
 
-		$this->locale   = Functions\get_subscribe_form_locale();
+		$this->locale   = Functions\get_subscription_form_locale();
 		$this->lists    = $this->get_lists();
 		$this->defaults = array_merge( [
 			'list_id' => $this->lists[0]['list_id'],
 		], $this->locale );
 
-		parent::__construct( 'wp-chimp-subscribe-form', $this->locale['title'], [
-			'classname'   => 'wp-chimp-subscribe-form-widget',
+		parent::__construct( 'wp-chimp-subscription-form', $this->locale['title'], [
+			'classname'   => 'wp-chimp-subscription-form-widget',
 			'description' => $this->locale['description'],
 		] );
 	}
@@ -84,7 +84,7 @@ final class Widget extends WP_Widget {
 		echo $args['before_widget'];
 		echo $args['before_title'] . $title . $args['after_title'];
 
-		echo Functions\render_subscribe_form( $instance );
+		echo Functions\render_subscription_form( $instance );
 		?>
 
 	<?php
@@ -162,8 +162,8 @@ final class Widget extends WP_Widget {
 	 */
 	static private function enqueue_scripts() {
 
-		if ( ! wp_script_is( 'wp-chimp-subscribe-form', 'enqueued' ) ) {
-			wp_enqueue_style( 'wp-chimp-subscribe-form' );
+		if ( ! wp_script_is( 'wp-chimp-subscription-form', 'enqueued' ) ) {
+			wp_enqueue_style( 'wp-chimp-subscription-form' );
 		}
 	}
 }

@@ -16,7 +16,7 @@ const { RichText } = wp.blocks;
  *
  * @see https://wordpress.org/gutenberg/handbook/block-api/
  */
-registerBlockType( 'wp-chimp/subscribe-form', {
+registerBlockType( 'wp-chimp/subscription-form', {
 
   /**
    * This is the display title for your block, which can be translated with `i18n` functions.
@@ -91,7 +91,7 @@ registerBlockType( 'wp-chimp/subscribe-form', {
    */
   edit( props ) {
 
-    props.className = 'wp-chimp-subscribe-form';
+    props.className = 'wp-chimp-subscription-form';
     const { className } = props;
 
     return [

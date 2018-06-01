@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 }
 
 use WP_Chimp\Admin;
-use WP_Chimp\Subscribe_Form;
+use WP_Chimp\Subscription_Form;
 
 /**
  * The core plugin class.
@@ -97,7 +97,7 @@ class Plugin {
 		$this->define_admin_hooks();
 		$this->define_database_hooks();
 		$this->define_endpoints_hooks();
-		$this->define_subscribe_form_hooks();
+		$this->define_subscription_form_hooks();
 	}
 
 	/**
@@ -176,21 +176,6 @@ class Plugin {
 	}
 
 	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 */
-	private function define_public_hooks() {
-
-		$plugin_public = new Front\Front( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-	}
-
-	/**
 	 * Register all of the hooks related to the database functionality
 	 * of the plugin.
 	 *
@@ -242,13 +227,13 @@ class Plugin {
 	 * @since  0.1.0
 	 * @access private
 	 */
-	private function define_subscribe_form_hooks() {
+	private function define_subscription_form_hooks() {
 
-		$subscribe_form = new Subscribe_Form\Subscribe_Form();
+		$subscription_form = new Subscription_Form\Subscription_Form();
 
-		$this->loader->add_action( 'init', $subscribe_form, 'register_scripts' );
-		$this->loader->add_action( 'init', $subscribe_form, 'register_block' );
-		$this->loader->add_action( 'widgets_init', $subscribe_form, 'register_widget' );
+		$this->loader->add_action( 'init', $subscription_form, 'register_scripts' );
+		$this->loader->add_action( 'init', $subscription_form, 'register_block' );
+		$this->loader->add_action( 'widgets_init', $subscription_form, 'register_widget' );
 	}
 
 	/**
