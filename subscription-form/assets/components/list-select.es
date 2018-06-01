@@ -1,5 +1,8 @@
 'use strict';
 
+import camelCaseKeys from 'camelcase-keys';
+import snakeCaseKeys from 'snakecase-keys';
+
 const wp = window.wp || {};
 const { __ } = wp.i18n;
 const { Component, createElement: el } = wp.element;
@@ -10,7 +13,7 @@ class ListSelect extends Component {
   render() {
 
     const { className, attributes, setAttributes, lists } = this.props;
-    const { listId } = attributes;
+    const { listId } = camelCaseKeys( attributes );
 
     if ( lists.isLoading || 'undefined' === typeof lists.data ) {
       return el( 'div', { className: `${className}__select-list` }, el( Spinner ) );
@@ -29,9 +32,7 @@ class ListSelect extends Component {
       el( Dashicon, { icon: 'feedback' }),
       el( 'select', {
         value: listId,
-        onChange( event ) {
-          setAttributes({ listId: event.target.value });
-        }
+        onChange: ( text ) => setAttributes( snakeCaseKeys({ listId: event.target.value }) )
       }, options )
     ]
    );

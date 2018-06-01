@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_Widget;
 use WP_REST_Request;
-use WP_Chimp\Includes\Functions;
+
 use WP_Chimp\Includes\Utilities;
 
 /**
@@ -36,36 +36,17 @@ final class Widget extends WP_Widget {
 	 */
 	public function __construct() {
 
-		$this->locale   = Functions\get_subscription_form_locale();
-		$this->lists    = $this->get_lists();
+		$this->locale = get_locale_strings();
+		$this->lists  = get_lists();
+
 		$this->defaults = array_merge( [
-			'list_id' => $this->lists[0]['list_id'],
+			'list_id' => get_default_list(),
 		], $this->locale );
 
 		parent::__construct( 'wp-chimp-subscription-form', $this->locale['title'], [
 			'classname'   => 'wp-chimp-subscription-form-widget',
 			'description' => $this->locale['description'],
 		] );
-	}
-
-	/**
-	 * Function to get all the MailChimp lists from the database.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return array
-	 */
-	private function get_lists() {
-
-		$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
-		$request->set_query_params( [
-			'context' => 'block',
-		] );
-
-		$response = rest_do_request( $request );
-		$data     = $response->get_data();
-
-		return Utilities\convert_keys_to_snake_case( $data );
 	}
 
 	/**
@@ -84,7 +65,7 @@ final class Widget extends WP_Widget {
 		echo $args['before_widget'];
 		echo $args['before_title'] . $title . $args['after_title'];
 
-		echo Functions\render_subscription_form( $instance );
+		echo render( $instance );
 		?>
 
 	<?php
@@ -162,8 +143,12 @@ final class Widget extends WP_Widget {
 	 */
 	static private function enqueue_scripts() {
 
-		if ( ! wp_script_is( 'wp-chimp-subscription-form', 'enqueued' ) ) {
+		if ( ! wp_style_is( 'wp-chimp-subscription-form', 'enqueued' ) ) {
 			wp_enqueue_style( 'wp-chimp-subscription-form' );
+		}
+
+		if ( ! wp_script_is( 'wp-chimp-subscription-form', 'enqueued' ) ) {
+			wp_enqueue_script( 'wp-chimp-subscription-form' );
 		}
 	}
 }

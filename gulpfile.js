@@ -47,26 +47,33 @@ gulp.task( 'script-admin', () => {
     .pipe( gulp.dest( './admin/js' ) );
 });
 
-gulp.task( 'script-subscription-form-block', () => {
+gulp.task( 'script-subscription-form', () => {
 
-  return browserify({
-    'entries': [ './subscription-form/assets/block.es' ],
-    'debug': true,
-    'transform': [ babelify ]
-  })
-    .bundle()
-    .on( 'error', function( err ) {
-      console.error( err );
-      this.emit( 'end' );
+  let files = [
+    'block',
+    'script'
+  ];
+
+  return mergeStream( files.map( ( file ) => {
+      return browserify({
+        'entries': `./subscription-form/assets/${file}.es`,
+        'debug': true,
+        'transform': [ babelify ]
     })
-    .pipe( sourceStream( 'block.js' ) )
-    .pipe( buffer() )
-      .pipe( sourcemaps.init({'loadMaps': true}) )
-      .pipe( sourcemaps.write( './' ) )
-    .pipe( gulp.dest( './subscription-form/assets' ) );
+      .bundle()
+        .on( 'error', function( err ) {
+          console.error( err );
+          this.emit( 'end' );
+        })
+      .pipe( sourceStream( `${file}.js` ) )
+      .pipe( buffer() )
+        .pipe( sourcemaps.init({'loadMaps': true}) )
+        .pipe( sourcemaps.write( './' ) )
+      .pipe( gulp.dest( './subscription-form/assets' ) );
+  }) );
 });
 
-gulp.task( 'script', [ 'script-admin', 'script-subscription-form-block' ]);
+gulp.task( 'scripts', [ 'script-admin', 'script-subscription-form' ]);
 
 /**
  * ---------------------------------------------------------------
@@ -77,28 +84,28 @@ gulp.task( 'script', [ 'script-admin', 'script-subscription-form-block' ]);
  * ---------------------------------------------------------------
  */
 
-const autoprefixerConfig = {
-  browsers: [ 'last 3 versions' ],
-  cascade: false
-};
-
-const styleSources = [
-  {
-    'src': 'subscription-form/assets/*.scss',
-    'dest': 'subscription-form/assets'
-  }, {
-    'src': 'admin/css/*.scss',
-    'dest': 'admin/css'
-  }
-];
-
 /**
  * Task to compile the SCSS files to CSS.
  *
  * We will loop through each files and put the compiled CSS to the
  * destination directory as listed in `styleSources`
  */
-gulp.task( 'style', () => {
+gulp.task( 'styles', () => {
+
+  const autoprefixerConfig = {
+    browsers: [ 'last 3 versions' ],
+    cascade: false
+  };
+
+  const styleSources = [
+    {
+      'src': 'subscription-form/assets/*.scss',
+      'dest': 'subscription-form/assets'
+    }, {
+      'src': 'admin/css/*.scss',
+      'dest': 'admin/css'
+    }
+  ];
 
   var stream = mergeStream();
   var style  = [];
@@ -126,7 +133,7 @@ gulp.task( 'style', () => {
  * ---------------------------------------------------------------
  */
 
-gulp.task( 'default', [ 'script', 'style' ], () => {
-  gulp.watch([ '**/*.es' ], [ 'script' ]);
-  gulp.watch([ '**/*.scss' ], [ 'style' ]);
+gulp.task( 'default', [ 'scripts', 'styles' ], () => {
+  gulp.watch([ '**/*.es' ], [ 'scripts' ]);
+  gulp.watch([ '**/*.scss' ], [ 'styles' ]);
 });

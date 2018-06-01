@@ -14,7 +14,7 @@
 
 namespace WP_Chimp\Includes;
 
-use WP_Chimp\Includes\Functions;
+use WP_Chimp\Subscription_Form;
 use WP_Chimp\Includes\Utilities;
 
 /**
@@ -74,7 +74,7 @@ class Languages {
 		 * @var array
 		 */
 		$subscription_form_locale = [
-			'subscription_form' => Functions\get_subscription_form_locale(),
+			'subscription_form' => Subscription_Form\get_locale_strings(),
 		];
 
 		/**

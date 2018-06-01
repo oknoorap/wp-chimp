@@ -4,7 +4,7 @@ import ListSelect from './components/list-select.es';
 import FormView from './components/form-view.es';
 
 const wp = window.wp || {};
-const { subscribeForm: locale } = wpChimpL10n;
+const { subscriptionForm: locale } = wpChimpL10n;
 
 const { registerBlockType, BlockControls } = wp.blocks;
 const { createElement: el } = wp.element;
@@ -36,6 +36,8 @@ registerBlockType( 'wp-chimp/subscription-form', {
   /**
    * Blocks are grouped into categories to help users browse and discover them.
    * The categories provided by core are `common`, `embed`, `formatting`, `layout` and `widgets`.
+   *
+   * @type {String}
    */
   category: 'widgets',
 
@@ -51,34 +53,7 @@ registerBlockType( 'wp-chimp/subscription-form', {
    *
    * @type {Array}
    */
-  keywords: [ 'form', 'subcribe' ],
-
-  /**
-   * Blocks attributes, their type, and the default value.
-   *
-   * @type {Object}
-   */
-	attributes: {
-    listId: {
-      type: 'string'
-    },
-		headingText: {
-      type: 'string',
-      default: locale.headingText
-    },
-		subHeadingText: {
-      type: 'string',
-      default: locale.subHeadingText
-    },
-		inputEmailPlaceholder: {
-      type: 'string',
-      default: locale.inputEmailPlaceholder
-    },
-		buttonText: {
-      type: 'string',
-      default: locale.buttonText
-    }
-	},
+  keywords: [ 'form', 'subcribe', 'mailchimp' ],
 
   /**
    * The edit function describes the structure of your block in the context of the editor.

@@ -3,7 +3,7 @@
 namespace WP_Chimp\Subscription_Form;
 
 /**
- * Register and render MailChimp Form block.
+ * Class to register and render MailChimp Form block.
  *
  * @since 0.1.0
  */
@@ -50,6 +50,14 @@ final class Subscription_Form {
 			filemtime( "$this->dir/$block_js" )
 		);
 
+		$script_js = 'assets/script.js';
+		wp_register_script(
+			'wp-chimp-subscription-form',
+			plugins_url( $script_js, __FILE__ ),
+			[ 'jquery' ],
+			filemtime( "$this->dir/$script_js" )
+		);
+
 		$editor_css = 'assets/editor.css';
 		wp_register_style(
 			'wp-chimp-subscription-form-editor',
@@ -78,11 +86,37 @@ final class Subscription_Form {
 
 		if ( function_exists( 'register_block_type' ) ) {
 
+			$locale       = get_locale_strings();
+			$default_list = get_default_list();
+
 			register_block_type( 'wp-chimp/subscription-form', [
 				'editor_script'   => 'wp-chimp-subscription-form-editor',
 				'editor_style'    => 'wp-chimp-subscription-form-editor',
+				'script'          => 'wp-chimp-subscription-form',
 				'style'           => 'wp-chimp-subscription-form',
-				'render_callback' => 'WP_Chimp\\Includes\\Functions\\render_subscription_form',
+				'render_callback' => __NAMESPACE__ . '\\render',
+				'attributes'      => [
+					'list_id' => [
+						'type' => 'string',
+						'default' => $default_list,
+					],
+					'heading_text' => [
+						'type'    => 'string',
+						'default' => $locale['heading_text'],
+					],
+					'sub_heading_text' => [
+						'type'    => 'string',
+						'default' => $locale['sub_heading_text'],
+					],
+					'input_email_placeholder' => [
+						'type'    => 'string',
+						'default' => $locale['input_email_placeholder'],
+					],
+					'button_text' => [
+						'type'    => 'string',
+						'default' => $locale['button_text'],
+					],
+				],
 			] );
 		}
 	}

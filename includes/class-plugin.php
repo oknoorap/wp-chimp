@@ -109,7 +109,7 @@ class Plugin {
 	private function load_dependencies() {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utilities.php'; // Load the helper and utility functions.
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/functions.php'; // Load the plugin core Functions.
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'subscription-form/functions.php';
 
 		/**
 		 * Create an instance of the loader which will be used to register the hooks

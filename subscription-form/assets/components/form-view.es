@@ -1,5 +1,8 @@
 'use strict';
 
+import camelCaseKeys from 'camelcase-keys';
+import snakeCaseKeys from 'snakecase-keys';
+
 const wp = window.wp || {};
 const { Component, createElement: el } = wp.element;
 const { RichText } = wp.editor;
@@ -9,7 +12,7 @@ class FormView extends Component {
   render() {
 
     const { className, attributes, setAttributes } = this.props;
-    const { headingText, subHeadingText, inputEmailPlaceholder, buttonText } = attributes;
+    const { headingText, subHeadingText, inputEmailPlaceholder, buttonText } = camelCaseKeys( attributes );
 
     return el( 'div', {
         className: `wp-chimp-block ${className}`
@@ -21,7 +24,7 @@ class FormView extends Component {
         className: `${className}__heading`,
         value: headingText,
         isSelected: false,
-        onChange: ( text ) => setAttributes({ headingText: text })
+        onChange: ( text ) => setAttributes( snakeCaseKeys({ headingText: text }) )
       }),
       el( RichText, {
         key: 'form-sub-heading',
@@ -30,7 +33,7 @@ class FormView extends Component {
         className: `${className}__sub-heading`,
         value: subHeadingText,
         isSelected: false,
-        onChange: ( text ) => setAttributes({ subHeadingText: text })
+        onChange: ( text ) => setAttributes( snakeCaseKeys({ subHeadingText: text }) )
       }),
       el( 'div', { className: `${className}__inputs` }, [
         el( RichText, {
@@ -40,7 +43,7 @@ class FormView extends Component {
           className: `${className}__email-field`,
           value: inputEmailPlaceholder,
           isSelected: false,
-          onChange: ( text ) => setAttributes({ inputEmailPlaceholder: text })
+          onChange: ( text ) => setAttributes( snakeCaseKeys({ inputEmailPlaceholder: text }) )
         }),
         el( RichText, {
           key: 'form-submit-button',
@@ -49,7 +52,7 @@ class FormView extends Component {
           className: `${className}__button`,
           value: buttonText,
           isSelected: false,
-          onChange: ( text ) => setAttributes({ buttonText: text })
+          onChange: ( text ) => setAttributes( snakeCaseKeys({ buttonText: text }) )
         })
       ])
     ]);
