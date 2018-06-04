@@ -335,12 +335,16 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	public function get_item( $request ) {
 
-		$list_id = $request->get_param( 'id' );
+		$response = [];
+		$list_id  = $request->get_param( 'id' );
+		$data     = $this->get_local_list_by_the_id( $list_id );
 
-		$data = $this->get_local_list_by_the_id( $list_id );
-		$item = $this->prepare_item_for_response( $data, $request );
+		if ( ! empty( $data ) ) {
+			$item     = $this->prepare_item_for_response( $data, $request );
+			$response = rest_ensure_response( $item );
+		}
 
-		return rest_ensure_response( $item );
+		return $response;
 	}
 
 	/**
@@ -506,7 +510,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		$response = $this->mailchimp->get( 'lists', $api_args );
 
-		if ( $mailchimp->success() ) {
+		if ( $this->mailchimp->success() ) {
 			$lists = Utilities\sort_mailchimp_lists( $response['lists'] );
 		}
 
@@ -519,7 +523,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			foreach ( $lists as $list ) {
 				$this->lists_process->push_to_queue( $list );
 			}
-			$this->lists_process->processing();
 			$this->lists_process->save()->dispatch();
 		}
 

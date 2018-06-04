@@ -1,9 +1,18 @@
 <?php
+/**
+ * File containing the Class to register the "Subscription Form"
+ *
+ * @package WP_Chimp
+ * @subpackage WP_Chimp/widgets
+ */
 
 namespace WP_Chimp\Subscription_Form;
 
 /**
- * Class to register and render MailChimp Form block.
+ * Class to register "Subscription Form".
+ *
+ * The Class will register the components surrounding the "Subscription Form"
+ * such as the scripts, styles, widget, shortcode, translateable strings, etc.
  *
  * @since 0.1.0
  */
@@ -24,7 +33,6 @@ final class Subscription_Form {
 	 * @since 0.1.0
 	 */
 	public function __construct() {
-
 		$this->dir = dirname( __FILE__ );
 	}
 
@@ -101,19 +109,19 @@ final class Subscription_Form {
 						'default' => $default_list,
 					],
 					'heading_text' => [
-						'type'    => 'string',
+						'type' => 'string',
 						'default' => $locale['heading_text'],
 					],
 					'sub_heading_text' => [
-						'type'    => 'string',
+						'type' => 'string',
 						'default' => $locale['sub_heading_text'],
 					],
 					'input_email_placeholder' => [
-						'type'    => 'string',
+						'type' => 'string',
 						'default' => $locale['input_email_placeholder'],
 					],
 					'button_text' => [
-						'type'    => 'string',
+						'type' => 'string',
 						'default' => $locale['button_text'],
 					],
 				],

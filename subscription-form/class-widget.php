@@ -29,6 +29,12 @@ use WP_Chimp\Includes\Utilities;
  */
 final class Widget extends WP_Widget {
 
+	private $locale;
+
+	private $lists;
+
+	private $defaults;
+
 	/**
 	 * Specifies the classname and description, instantiates the widget,
 	 *
@@ -50,6 +56,29 @@ final class Widget extends WP_Widget {
 	}
 
 	/**
+	 * F
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return string
+	 */
+	public function get_notice() {
+
+		$notice = '';
+
+		if ( empty( $this->lists ) ) {
+
+			$mailchimp_kb_list = '<a href="https://kb.mailchimp.com/lists" target="_blank">' . __( 'List', 'wp-chimp' ) . '</a>';
+			$chimp_setting     = '<a href="' . admin_url( 'options-general.php?page=wp-chimp' ) . '" target="_blank">' . __( 'the Settings page', 'wp-chimp' ) . '</a>';
+
+			// translators: %1$s the MailChimp List knowledgebase link URL, %2$s the "Chimp" setting page.
+			$notice = sprintf( __( 'Lists are empty. It might be that your MailChimp account does not contain any %1$s or MailChimp API key is not yet added to %2$s.', 'wp-chimp' ), $mailchimp_kb_list, $chimp_setting );
+		}
+
+		return $notice;
+	}
+
+	/**
 	 * Echoes the widget content.
 	 *
 	 * @since 0.1.0
@@ -65,11 +94,14 @@ final class Widget extends WP_Widget {
 		echo $args['before_widget'];
 		echo $args['before_title'] . $title . $args['after_title'];
 
-		echo render( $instance );
-		?>
+		if ( empty( $this->lists ) ) : ?>
+			<p><?php echo $this->get_notice(); ?></p>
+		<?php
+			else :
+				echo render( $instance );
+			endif;
 
-	<?php
-		echo $args['after_widget'];
+			echo $args['after_widget'];
 	}
 
 	/**
@@ -81,7 +113,13 @@ final class Widget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$options = wp_parse_args( $instance, $this->defaults );
+
+		if ( empty( $this->lists ) ) :
 		?>
+
+		<p><strong><?php echo esc_html__( 'Oops!', 'wp-chimp' ); ?></strong></p>
+		<p><?php echo $this->get_notice(); ?></p>
+		<?php else : ?>
 
 		<p class="wp-chimp-list-select">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'list_id' ) ); ?>">
@@ -118,6 +156,7 @@ final class Widget extends WP_Widget {
 		</p>
 
 	<?php
+		endif;
 	}
 
 	/**
