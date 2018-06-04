@@ -1,5 +1,14 @@
+'use strict';
+
+import camelCaseKeys from 'camelcase-keys';
 import { mount, el, list, setChildren } from 'redom';
-import { __ } from '@wordpress/i18n';
+
+/**
+ * Get the translateable strings for the Admin Settings page.
+ *
+ * @type {Object}
+ */
+const locale = camelCaseKeys( wpChimpL10n );
 
 /**
  * The Class to render the table row (`tr`) and data (`td`) elements.
@@ -40,7 +49,7 @@ class TableRow {
       ]),
       el( 'td', list.name ),
       el( 'td', list.subscribers ),
-      el( 'td', ( 0 === list.doubleOptin ? __( 'No', 'wp-chimp' ) : __( 'Yes', 'wp-chimp' ) ) ),
+      el( 'td', ( 0 === list.doubleOptin ? locale.no : locale.yes ) ),
       el( 'td', [
         el( 'code', `[wp-chimp list_id="${list.listId}"]` )
       ])
@@ -82,7 +91,7 @@ class TableBody {
   mountEmptyState() {
 
     setChildren( this.el, el( 'tr', [
-      el( 'td', __( 'No MailChimp lists found', 'wp-chimp' ), {
+      el( 'td', locale.noLists, {
         'colspan': '5'
       })
     ]) );

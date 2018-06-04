@@ -17,7 +17,9 @@ use WP_REST_Request;
 use WP_Chimp\Includes\Utilities;
 
 /**
- * Undocumented function
+ * Function to get the list using the WP REST API.
+ *
+ * @since 0.1.0
  *
  * @return array;
  */
@@ -35,9 +37,11 @@ function get_lists() {
 }
 
 /**
- * Undocumented function
+ * Get the default MailChimp list.
  *
- * @return void
+ * @since 0.1.0
+ *
+ * @return string
  */
 function get_default_list() {
 
@@ -52,7 +56,7 @@ function get_default_list() {
 }
 
 /**
- * Function to return default translatable strings for the "Subscribe Form"
+ * Function to define translatable strings to diplay in the "Subscription Form".
  *
  * @since 0.1.0
  *
@@ -78,25 +82,28 @@ function get_locale_strings() {
  *
  * @since 0.1.0
  *
- * @param  array $attributes The attributes to assign to the .
+ * @param  array $attrs The attributes to assign to the .
  * @return null|string Associative array with the key converted to camelcase,
  *                     otherwise 'null' if the list ID is not present.
  */
-function render( array $attributes ) {
+function render( array $attrs ) {
 
-	if ( ! is_string( $attributes['list_id'] ) || empty( $attributes['list_id'] ) ) {
+	if ( ! is_string( $attrs['list_id'] ) || empty( $attrs['list_id'] ) ) {
 		return;
 	}
+
+	$action_url = 'wp-chimp/v1/lists/' . $attrs['list_id'];
+
 	ob_start();
 	?>
 
-	<div class="wp-chimp-subscription-form" data-list-id="<?php echo esc_attr( $attributes['list_id'] ); ?>">
-		<h3 class="wp-chimp-subscription-form__heading"><?php echo esc_html( $attributes['heading_text'] ); ?></h3>
-		<p class="wp-chimp-subscription-form__sub-heading"><?php echo esc_html( $attributes['sub_heading_text'] ); ?></p>
-		<div class="wp-chimp-subscription-form__inputs">
-			<input class="wp-chimp-subscription-form__email-field" type="email" placeholder="<?php echo esc_html( $attributes['input_email_placeholder'] ); ?>">
-			<button class="wp-chimp-subscription-form__button"><?php echo esc_html( $attributes['button_text'] ); ?></button>
-		</div>
+	<div class="wp-chimp-subscription-form" method="post" action="<?php echo rest_url( $action_url ); ?>">
+		<h3 class="wp-chimp-subscription-form__heading"><?php echo esc_html( $attrs['heading_text'] ); ?></h3>
+		<p class="wp-chimp-subscription-form__sub-heading"><?php echo esc_html( $attrs['sub_heading_text'] ); ?></p>
+		<form class="wp-chimp-subscription-form__inputs">
+			<input class="wp-chimp-subscription-form__email-field" name="email" type="email" placeholder="<?php echo esc_html( $attrs['input_email_placeholder'] ); ?>">
+			<button class="wp-chimp-subscription-form__button"><?php echo esc_html( $attrs['button_text'] ); ?></button>
+		</form>
 	</div>
 
 	<?php

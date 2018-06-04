@@ -142,4 +142,15 @@ final class Subscription_Form {
 	public function register_shortcode() {
 
 	}
+
+	/**
+	 * Function to register translateable string displayed in the Subscription Form.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	public function register_locale_strings() {
+		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', get_locale_strings() );
+	}
 }

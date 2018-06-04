@@ -19,6 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 use WP_Chimp\Admin;
 use WP_Chimp\Subscription_Form;
 
+use DrewM\MailChimp\MailChimp;
+
 /**
  * The core plugin class.
  *
@@ -132,7 +134,6 @@ class Plugin {
 		$languages = new Languages( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'plugins_loaded', $languages, 'load_plugin_textdomain' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $languages, 'enqueue_scripts', 30, 3 );
 	}
 
 	/**
@@ -156,6 +157,7 @@ class Plugin {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'register_locale_strings' );
 
 		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
 		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
@@ -205,6 +207,18 @@ class Plugin {
 		$lists_rest    = new Endpoints\REST_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
 
 		/**
+		 * The MailChimp API key.
+		 *
+		 * @var string
+		 */
+		$api_key = get_option( 'wp_chimp_api_key', '' );
+
+		if ( ! empty( $api_key ) ) {
+			$mailchimp = new MailChimp( $api_key );
+			$lists_rest->register_mailchimp( $mailchimp );
+		}
+
+		/**
 		 * Add Lists\Query instance to List\Process and Endpoints\REST_Lists_Controller
 		 * to be able to add, get, or delete lists from the database.
 		 */
@@ -234,6 +248,7 @@ class Plugin {
 		$this->loader->add_action( 'init', $subscription_form, 'register_scripts' );
 		$this->loader->add_action( 'init', $subscription_form, 'register_block' );
 		$this->loader->add_action( 'widgets_init', $subscription_form, 'register_widget' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $subscription_form, 'register_locale_strings', 30, 3 );
 	}
 
 	/**

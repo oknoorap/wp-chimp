@@ -108,4 +108,27 @@ class Admin {
 			wp_enqueue_script( $this->plugin_name );
 		}
 	}
+
+	/**
+	 * Function to register translateable strings in the Admin settings page.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	public function register_locale_strings() {
+
+		$screen = get_current_screen();
+
+		if ( 'settings_page_' . $this->plugin_name === $screen->id ) {
+
+			$locale = [
+				'no'       => __( 'No', 'wp-chimp' ),
+				'yes'      => __( 'Yes', 'wp-chimp' ),
+				'no_lists' => __( 'No MailChimp lists found', 'wp-chimp' ),
+			];
+
+			wp_localize_script( $this->plugin_name, 'wpChimpL10n', $locale );
+		}
+	}
 }

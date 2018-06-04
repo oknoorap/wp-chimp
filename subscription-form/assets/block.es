@@ -1,10 +1,11 @@
 'use strict';
 
+import camelCaseKeys from 'camelcase-keys';
 import ListSelect from './components/list-select.es';
 import FormView from './components/form-view.es';
 
 const wp = window.wp || {};
-const { subscriptionForm: locale } = wpChimpL10n;
+const locale = camelCaseKeys( wpChimpL10n );
 
 const { registerBlockType, BlockControls } = wp.blocks;
 const { createElement: el } = wp.element;

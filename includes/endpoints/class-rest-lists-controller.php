@@ -139,6 +139,18 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Function to register the MailChimp instance.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param MailChimp $mailchimp The MailChimp instance.
+	 * @return void
+	 */
+	public function register_mailchimp( MailChimp $mailchimp ) {
+		$this->mailchimp = $mailchimp;
+	}
+
+	/**
 	 * Function to register the Query instance
 	 *
 	 * @since 0.1.0
@@ -179,9 +191,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	public function register_routes() {
 
 		/**
-		 * Register the '/lists' route.
-		 *
-		 * @example http://wp-chimp.local/wp-json/wp-chimp/v1/lists
+		 * Register the '/lists' route to retrieve a collection of MailChimp list.
 		 *
 		 * @uses WP_REST_Server
 		 */
@@ -191,6 +201,28 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 				'callback'            => [ $this, 'get_items' ],
 				'permission_callback' => [ $this, 'get_items_permissions_check' ],
 				'args'                => $this->get_collection_params(),
+			],
+			'schema' => [ $this, 'get_public_item_schema' ],
+		]);
+
+		/**
+		 * Register the '/list' route to retrieve a single MailChimp list with their ID.
+		 *
+		 * @uses WP_REST_Server
+		 */
+		register_rest_route( $this->namespace, $this->rest_base . '/(?P<id>[\w-]+)', [
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'get_item' ],
+				// 'permission_callback' => [ $this, 'get_item_permissions_check' ],
+				'args'                => [
+					'context' => $this->get_context_param( [ 'default' => 'view' ] ),
+				],
+			],
+			[
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => [ $this, 'update_item' ],
+				'permission_callback' => [ $this, 'get_item_permissions_check' ],
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
 		]);
@@ -206,7 +238,14 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return bool
 	 */
 	public function get_items_permissions_check( $request ) {
-		return current_user_can( 'manage_options' );
+
+		$method = $request->get_method();
+
+		if ( 'GET' === $method ) {
+			return current_user_can( 'manage_options' );
+		} else {
+			return true;
+		}
 	}
 
 	/**
@@ -236,7 +275,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		$total_pages = null;
 
 		$context = $request->get_param( 'context' );
-		$page    = $request->get_param( 'page' );
+		$page    = isset( $request['page'] ) && 0 < $request['page'] ? $request['page'] : 1;
 
 		if ( 'block' === $context ) {
 
@@ -281,6 +320,42 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		if ( $total_pages ) {
 			$response->header( 'X-WP-Chimp-Lists-TotalPages', absint( $total_pages ) );
 		}
+
+		return $response;
+	}
+
+	/**
+	 * Function to return the response from '/list' API endpoint.
+	 *
+	 * @since  0.1.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response Response object.
+	 */
+	public function get_item( $request ) {
+
+		$list_id = $request->get_param( 'id' );
+
+		$data = $this->get_local_list_by_the_id( $list_id );
+		$item = $this->prepare_item_for_response( $data, $request );
+
+		return rest_ensure_response( $item );
+	}
+
+	/**
+	 * Function to update a list ID in '/list' API endpoint.
+	 *
+	 * @since  0.1.0
+	 * @access public
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response Response object.
+	 */
+	public function update_item( $request ) {
+
+		$items    = [];
+		$response = rest_ensure_response( $items );
 
 		return $response;
 	}
@@ -398,14 +473,13 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	private function get_lists( array $args ) {
 
-		$lists   = [];
-		$api_key = self::get_the_mailchimp_api_key();  // Get the MailChimp API key saved.
-		$args    = wp_parse_args( $args, [
+		$lists = [];
+		$args  = wp_parse_args( $args, [
 			'count' => $this->get_lists_per_page(),
 		]);
 
-		if ( ! empty( $api_key ) && 1 !== self::is_lists_init() ) {
-			$lists = $this->get_remote_lists( $api_key, $args );
+		if ( 1 !== self::is_lists_init() ) {
+			$lists = $this->get_remote_lists( $args );
 		} else {
 			$lists = $this->get_local_lists( $args );
 		}
@@ -418,12 +492,11 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param string $api_key The MailChimp API key.
-	 * @param array  $args The arguments passed in the Endpoint query strings.
+	 * @param array $args The arguments passed in the Endpoint query strings.
 	 * @return mixed Returns an object of the lists, or an Exception if the API key added
 	 *               is invalid.
 	 */
-	private function get_remote_lists( $api_key, array $args = [] ) {
+	private function get_remote_lists( array $args = [] ) {
 
 		$lists    = [];
 		$api_args = [
@@ -431,8 +504,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			'count'  => self::get_lists_total_items(),
 		];
 
-		$mailchimp = new MailChimp( $api_key );
-		$response  = $mailchimp->get( 'lists', $api_args );
+		$response = $this->mailchimp->get( 'lists', $api_args );
 
 		if ( $mailchimp->success() ) {
 			$lists = Utilities\sort_mailchimp_lists( $response['lists'] );
@@ -468,6 +540,16 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Undocumented function
+	 *
+	 * @param [type] $list_id
+	 * @return array
+	 */
+	private function get_local_list_by_the_id( $list_id ) {
+		return $this->lists_query->get_by_the_id( $list_id );
+	}
+
+	/**
 	 * Function get the MailChimp API key set.
 	 *
 	 * @since 0.1.0
@@ -475,7 +557,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return string The MailChimp API key or an empty string if it has not
 	 *                yet been set.
 	 */
-	static private function get_the_mailchimp_api_key() {
+	static private function get_mailchimp_api_key() {
 		return get_option( 'wp_chimp_api_key', '' );
 	}
 

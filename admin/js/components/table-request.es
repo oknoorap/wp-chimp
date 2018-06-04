@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * The Class to make a request to wp-chimp API enpoint
  *

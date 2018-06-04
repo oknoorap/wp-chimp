@@ -8,13 +8,6 @@ import TablePagination from './components/table-pagination.es';
 
 document.addEventListener( 'DOMContentLoaded', () => {
 
-  /**
-   * Creates a new Jed instance with specified locale data configuration.
-   *
-   * {@link https://www.npmjs.com/package/@wordpress/i18n NPM Repository}.
-   */
-  setLocaleData( wpChimpLocaleConfigs, 'wp-chimp' );
-
   const tableBody = new TableBody();
 
   if ( true !== getApiStatus() || true !== getMailChimpApiStatus( wpChimpSettingsState ) ) {
