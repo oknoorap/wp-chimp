@@ -1,29 +1,14 @@
+export function getApiRootStatus() {
 
-export function getApiStatus() {
+  var status = true;
+
   if ( 'undefined' === typeof wpApiSettings || 'undefined' === typeof wpApiSettings.root ) {
-    return;
+    status = false;
   }
 
   if ( -1 === wpApiSettings.root.indexOf( '/wp-json/' ) ) {
-    return;
+    status = false;
   }
 
-  return true;
-}
-
-export function getMailChimpApiStatus( settingsState ) {
-
-  if ( 'undefined' === typeof settingsState.mailchimp ) {
-    return;
-  }
-
-  if ( false === settingsState.mailchimp.apiKey || false === settingsState.mailchimp.apiKeyStatus ) {
-    return;
-  }
-
-  if ( 'invalid' === settingsState.mailchimp.apiKeyStatus ) {
-    return;
-  }
-
-  return true;
+  return status;
 }

@@ -1,7 +1,7 @@
 'use strict';
 
-import { setLocaleData } from '@wordpress/i18n';
-import { getApiStatus, getMailChimpApiStatus } from './components/utilities.es';
+import { getApiStatus } from './components/utilities.es';
+
 import TableBody from './components/table-body.es';
 import TableRequest from './components/table-request.es';
 import TablePagination from './components/table-pagination.es';
@@ -10,7 +10,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
   const tableBody = new TableBody();
 
-  if ( true !== getApiStatus() || true !== getMailChimpApiStatus( wpChimpSettingsState ) ) {
+  if ( false === getApiRootStatus() || ! apiKey || ! apiKeyStatus || 0 < listsTotalItems ) {
     tableBody.mountEmptyState();
   } else {
 

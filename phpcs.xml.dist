@@ -2,8 +2,17 @@
 <ruleset name="WordPress Coding Standards for Plugins">
 	<description>Generally-applicable sniffs for WordPress plugins</description>
 
-	<rule ref="WordPress-Core" />
+	<rule ref="WordPress-Core">
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment" />
+		<exclude name="Generic.Formatting.MultipleStatementAlignment" />
+	</rule>
+	<rule ref="WordPress-Extra" />
 	<rule ref="WordPress-Docs" />
+
+	<!-- <link:>https://github.com/squizlabs/PHP_CodeSniffer/issues/870</link:> -->
+	<rule ref="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing">
+  		<severity>0</severity>
+	</rule>
 
 	<!-- Check all PHP files in directory tree by default. -->
 	<arg name="extensions" value="php"/>

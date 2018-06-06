@@ -95,6 +95,7 @@ class Plugin {
 
 		$this->load_dependencies();
 
+		$this->define_settings_hooks();
 		$this->define_languages_hooks();
 		$this->define_admin_hooks();
 		$this->define_database_hooks();
@@ -161,7 +162,7 @@ class Plugin {
 
 		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
 		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
-		$this->loader->add_action( 'admin_enqueue_scripts', $admin_page, 'enqueue_scripts', 30, 3 );
+		// $this->loader->add_action( 'admin_enqueue_scripts', $admin_page, 'enqueue_scripts', 30, 3 );
 
 		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
 		$this->loader->add_action( 'current_screen', $admin_menu, 'add_help_tabs' );
@@ -248,7 +249,62 @@ class Plugin {
 		$this->loader->add_action( 'init', $subscription_form, 'register_scripts' );
 		$this->loader->add_action( 'init', $subscription_form, 'register_block' );
 		$this->loader->add_action( 'widgets_init', $subscription_form, 'register_widget' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $subscription_form, 'register_locale_strings', 30, 3 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $subscription_form, 'register_locale_strings', 30 );
+	}
+
+	/**
+	 * Register the settings state to be used in the JavaScript side of the plugin.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	private function define_settings_hooks() {
+		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'register_settings_state', 30 );
+	}
+
+	/**
+	 * Function to add the settings state.
+	 *
+	 * The settings state will be used in the JavaScript side of the plugin
+	 * i.e. whether we should display the 'Subscription Form', request data
+	 * to MailChimp API, etc.
+	 *
+	 * @since 0.1.0
+	 * @see ./admin/js/admin.es
+	 * @see ./admin/js/utilities.es
+	 *
+	 * @return void
+	 */
+	public function register_settings_state() {
+
+		$state = self::get_settings_state();
+		$data = 'var wpChimpSettingsState = ' . wp_json_encode( $state );
+
+		wp_add_inline_script( $this->plugin_name, $data, 'before' );
+		wp_add_inline_script( 'wp-chimp-subscription-form-editor', $data, 'before' );
+	}
+
+	/**
+	 * Function to get the list of plugin options to add as the settings state.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @see $this->register_settings_state()
+	 *
+	 * @return array
+	 */
+	static public function get_settings_state() {
+
+		$api_key = (string) get_option( 'wp_chimp_api_key', '' );
+		$api_key_status = (string) get_option( 'wp_chimp_api_key_status', 'invalid' );
+		$total_items = (int) get_option( 'wp_chimp_lists_total_items', 0 );
+
+		return Utilities\convert_keys_to_camel_case( [
+			'api_key' => ! empty( $api_key ),
+			'api_key_status' => 'invalid' === $api_key_status ? false : true,
+			'lists_total_items' => is_int( $total_items ) && 0 < $total_items ? $total_items : 0,
+		] );
 	}
 
 	/**

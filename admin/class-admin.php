@@ -11,6 +11,8 @@
 
 namespace WP_Chimp\Admin;
 
+use WP_Chimp\Includes\Utilities;
+
 use DrewM\MailChimp\MailChimp;
 
 /**
@@ -128,7 +130,7 @@ class Admin {
 				'no_lists' => __( 'No MailChimp lists found', 'wp-chimp' ),
 			];
 
-			wp_localize_script( $this->plugin_name, 'wpChimpL10n', $locale );
+			wp_localize_script( $this->plugin_name, 'wpChimpL10n', Utilities\convert_keys_to_camel_case( $locale ) );
 		}
 	}
 }

@@ -303,6 +303,7 @@ class Page {
 			'mailchimp' => [
 				'api_key'        => get_option( 'wp_chimp_api_key', '' ),
 				'api_key_status' => get_option( 'wp_chimp_api_key_status', false ),
+				'list_count'     => get_option( 'wp_chimp_lists_total_items', 0 ),
 			],
 		];
 	}

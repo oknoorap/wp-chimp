@@ -8,6 +8,8 @@
 
 namespace WP_Chimp\Subscription_Form;
 
+use WP_Chimp\Includes\Utilities;
+
 /**
  * Class to register "Subscription Form".
  *
@@ -159,6 +161,9 @@ final class Subscription_Form {
 	 * @return void
 	 */
 	public function register_locale_strings() {
-		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', get_locale_strings() );
+
+		$locale = get_locale_strings();
+
+		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', Utilities\convert_keys_to_camel_case( $locale ) );
 	}
 }

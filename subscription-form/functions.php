@@ -8,8 +8,7 @@
 
 namespace WP_Chimp\Subscription_Form;
 
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;
 }
 
@@ -17,11 +16,11 @@ use WP_REST_Request;
 use WP_Chimp\Includes\Utilities;
 
 /**
- * Function to get the list using the WP REST API.
+ * Function to get the lists using WP REST API.
  *
  * @since 0.1.0
  *
- * @return array;
+ * @return array
  */
 function get_lists() {
 
@@ -37,7 +36,10 @@ function get_lists() {
 }
 
 /**
- * Get the default MailChimp list.
+ * Function to get the default MailChimp list.
+ *
+ * The default is currently picked up of the first one
+ * on the list.
  *
  * @since 0.1.0
  *
@@ -56,11 +58,11 @@ function get_default_list() {
 }
 
 /**
- * Function to define translatable strings to diplay in the "Subscription Form".
+ * Function to get the translatable strings to diplay on the "Subscription Form".
  *
  * @since 0.1.0
  *
- * @return array Lists of translatable strings.
+ * @return array The list of translateable strings.
  */
 function get_locale_strings() {
 
@@ -71,6 +73,9 @@ function get_locale_strings() {
 		'sub_heading_text'        => __( 'Get notified of our next update right to your inbox', 'wp-chimp' ),
 		'input_email_placeholder' => __( 'Enter your email address', 'wp-chimp' ),
 		'button_text'             => __( 'Submit', 'wp-chimp' ),
+
+		// translators: %1$s the MailChimp List knowledgebase link URL, %2$s the "Chimp" setting page.
+		'inactive_notice' => sprintf( __( 'Subscription Form is inactive. You might haven\'t yet input the MailChimp API key to %1$s or your MailChimp account might not contain a %2$s.', 'wp-chimp' ), '<a href="' . admin_url( 'options-general.php?page=wp-chimp' ) . '" target="_blank">' . __( 'the Settings page', 'wp-chimp' ) . '</a>', '<a href="https://kb.mailchimp.com/lists" target="_blank">' . __( 'List', 'wp-chimp' ) . '</a>' ),
 	];
 }
 
@@ -97,7 +102,7 @@ function render( array $attrs ) {
 	ob_start();
 	?>
 
-	<div class="wp-chimp-subscription-form" method="post" action="<?php echo rest_url( $action_url ); ?>">
+	<div class="wp-chimp-subscription-form" method="post" action="<?php echo esc_attr( rest_url( $action_url ) ); ?>">
 		<h3 class="wp-chimp-subscription-form__heading"><?php echo esc_html( $attrs['heading_text'] ); ?></h3>
 		<p class="wp-chimp-subscription-form__sub-heading"><?php echo esc_html( $attrs['sub_heading_text'] ); ?></p>
 		<form class="wp-chimp-subscription-form__inputs">

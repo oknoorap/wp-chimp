@@ -1,14 +1,17 @@
 'use strict';
 
 import camelCaseKeys from 'camelcase-keys';
+
 import ListSelect from './components/list-select.es';
 import FormView from './components/form-view.es';
 
 const wp = window.wp || {};
+
 const locale = camelCaseKeys( wpChimpL10n );
+const settingsState = camelCaseKeys( wpChimpSettingsState );
 
 const { registerBlockType, BlockControls } = wp.blocks;
-const { createElement: el } = wp.element;
+const { createElement: el, RawHTML } = wp.element;
 const { Toolbar } = wp.components;
 const { RichText } = wp.blocks;
 
@@ -68,7 +71,17 @@ registerBlockType( 'wp-chimp/subscription-form', {
   edit( props ) {
 
     props.className = 'wp-chimp-subscription-form';
+
     const { className } = props;
+    const { apiKey, apiKeyStatus, listsTotalItems } = settingsState;
+
+    if ( ! apiKey || ! apiKeyStatus || 0 < listsTotalItems ) {
+
+      return el( RawHTML, {
+        key: 'form-controls-inactive',
+        className: `${className}__block-controls ${className}__block-controls--inactive`
+      }, locale.inactiveNotice );
+    }
 
     return [
       el( BlockControls, {
