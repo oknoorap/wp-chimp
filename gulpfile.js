@@ -7,7 +7,6 @@ const browserify   = require( 'browserify' );
 const babelify     = require( 'babelify' );
 
 const gulp         = require( 'gulp' );
-const babel        = require( 'gulp-babel' );
 const sass         = require( 'gulp-sass' );
 const autoprefixer = require( 'gulp-autoprefixer' );
 const sourcemaps   = require( 'gulp-sourcemaps' );

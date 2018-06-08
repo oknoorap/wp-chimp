@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
+use Exception;
 use WP_Chimp\Includes\Utilities;
 use DrewM\MailChimp\MailChimp;
 
@@ -77,7 +78,6 @@ class Page {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-		$this->options     = $this->get_options();
 	}
 
 	/**
@@ -172,10 +172,10 @@ class Page {
 	 */
 	public function html_field_mailchimp_api_key() {
 
-		$options = self::get_options();
+		$api_key = get_option( 'wp_chimp_api_key', '' );
 		?>
-		<input type="text" name="wp_chimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $options['mailchimp']['api_key'] ); ?>" />
-		<p class="description"><?php esc_html_e( 'Add your MailChimp API key' ); ?>. <a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank"><?php esc_html_e( 'How to generate the API key?', 'wp-chimp' ); ?></a></p>
+		<input type="text" name="wp_chimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $api_key ); ?>" />
+		<p class="description"><?php esc_html_e( 'Add your MailChimp API key', 'wp-chimp' ); ?>. <a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank"><?php esc_html_e( 'How to get the API key?', 'wp-chimp' ); ?></a></p>
 	<?php
 	}
 
@@ -234,13 +234,13 @@ class Page {
 	 * @param string $api_key The MailChimp API key value.
 	 * @return integer|null The number of total items, or null if it is not set.
 	 */
-	static protected function get_lists_total_items( $api_key ) {
+	protected static function get_lists_total_items( $api_key ) {
 
 		if ( ! empty( $api_key ) ) {
 
 			try {
 				$mailchimp = new MailChimp( $api_key );
-			} catch ( \Exception $e ) {
+			} catch ( Exception $e ) {
 				add_settings_error( 'wp-chimp-invalid-api-key', '401', $e->getMessage() );
 			}
 
@@ -260,51 +260,5 @@ class Page {
 		}
 
 		return isset( $response['total_items'] ) ? absint( $response['total_items'] ) : null;
-	}
-
-	/**
-	 * Load the scripts in the Settings page.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return void
-	 */
-	public function enqueue_scripts() {
-
-		$options = self::get_options();
-		$state   = [
-			'mailchimp' => [],
-		];
-
-		foreach ( $options['mailchimp'] as $key => $value ) {
-			$state['mailchimp'][ $key ] = 'api_key' === $key ? (bool) $value : $value;
-		}
-		$state = Utilities\convert_keys_to_camel_case( $state );
-
-		wp_add_inline_script( $this->plugin_name, 'var wpChimpSettingsState = ' . wp_json_encode( $state ), 'before' );
-	}
-
-	/**
-	 * Function to get some of the plugin Settings state.
-	 *
-	 * This primarily is a data object that will determine the JavaScript behaviour
-	 * based on the data stored in the option. For example, we will check if the
-	 * API key is present in the option before requesting data from the API
-	 * endpoint.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 *
-	 * @return array
-	 */
-	static protected function get_options() {
-
-		return [
-			'mailchimp' => [
-				'api_key'        => get_option( 'wp_chimp_api_key', '' ),
-				'api_key_status' => get_option( 'wp_chimp_api_key_status', false ),
-				'list_count'     => get_option( 'wp_chimp_lists_total_items', 0 ),
-			],
-		];
 	}
 }

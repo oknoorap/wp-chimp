@@ -15,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_Widget;
 use WP_REST_Request;
-
 use WP_Chimp\Includes\Utilities;
 
 /**
@@ -57,12 +56,9 @@ final class Widget extends WP_Widget {
 	 */
 	public function __construct() {
 
-		$this->locale = get_locale_strings();
-		$this->lists  = get_lists();
-
-		$this->defaults = array_merge( [
-			'list_id' => get_default_list(),
-		], $this->locale );
+		$this->lists = get_the_lists();
+		$this->locale = get_the_locale_strings();
+		$this->default_attrs = get_the_default_attrs();
 
 		parent::__construct( 'wp-chimp-subscription-form', $this->locale['title'], [
 			'classname'   => 'wp-chimp-subscription-form-widget',
@@ -104,13 +100,13 @@ final class Widget extends WP_Widget {
 	 * @param array $instance Current settings.
 	 */
 	public function form( $instance ) {
-		$options = wp_parse_args( $instance, $this->defaults );
+		$options = wp_parse_args( $instance, $this->default_attrs );
 
 		if ( empty( $this->lists ) ) :
 		?>
 
 		<div class="wp-chimp-notice">
-			<p><?php echo $this->locale->inactive_notice; ?></p>
+			<p><?php echo wp_kses_post( $this->locale->inactive_notice ); ?></p>
 		</div>
 
 		<?php else : ?>
@@ -164,7 +160,7 @@ final class Widget extends WP_Widget {
 	 * @return array Settings to save or bool false to cancel saving.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		return wp_parse_args( $new_instance, $this->defaults );
+		return wp_parse_args( $new_instance, $this->default_attrs );
 	}
 
 	/**

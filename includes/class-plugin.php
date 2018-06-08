@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 
 use WP_Chimp\Admin;
 use WP_Chimp\Subscription_Form;
-
 use DrewM\MailChimp\MailChimp;
 
 /**
@@ -112,6 +111,7 @@ class Plugin {
 	private function load_dependencies() {
 
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utilities.php'; // Load the helper and utility functions.
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/functions.php'; // Load core funcions.
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'subscription-form/functions.php';
 
 		/**
@@ -248,6 +248,7 @@ class Plugin {
 
 		$this->loader->add_action( 'init', $subscription_form, 'register_scripts' );
 		$this->loader->add_action( 'init', $subscription_form, 'register_block' );
+		$this->loader->add_action( 'init', $subscription_form, 'register_shortcode' );
 		$this->loader->add_action( 'widgets_init', $subscription_form, 'register_widget' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $subscription_form, 'register_locale_strings', 30 );
 	}
@@ -289,21 +290,16 @@ class Plugin {
 	 * Function to get the list of plugin options to add as the settings state.
 	 *
 	 * @since 0.1.0
-	 *
 	 * @see $this->register_settings_state()
 	 *
 	 * @return array
 	 */
-	static public function get_settings_state() {
-
-		$api_key = (string) get_option( 'wp_chimp_api_key', '' );
-		$api_key_status = (string) get_option( 'wp_chimp_api_key_status', 'invalid' );
-		$total_items = (int) get_option( 'wp_chimp_lists_total_items', 0 );
+	public static function get_settings_state() {
 
 		return Utilities\convert_keys_to_camel_case( [
-			'api_key' => ! empty( $api_key ),
-			'api_key_status' => 'invalid' === $api_key_status ? false : true,
-			'lists_total_items' => is_int( $total_items ) && 0 < $total_items ? $total_items : 0,
+			'api_key' => get_the_mailchimp_api_key(),
+			'api_key_status' => get_the_mailchimp_api_key_status(),
+			'lists_total_items' => get_the_lists_total_items(),
 		] );
 	}
 

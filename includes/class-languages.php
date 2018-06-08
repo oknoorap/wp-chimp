@@ -74,7 +74,7 @@ class Languages {
 		 * @var array
 		 */
 		$subscription_form_locale = [
-			'subscription_form' => Subscription_Form\get_locale_strings(),
+			'subscription_form' => Subscription_Form\get_the_locale_strings(),
 		];
 
 		/**

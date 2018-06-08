@@ -96,8 +96,7 @@ final class Subscription_Form {
 
 		if ( function_exists( 'register_block_type' ) ) {
 
-			$locale       = get_locale_strings();
-			$default_list = get_default_list();
+			$locale = get_the_locale_strings();
 
 			register_block_type( 'wp-chimp/subscription-form', [
 				'editor_script'   => 'wp-chimp-subscription-form-editor',
@@ -108,23 +107,23 @@ final class Subscription_Form {
 				'attributes'      => [
 					'list_id' => [
 						'type' => 'string',
-						'default' => $default_list,
+						'default' => get_the_default_list(),
 					],
 					'heading_text' => [
 						'type' => 'string',
-						'default' => $locale['heading_text'],
+						'default' => get_the_locale_strings( 'heading_text' ),
 					],
 					'sub_heading_text' => [
 						'type' => 'string',
-						'default' => $locale['sub_heading_text'],
+						'default' => get_the_locale_strings( 'sub_heading_text' ),
 					],
 					'input_email_placeholder' => [
 						'type' => 'string',
-						'default' => $locale['input_email_placeholder'],
+						'default' => get_the_locale_strings( 'input_email_placeholder' ),
 					],
 					'button_text' => [
 						'type' => 'string',
-						'default' => $locale['button_text'],
+						'default' => get_the_locale_strings( 'button_text' ),
 					],
 				],
 			] );
@@ -132,7 +131,7 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Function to register the Subscribe Form widget.
+	 * Function to register the "Subscription Form" widget.
 	 *
 	 * @since 0.1.0
 	 *
@@ -143,14 +142,14 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Function to register the Subscribe Form shortcode.
+	 * Function to register the "Subscription Form" shortcode.
 	 *
 	 * @since 0.1.0
 	 *
 	 * @return void
 	 */
 	public function register_shortcode() {
-
+		add_shortcode( 'wp-chimp', [ __NAMESPACE__ . '\\Shortcode', 'render' ] );
 	}
 
 	/**
@@ -162,7 +161,7 @@ final class Subscription_Form {
 	 */
 	public function register_locale_strings() {
 
-		$locale = get_locale_strings();
+		$locale = get_the_locale_strings();
 
 		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', Utilities\convert_keys_to_camel_case( $locale ) );
 	}

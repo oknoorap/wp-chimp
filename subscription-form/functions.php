@@ -22,7 +22,7 @@ use WP_Chimp\Includes\Utilities;
  *
  * @return array
  */
-function get_lists() {
+function get_the_lists() {
 
 	$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
 	$request->set_query_params( [
@@ -45,10 +45,10 @@ function get_lists() {
  *
  * @return string
  */
-function get_default_list() {
+function get_the_default_list() {
 
 	$default = [];
-	$lists   = get_lists();
+	$lists   = get_the_lists();
 
 	if ( 1 <= count( $lists ) ) {
 		$default = $lists[0]['list_id'];
@@ -64,18 +64,38 @@ function get_default_list() {
  *
  * @return array The list of translateable strings.
  */
-function get_locale_strings() {
+function get_the_locale_strings( $key = '' ) {
 
-	return [
-		'title'                   => __( 'Subscription Form', 'wp-chimp' ),
-		'description'             => __( 'Display a MailChimp subscription form.', 'wp-chimp' ),
-		'heading_text'            => __( 'Subscribe', 'wp-chimp' ),
-		'sub_heading_text'        => __( 'Get notified of our next update right to your inbox', 'wp-chimp' ),
+	$locale = [
+		'title' => __( 'Subscription Form', 'wp-chimp' ),
+		'description' => __( 'Display a MailChimp subscription form.', 'wp-chimp' ),
+		'heading_text' => __( 'Subscribe', 'wp-chimp' ),
+		'sub_heading_text' => __( 'Get notified of our next update right to your inbox', 'wp-chimp' ),
 		'input_email_placeholder' => __( 'Enter your email address', 'wp-chimp' ),
-		'button_text'             => __( 'Submit', 'wp-chimp' ),
+		'button_text' => __( 'Submit', 'wp-chimp' ),
 
 		// translators: %1$s the MailChimp List knowledgebase link URL, %2$s the "Chimp" setting page.
 		'inactive_notice' => sprintf( __( 'Subscription Form is inactive. You might haven\'t yet input the MailChimp API key to %1$s or your MailChimp account might not contain a %2$s.', 'wp-chimp' ), '<a href="' . admin_url( 'options-general.php?page=wp-chimp' ) . '" target="_blank">' . __( 'the Settings page', 'wp-chimp' ) . '</a>', '<a href="https://kb.mailchimp.com/lists" target="_blank">' . __( 'List', 'wp-chimp' ) . '</a>' ),
+	];
+
+	return isset( $locale[ $key ] ) ? $locale[ $key ] : $locale;
+}
+
+/**
+ * Undocumented function
+ *
+ * @since 0.1.0
+ *
+ * @return array
+ */
+function get_the_default_attrs() {
+
+	return [
+		'list_id' => get_the_default_list(),
+		'heading_text' => get_the_locale_strings( 'heading_text' ),
+		'sub_heading_text' => get_the_locale_strings( 'sub_heading_text' ),
+		'input_email_placeholder' => get_the_locale_strings( 'input_email_placeholder' ),
+		'button_text' => get_the_locale_strings( 'button_text' ),
 	];
 }
 

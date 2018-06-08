@@ -2,18 +2,16 @@
 
 import camelCaseKeys from 'camelcase-keys';
 
+import { getApiRootStatus, getMailChimpApiStatus } from './components/utilities.es';
 import ListSelect from './components/list-select.es';
 import FormView from './components/form-view.es';
 
 const wp = window.wp || {};
 
 const locale = camelCaseKeys( wpChimpL10n );
-const settingsState = camelCaseKeys( wpChimpSettingsState );
 
 const { registerBlockType, BlockControls } = wp.blocks;
 const { createElement: el, RawHTML } = wp.element;
-const { Toolbar } = wp.components;
-const { RichText } = wp.blocks;
 
 /**
  * Every block starts by registering a new block type definition.
@@ -23,8 +21,8 @@ const { RichText } = wp.blocks;
 registerBlockType( 'wp-chimp/subscription-form', {
 
   /**
-   * This is the display title for your block, which can be translated with `i18n` functions.
-   * The block inserter will show this name.
+   * This is the display title for your block, which can be translated
+   * with `i18n` functions. The block inserter will show this name.
    */
   title: locale.title,
 
@@ -39,7 +37,8 @@ registerBlockType( 'wp-chimp/subscription-form', {
 
   /**
    * Blocks are grouped into categories to help users browse and discover them.
-   * The categories provided by core are `common`, `embed`, `formatting`, `layout` and `widgets`.
+   * The categories provided by core are `common`, `embed`, `formatting`,
+   * `layout` and `widgets`.
    *
    * @type {String}
    */
@@ -73,10 +72,8 @@ registerBlockType( 'wp-chimp/subscription-form', {
     props.className = 'wp-chimp-subscription-form';
 
     const { className } = props;
-    const { apiKey, apiKeyStatus, listsTotalItems } = settingsState;
 
-    if ( ! apiKey || ! apiKeyStatus || 0 < listsTotalItems ) {
-
+    if ( false === getApiRootStatus() || false === getMailChimpApiStatus() ) {
       return el( RawHTML, {
         key: 'form-controls-inactive',
         className: `${className}__block-controls ${className}__block-controls--inactive`

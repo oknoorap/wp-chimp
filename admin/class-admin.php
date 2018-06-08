@@ -12,7 +12,6 @@
 namespace WP_Chimp\Admin;
 
 use WP_Chimp\Includes\Utilities;
-
 use DrewM\MailChimp\MailChimp;
 
 /**
