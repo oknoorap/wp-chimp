@@ -16,9 +16,6 @@ final class Shortcode {
 	 * @return string The "Subscription Form" HTML markup.
 	 */
 	public static function render( $attrs ) {
-
-		$attrs = wp_parse_args( $attrs, get_the_default_attrs() );
-
 		return render( $attrs );
 	}
 }

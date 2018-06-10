@@ -13,6 +13,10 @@
 
 namespace WP_Chimp\Admin\Partials;
 
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+	die( 'No script kiddies please!' );
+}
+
 /**
  * Class that register new menu in the Admin area and load the page.
  *
@@ -53,7 +57,7 @@ class Menu {
 	 *
 	 * @return void
 	 */
-	public function add_help_tabs() {
+	public function register_help_tabs() {
 
 		$screen = get_current_screen();
 

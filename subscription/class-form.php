@@ -22,7 +22,7 @@ use WP_Chimp\Includes\Utilities;
  *
  * @since 0.1.0
  */
-final class Subscription_Form {
+final class Form {
 
 	/**
 	 * The directory

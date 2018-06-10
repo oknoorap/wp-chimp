@@ -1,5 +1,6 @@
 /* eslint-env node */
 
+const path         = require( 'path' );
 const buffer       = require( 'vinyl-buffer' );
 const sourceStream = require( 'vinyl-source-stream' );
 const mergeStream  = require( 'merge-stream' );
@@ -12,6 +13,18 @@ const autoprefixer = require( 'gulp-autoprefixer' );
 const sourcemaps   = require( 'gulp-sourcemaps' );
 const uglify       = require( 'gulp-uglifyes' );
 
+const sassFiles = [
+  'admin.scss',
+  'subscription-form-editor.scss',
+  'subscription-form.scss'
+];
+
+const ecmaScriptFiles = [
+  'admin.es',
+  'subscription-form-editor.es',
+  'subscription-form.es'
+];
+
 /**
  * ---------------------------------------------------------------
  * Script tasks
@@ -21,58 +34,29 @@ const uglify       = require( 'gulp-uglifyes' );
  * ---------------------------------------------------------------
  */
 
-/**
- * Compile and bundle the 'admin/script.es' which will be loaded
- * in the administration side of the plugin.
- */
-gulp.task( 'script-admin', () => {
+gulp.task( 'scripts', () => {
 
-  let file = './admin/js/admin.es';
+  return mergeStream( ecmaScriptFiles.map( ( file ) => {
 
-  return browserify({
-    'entries': [ file ],
-    'debug': true,
-    'transform': [ babelify ]
-  })
-    .bundle()
-    .on( 'error', function( err ) {
-      console.error( err );
-      this.emit( 'end' );
-    })
-    .pipe( sourceStream( 'admin.js' ) )
-    .pipe( buffer() )
-      .pipe( sourcemaps.init({'loadMaps': true}) )
-      .pipe( sourcemaps.write( './' ) )
-    .pipe( gulp.dest( './admin/js' ) );
-});
+    let fileName = path.basename( file, '.es' );
 
-gulp.task( 'script-subscription-form', () => {
-
-  let files = [
-    'block',
-    'script'
-  ];
-
-  return mergeStream( files.map( ( file ) => {
-      return browserify({
-        'entries': `./subscription-form/assets/${file}.es`,
+    return browserify({
+        'entries': `./assets/js/${file}`,
         'debug': true,
         'transform': [ babelify ]
     })
-      .bundle()
-        .on( 'error', function( err ) {
-          console.error( err );
-          this.emit( 'end' );
-        })
-      .pipe( sourceStream( `${file}.js` ) )
-      .pipe( buffer() )
-        .pipe( sourcemaps.init({'loadMaps': true}) )
-        .pipe( sourcemaps.write( './' ) )
-      .pipe( gulp.dest( './subscription-form/assets' ) );
+    .bundle()
+      .on( 'error', function( err ) {
+        console.error( err );
+        this.emit( 'end' );
+      })
+    .pipe( sourceStream( `${fileName}.js` ) )
+    .pipe( buffer() )
+      .pipe( sourcemaps.init({'loadMaps': true}) )
+      .pipe( sourcemaps.write( './' ) )
+    .pipe( gulp.dest( './assets/js' ) );
   }) );
 });
-
-gulp.task( 'scripts', [ 'script-admin', 'script-subscription-form' ]);
 
 /**
  * ---------------------------------------------------------------
@@ -96,31 +80,14 @@ gulp.task( 'styles', () => {
     cascade: false
   };
 
-  const styleSources = [
-    {
-      'src': 'subscription-form/assets/*.scss',
-      'dest': 'subscription-form/assets'
-    }, {
-      'src': 'admin/css/*.scss',
-      'dest': 'admin/css'
-    }
-  ];
-
-  var stream = mergeStream();
-  var style  = [];
-
-  styleSources.forEach( ( value, index ) => {
-    style[index] = gulp.src( value.src )
+  return mergeStream( sassFiles.map( ( file ) => {
+    return gulp.src( `./assets/css/${file}` )
       .pipe( sass().on( 'error', sass.logError ) )
         .pipe( sourcemaps.init() )
         .pipe( autoprefixer( autoprefixerConfig ) )
         .pipe( sourcemaps.write( '.' ) )
-      .pipe( gulp.dest( value.dest ) );
-
-    stream.add( style[index]);
-  });
-
-  return stream;
+      .pipe( gulp.dest( './assets/css' ) );
+  } ) );
 });
 
 /**

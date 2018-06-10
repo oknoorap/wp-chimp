@@ -9,7 +9,7 @@
 namespace WP_Chimp\Subscription_Form;
 
 if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
-	die;
+	die( 'No script kiddies please!' );
 }
 
 use WP_REST_Request;
@@ -30,7 +30,7 @@ function get_the_lists() {
 	] );
 
 	$response = rest_do_request( $request );
-	$data     = $response->get_data();
+	$data = $response->get_data();
 
 	return Utilities\convert_keys_to_snake_case( $data );
 }
@@ -113,10 +113,7 @@ function get_the_default_attrs() {
  */
 function render( array $attrs ) {
 
-	if ( ! is_string( $attrs['list_id'] ) || empty( $attrs['list_id'] ) ) {
-		return;
-	}
-
+	$attrs = wp_parse_args( $attrs, get_the_default_attrs() );
 	$action_url = 'wp-chimp/v1/lists/' . $attrs['list_id'];
 
 	ob_start();

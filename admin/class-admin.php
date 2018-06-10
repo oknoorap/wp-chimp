@@ -11,6 +11,10 @@
 
 namespace WP_Chimp\Admin;
 
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+	die( 'No script kiddies please!' );
+}
+
 use WP_Chimp\Includes\Utilities;
 use DrewM\MailChimp\MailChimp;
 
@@ -45,16 +49,25 @@ class Admin {
 	private $version;
 
 	/**
+	 * Undocumented variable
+	 *
+	 * @var [type]
+	 */
+	private $file_path;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since 0.1.0
+	 *
 	 * @param string $plugin_name The name of this plugin.
 	 * @param string $version     The version of this plugin.
+	 * @param string $file_path   The plugin file path.
 	 */
-	public function __construct( $plugin_name, $version ) {
-
+	public function __construct( $plugin_name, $version, $file_path ) {
 		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+		$this->version = $version;
+		$this->file_path = $file_path;
 	}
 
 	/**
@@ -78,7 +91,8 @@ class Admin {
 			 * between the defined hooks and the functions defined in this
 			 * class.
 			 */
-			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/admin.css', [], $this->version, 'all' );
+
+			wp_enqueue_style( $this->plugin_name, plugins_url( 'assets/css/admin.css', $this->file_path ), [], $this->version, 'all' );
 		}
 	}
 
@@ -104,7 +118,7 @@ class Admin {
 			 * between the defined hooks and the functions defined in this
 			 * class.
 			 */
-			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', [ 'jquery', 'wp-api' ], $this->version );
+			wp_register_script( $this->plugin_name, plugins_url( 'assets/js/admin.js', $this->file_path ), [ 'jquery', 'wp-api' ], $this->version );
 
 			wp_enqueue_script( $this->plugin_name );
 		}

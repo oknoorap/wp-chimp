@@ -13,9 +13,8 @@
 
 namespace WP_Chimp\Admin\Partials;
 
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
-	die;
+if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+	die( 'No script kiddies please!' );
 }
 
 use Exception;
@@ -86,7 +85,7 @@ class Page {
 	 * @param [type] $query
 	 * @return void
 	 */
-	public function register_lists_query( $query ) {
+	public function set_lists_query( $query ) {
 		$this->lists_query = $query;
 	}
 
@@ -118,7 +117,7 @@ class Page {
 	 *
 	 * @return void
 	 */
-	static public function render_form() {
+	public static function render_form() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		} ?>
@@ -134,7 +133,7 @@ class Page {
 							<th scope="col" class="wp-chimp-table__th-name"><?php esc_html_e( 'Name', 'wp-chimp' ); ?></th>
 							<th scope="col" class="wp-chimp-table__th-subscribers"><?php esc_html_e( 'Subscribers', 'wp-chimp' ); ?></th>
 							<th scope="col" class="wp-chimp-table__th-double-optin"><?php esc_html_e( 'Double Optin.', 'wp-chimp' ); ?></th>
-							<th scope="col" class="wp-chimp-table__th-shortcode"><?php esc_html_e( 'Shortcode', 'wp-chimp' ); ?></th>
+							<th scope="col" class="wp-chimp-table__th-shortcode"><?php esc_html_e( 'GDPR', 'wp-chimp' ); ?></th>
 						</tr>
 					</thead>
 				</table>

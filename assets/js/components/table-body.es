@@ -50,9 +50,7 @@ class TableRow {
       el( 'td', list.name ),
       el( 'td', list.subscribers ),
       el( 'td', ( 0 === list.doubleOptin ? locale.no : locale.yes ) ),
-      el( 'td', [
-        el( 'code', `[wp-chimp list_id="${list.listId}"]` )
-      ])
+      el( 'td', ( 0 === list.doubleOptin ? locale.no : locale.yes ) )
     ];
   }
 }

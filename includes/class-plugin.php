@@ -63,7 +63,7 @@ class Plugin {
 	 * @access protected
 	 * @var    string
 	 */
-	protected $file;
+	protected $file_path;
 
 	/**
 	 * The current version of the plugin.
@@ -84,13 +84,13 @@ class Plugin {
 	 * @since 0.1.0
 	 * @param string $plugin_name The name of this plugin.
 	 * @param string $version     The version of this plugin.
-	 * @param string $file        The full path and filename of the main plugin file.
+	 * @param string $file_path   The full path and filename of the main plugin file.
 	 */
-	public function __construct( $plugin_name, $version, $file ) {
+	public function __construct( $plugin_name, $version, $file_path ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
-		$this->file        = $file;
+		$this->version = $version;
+		$this->file_path = $file_path;
 
 		$this->load_dependencies();
 
@@ -146,7 +146,7 @@ class Plugin {
 	 */
 	private function define_admin_hooks() {
 
-		$admin      = new Admin\Admin( $this->get_plugin_name(), $this->get_version() );
+		$admin = new Admin\Admin( $this->get_plugin_name(), $this->get_version(), $this->get_file_path() );
 		$admin_page = new Admin\Partials\Page( $this->get_plugin_name(), $this->get_version() );
 		$admin_menu = new Admin\Partials\Menu( $this->get_plugin_name(), $this->get_version() );
 
@@ -154,7 +154,7 @@ class Plugin {
 		 * Add Lists\Query instance to the Admin\Admin_Page to be able to add, get,
 		 * or delete lists from the database.
 		 */
-		$admin_page->register_lists_query( new Lists\Query() );
+		$admin_page->set_lists_query( new Lists\Query() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
@@ -162,20 +162,19 @@ class Plugin {
 
 		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
 		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
-		// $this->loader->add_action( 'admin_enqueue_scripts', $admin_page, 'enqueue_scripts', 30, 3 );
 
 		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
-		$this->loader->add_action( 'current_screen', $admin_menu, 'add_help_tabs' );
+		$this->loader->add_action( 'current_screen', $admin_menu, 'register_help_tabs' );
 
 		/**
 		 * Add the Action link for the plugin in the Plugin list screen.
 		 *
-		 * !important that the plugin file name is always referring to the plugin main file
-		 * in the plugin's root folder instead of the sub-folders in order for the function to work.
+		 * !important that_path e plugin file name is always referring to the plugin main file
+		 * in the plugin's root folder instead of the sub-folders in order for the function_path to work.
 		 *
 		 * @link https://developer.wordpress.org/reference/hooks/prefixplugin_action_links_plugin_file/
 		 */
-		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), $admin_page, 'add_action_links', 10, 2 );
+		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( $this->file_path ), $admin_page, 'add_action_links', 2 );
 	}
 
 	/**
@@ -189,7 +188,7 @@ class Plugin {
 
 		$lists_db = new Lists\Table();
 
-		register_activation_hook( $this->file, [ $lists_db, 'maybe_upgrade' ] ); // Create or Update the database on activation.
+		register_activation_hook( $this->file_path, [ $lists_db, 'maybe_upgrade' ] ); // Create or Updatedatabase on activation_path.
 
 		$this->loader->add_action( 'switch_blog', $lists_db, 'switch_blog' );
 		$this->loader->add_action( 'admin_init', $lists_db, 'maybe_upgrade' );
@@ -203,9 +202,9 @@ class Plugin {
 	 */
 	private function define_endpoints_hooks() {
 
-		$lists_query   = new Lists\Query();
+		$lists_query = new Lists\Query();
 		$lists_process = new Lists\Process();
-		$lists_rest    = new Endpoints\REST_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
+		$lists_rest = new Endpoints\REST_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
 
 		/**
 		 * The MailChimp API key.
@@ -216,22 +215,22 @@ class Plugin {
 
 		if ( ! empty( $api_key ) ) {
 			$mailchimp = new MailChimp( $api_key );
-			$lists_rest->register_mailchimp( $mailchimp );
+			$lists_rest->set_mailchimp( $mailchimp );
 		}
 
 		/**
 		 * Add Lists\Query instance to List\Process and Endpoints\REST_Lists_Controller
 		 * to be able to add, get, or delete lists from the database.
 		 */
-		$lists_process->register_lists_query( $lists_query );
-		$lists_rest->register_lists_query( $lists_query );
+		$lists_process->set_lists_query( $lists_query );
+		$lists_rest->set_lists_query( $lists_query );
 
 		/**
 		 * Add Lists\Process instance to Endpoints\REST_Lists_Controller
 		 * to add background processing when adding lists from the
 		 * MailChimp API response.
 		 */
-		$lists_rest->register_lists_process( $lists_process );
+		$lists_rest->set_lists_process( $lists_process );
 
 		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' ); // Register the `/lists` API endpoint.
 	}
@@ -240,11 +239,10 @@ class Plugin {
 	 * Register all of the hooks to register the Subscribe Form.
 	 *
 	 * @since  0.1.0
-	 * @access private
 	 */
 	private function define_subscription_form_hooks() {
 
-		$subscription_form = new Subscription_Form\Subscription_Form();
+		$subscription_form = new Subscription_Form\Subscription_Form( $this->get_plugin_name(), $this->get_version(), $this->get_file_path() );
 
 		$this->loader->add_action( 'init', $subscription_form, 'register_scripts' );
 		$this->loader->add_action( 'init', $subscription_form, 'register_block' );
@@ -327,7 +325,7 @@ class Plugin {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since  0.1.0
-	 * @return WP_Chimp\Includes\Loader Orchestrates the hooks of the plugin.
+	 * @return WP_Chimp\Includes\Loader Orchestrates the hooks of the plugins.
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -341,5 +339,15 @@ class Plugin {
 	 */
 	public function get_version() {
 		return $this->version;
+	}
+
+	/**
+	 * Retrieve the plugin file path.
+	 *
+	 * @since  0.1.0
+	 * @return string The plugin file path.
+	 */
+	public function get_file_path() {
+		return $this->file_path;
 	}
 }

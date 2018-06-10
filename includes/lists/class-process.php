@@ -39,7 +39,7 @@ final class Process extends WP_Background_Process {
 	 * @param Query $lists_query The Query class instance.
 	 * @return void
 	 */
-	public function register_lists_query( Query $lists_query ) {
+	public function set_lists_query( Query $lists_query ) {
 		$this->lists_query = $lists_query;
 	}
 
