@@ -4,7 +4,7 @@ import camelCaseKeys from 'camelcase-keys';
 
 import { getApiRootStatus, getMailChimpApiStatus } from './components/utilities.es';
 import ListSelect from './components/list-select.es';
-import FormView from './components/form-view.es';
+import FormPreView from './components/form-preview.es';
 
 const wp = window.wp || {};
 
@@ -85,7 +85,7 @@ registerBlockType( 'wp-chimp/subscription-form', {
         key: 'form-controls',
         className: `${className}__block-controls`
       }, el( ListSelect, props ) ),
-      el( FormView, props )
+      el( FormPreView, props )
     ];
   },
 

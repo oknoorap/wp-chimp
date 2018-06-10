@@ -138,8 +138,6 @@ class Admin {
 		if ( 'settings_page_' . $this->plugin_name === $screen->id ) {
 
 			$locale = [
-				'no'       => __( 'No', 'wp-chimp' ),
-				'yes'      => __( 'Yes', 'wp-chimp' ),
 				'no_lists' => __( 'No MailChimp lists found', 'wp-chimp' ),
 			];
 

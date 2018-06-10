@@ -5,8 +5,8 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link    https://wp-chimp.com
- * @since   0.1.0
+ * @link https://wp-chimp.com
+ * @since 0.1.0
  * @package WP_Chimp/Includes
  */
 
@@ -38,18 +38,16 @@ class Plugin {
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    WP_Chimp\Includes\Loader $loader Maintains and registers all hooks for the plugin.
+	 * @since 0.1.0
+	 * @var WP_Chimp\Includes\Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string $plugin_name The string used to uniquely identify this plugin.
+	 * @since 0.1.0
+	 * @var string $plugin_name The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
 
@@ -110,9 +108,9 @@ class Plugin {
 	 */
 	private function load_dependencies() {
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/utilities.php'; // Load the helper and utility functions.
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/functions.php'; // Load core funcions.
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'subscription-form/functions.php';
+		require_once plugin_dir_path( $this->file_path ) . 'includes/utilities.php'; // Load the helper and utility functions.
+		require_once plugin_dir_path( $this->file_path ) . 'includes/functions.php'; // Load core funcions.
+		require_once plugin_dir_path( $this->file_path ) . 'subscription-form/functions.php';
 
 		/**
 		 * Create an instance of the loader which will be used to register the hooks
@@ -132,7 +130,7 @@ class Plugin {
 	 */
 	private function define_languages_hooks() {
 
-		$languages = new Languages( $this->get_plugin_name(), $this->get_version() );
+		$languages = new Languages( $this->plugin_name, $this->version );
 
 		$this->loader->add_action( 'plugins_loaded', $languages, 'load_plugin_textdomain' );
 	}
@@ -146,9 +144,9 @@ class Plugin {
 	 */
 	private function define_admin_hooks() {
 
-		$admin = new Admin\Admin( $this->get_plugin_name(), $this->get_version(), $this->get_file_path() );
-		$admin_page = new Admin\Partials\Page( $this->get_plugin_name(), $this->get_version() );
-		$admin_menu = new Admin\Partials\Menu( $this->get_plugin_name(), $this->get_version() );
+		$admin = new Admin\Admin( $this->plugin_name, $this->version, $this->file_path );
+		$admin_page = new Admin\Partials\Page( $this->plugin_name, $this->version );
+		$admin_menu = new Admin\Partials\Menu( $this->plugin_name, $this->version );
 
 		/**
 		 * Add Lists\Query instance to the Admin\Admin_Page to be able to add, get,
@@ -204,14 +202,14 @@ class Plugin {
 
 		$lists_query = new Lists\Query();
 		$lists_process = new Lists\Process();
-		$lists_rest = new Endpoints\REST_Lists_Controller( $this->get_plugin_name(), $this->get_version() );
+		$lists_rest = new Endpoints\REST_Lists_Controller( $this->plugin_name, $this->version );
 
 		/**
 		 * The MailChimp API key.
 		 *
 		 * @var string
 		 */
-		$api_key = get_option( 'wp_chimp_api_key', '' );
+		$api_key = (string) get_option( 'wp_chimp_api_key', '' );
 
 		if ( ! empty( $api_key ) ) {
 			$mailchimp = new MailChimp( $api_key );
@@ -242,7 +240,7 @@ class Plugin {
 	 */
 	private function define_subscription_form_hooks() {
 
-		$subscription_form = new Subscription_Form\Subscription_Form( $this->get_plugin_name(), $this->get_version(), $this->get_file_path() );
+		$subscription_form = new Subscription_Form\Subscription_Form( $this->plugin_name, $this->version, $this->file_path );
 
 		$this->loader->add_action( 'init', $subscription_form, 'register_scripts' );
 		$this->loader->add_action( 'init', $subscription_form, 'register_block' );

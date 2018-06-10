@@ -43,14 +43,27 @@ class TableRow {
    */
   getTableData( list ) {
 
+    const dashiconsNo = el( 'span', { 'class': 'dashicons dashicons-no-alt' });
+    const dashiconsYes = el( 'span', { 'class': 'dashicons dashicons-yes' });
+
     return [
-      el( 'td', [
+      el( 'td', {
+        className: 'wp-chimp-table__td-list-id'
+      }, [
         el( 'code', list.listId )
       ]),
-      el( 'td', list.name ),
-      el( 'td', list.subscribers ),
-      el( 'td', ( 0 === list.doubleOptin ? locale.no : locale.yes ) ),
-      el( 'td', ( 0 === list.doubleOptin ? locale.no : locale.yes ) )
+      el( 'td', {
+        className: 'wp-chimp-table__td-name'
+      }, list.name ),
+      el( 'td', {
+        className: 'wp-chimp-table__td-subscribers'
+      }, list.subscribers ),
+      el( 'td', {
+        className: 'wp-chimp-table__td-double-optin'
+      }, 0 === list.doubleOptin ? dashiconsNo : dashiconsYes ),
+      el( 'td', {
+        className: 'wp-chimp-table__td-shortcode'
+      }, el( 'code', `[wp-chimp list_id="${list.listId}"]` ) )
     ];
   }
 }
@@ -64,7 +77,7 @@ class TableBody {
 
   constructor() {
 
-    this.el   = el( 'tbody', { 'id': 'wp-chimp-table-lists-body' });
+    this.el   = el( 'tbody', { id: 'wp-chimp-table-lists-body' });
     this.list = list( this.el, TableRow );
 
     mount( document.querySelector( '#wp-chimp-table-lists' ), this );
@@ -106,7 +119,7 @@ class TableBody {
     for ( let i = 0; 5 > i; i++ ) {
       placeholder.push( el( 'td', [
         el( 'span', '', {
-          'class': `wp-chimp-table-data-placeholder__bar index-${i}`
+          className: `wp-chimp-table-data-placeholder__bar index-${i}`
         })
       ]) );
     }

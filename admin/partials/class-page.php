@@ -133,7 +133,7 @@ class Page {
 							<th scope="col" class="wp-chimp-table__th-name"><?php esc_html_e( 'Name', 'wp-chimp' ); ?></th>
 							<th scope="col" class="wp-chimp-table__th-subscribers"><?php esc_html_e( 'Subscribers', 'wp-chimp' ); ?></th>
 							<th scope="col" class="wp-chimp-table__th-double-optin"><?php esc_html_e( 'Double Optin.', 'wp-chimp' ); ?></th>
-							<th scope="col" class="wp-chimp-table__th-shortcode"><?php esc_html_e( 'GDPR', 'wp-chimp' ); ?></th>
+							<th scope="col" class="wp-chimp-table__th-shortcode"><?php esc_html_e( 'Shortcode.', 'wp-chimp' ); ?></th>
 						</tr>
 					</thead>
 				</table>
