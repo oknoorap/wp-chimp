@@ -10,15 +10,14 @@ const { RichText } = wp.editor;
 class FormView extends Component {
 
   render() {
-
     const { className, attributes, setAttributes } = this.props;
-    const { headingText, subHeadingText, inputEmailPlaceholder, buttonText } = camelCaseKeys( attributes );
+    const { headingText, subHeadingText, emailPlaceholderText, buttonText, footerText } = camelCaseKeys( attributes );
 
     return el( 'div', {
         className: `wp-chimp-block ${className}`
       }, [
       el( RichText, {
-        key: 'form-heading',
+        key: 'heading',
         format: 'string',
         tagName: 'h3',
         className: `${className}__heading`,
@@ -27,7 +26,7 @@ class FormView extends Component {
         onChange: ( text ) => setAttributes( snakeCaseKeys({ headingText: text }) )
       }),
       el( RichText, {
-        key: 'form-sub-heading',
+        key: 'sub-heading',
         format: 'string',
         tagName: 'p',
         className: `${className}__sub-heading`,
@@ -37,16 +36,16 @@ class FormView extends Component {
       }),
       el( 'div', { className: `${className}__inputs` }, [
         el( RichText, {
-          key: 'form-input-email',
+          key: 'input-email',
           format: 'string',
           tagName: 'div',
           className: `${className}__email-field`,
-          value: inputEmailPlaceholder,
+          value: emailPlaceholderText,
           isSelected: false,
-          onChange: ( text ) => setAttributes( snakeCaseKeys({ inputEmailPlaceholder: text }) )
+          onChange: ( text ) => setAttributes( snakeCaseKeys({ emailPlaceholderText: text }) )
         }),
         el( RichText, {
-          key: 'form-submit-button',
+          key: 'submit-button',
           format: 'string',
           tagName: 'div',
           className: `${className}__button`,
@@ -54,7 +53,16 @@ class FormView extends Component {
           isSelected: false,
           onChange: ( text ) => setAttributes( snakeCaseKeys({ buttonText: text }) )
         })
-      ])
+      ]),
+      el( RichText, {
+        key: 'footer',
+        format: 'string',
+        tagName: 'p',
+        className: `${className}__footer`,
+        value: footerText,
+        isSelected: false,
+        onChange: ( text ) => setAttributes( snakeCaseKeys({ footerText: text }) )
+      })
     ]);
   }
 }

@@ -26,18 +26,6 @@
 
 	.wp-chimp-subscription-form {
 
-		&__heading {
-			font-size: 1.2em;
-			font-weight: 600;
-			color: $gray-darker;
-		}
-
-		&__sub-heading {
-			font-size: 0.9em;
-			line-height: 1.6;
-			color: $gray-dark;
-		}
-
 		&__heading,
 		&__sub-heading,
 		&__email-field,
@@ -47,6 +35,19 @@
 			margin: 0;
 		}
 
+		&__heading {
+			font-size: 1.2em;
+			font-weight: 600;
+			margin-bottom: 0.4em;
+			color: $gray-darker;
+		}
+
+		&__sub-heading {
+			font-size: 0.9em;
+			line-height: 1.4;
+			color: $gray-dark;
+		}
+
 		&__inputs {
 			margin-top: 1em;
 		}
@@ -54,7 +55,7 @@
 		&__email-field,
 		&__button {
 			border-radius: 3px;
-			font-size: 0.86em;
+			font-size: 0.9em;
 			padding: 1em;
 		}
 
@@ -69,6 +70,13 @@
 			color: #fff;
 			text-align: center;
 			font-weight: 600;
+		}
+
+		&__footer-text {
+			font-size: 0.7em;
+			margin: 1.2em 0 0;
+			line-height: 1.2;
+			color: $gray;
 		}
 	}
 

@@ -4,10 +4,9 @@ import camelCaseKeys from 'camelcase-keys';
 
 import { getApiRootStatus, getMailChimpApiStatus } from './components/utilities.es';
 import ListSelect from './components/list-select.es';
-import FormPreView from './components/form-preview.es';
+import FormPreview from './components/form-preview.es';
 
 const wp = window.wp || {};
-
 const locale = camelCaseKeys( wpChimpL10n );
 
 const { registerBlockType, BlockControls } = wp.blocks;
@@ -68,9 +67,7 @@ registerBlockType( 'wp-chimp/subscription-form', {
    * @return {Element}       Element to render.
    */
   edit( props ) {
-
     props.className = 'wp-chimp-subscription-form';
-
     const { className } = props;
 
     if ( false === getApiRootStatus() || false === getMailChimpApiStatus() ) {
@@ -85,13 +82,14 @@ registerBlockType( 'wp-chimp/subscription-form', {
         key: 'form-controls',
         className: `${className}__block-controls`
       }, el( ListSelect, props ) ),
-      el( FormPreView, props )
+      el( FormPreview, props )
     ];
   },
 
   /**
-   * The save function defines the way in which the different attributes should be combined
-   * into the final markup, which is then serialized by Gutenberg into `post_content`.
+   * The save function defines the way in which the different attributes
+   * should be combined into the final markup, which is then serialized
+   * by Gutenberg into `post_content`.
    *
    * @see https://wordpress.org/gutenberg/handbook/block-edit-save/#save
    *

@@ -2,15 +2,16 @@
 /**
  * File containing the Class to define the "Subscribe Form" Widget
  *
+ * @since 0.1.0
  * @package WP_Chimp
- * @subpackage WP_Chimp/widgets
+ * @subpackage WP_Chimp/Subscription_Form
  */
 
 namespace WP_Chimp\Subscription_Form;
 
-// If this file is called directly, abort.
+/* If this file is called directly, abort. */
 if ( ! defined( 'ABSPATH' ) ) {
-	die;
+	die( 'No script kiddies please!' );
 }
 
 use WP_Widget;
@@ -23,7 +24,7 @@ use WP_Chimp\Includes\Utilities;
  * Define functionality of the widget both in the front-end,
  * and in the back-end.
  *
- * @since  0.1.0
+ * @since 0.1.0
  * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
 final class Widget extends WP_Widget {
@@ -31,23 +32,25 @@ final class Widget extends WP_Widget {
 	/**
 	 * Undocumented variable
 	 *
-	 * @var [type]
+	 * @var array
 	 */
 	private $locale;
 
 	/**
-	 * Undocumented variable
+	 * Lists
 	 *
-	 * @var [type]
+	 * @since 0.1.0
+	 * @var array
 	 */
 	private $lists;
 
 	/**
-	 * Undocumented variable
+	 * List of "Subscription Form" default attributes.
 	 *
-	 * @var [type]
+	 * @since 0.1.0
+	 * @var array
 	 */
-	private $defaults;
+	private $default_attrs;
 
 	/**
 	 * Specifies the classname and description, instantiates the widget,
@@ -179,7 +182,7 @@ final class Widget extends WP_Widget {
 	 *
 	 * @return void
 	 */
-	static private function enqueue_scripts() {
+	private static function enqueue_scripts() {
 
 		if ( ! wp_style_is( 'wp-chimp-subscription-form', 'enqueued' ) ) {
 			wp_enqueue_style( 'wp-chimp-subscription-form' );

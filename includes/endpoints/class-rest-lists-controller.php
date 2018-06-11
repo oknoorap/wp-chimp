@@ -2,15 +2,16 @@
 /**
  * The file that defines a REST controller for '/lists' endpoints.
  *
- * @link    https://wp-chimp.com
- * @since   0.1.0
+ * @link https://wp-chimp.com
+ * @since 0.1.0
  * @package WP_Chimp/Includes
  */
 
 namespace WP_Chimp\Includes\Endpoints;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
-	die;
+/* If this file is called directly, abort. */
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
 }
 
 use WP_Error;
@@ -33,6 +34,14 @@ use DrewM\MailChimp\MailChimp;
 final class REST_Lists_Controller extends WP_REST_Controller {
 
 	/**
+	 * The plugin API version.
+	 *
+	 * @since 0.1.0
+	 * @var string
+	 */
+	const VERSION = 'v1';
+
+	/**
 	 * The Plugin class instance.
 	 *
 	 * @since  0.1.0
@@ -49,15 +58,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @var    string
 	 */
 	protected $version;
-
-	/**
-	 * The plugin API version.
-	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $api_version = 'v1';
 
 	/**
 	 * The API unique namespace.
@@ -109,10 +109,10 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+		$this->version = $version;
 
-		$this->namespace = $this->get_namespace();
-		$this->rest_base = $this->get_rest_base();
+		$this->namespace = self::get_namespace();
+		$this->rest_base = self::get_rest_base();
 	}
 
 	/**
@@ -122,8 +122,8 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @return string The name space and the version.
 	 */
-	public function get_namespace() {
-		return 'wp-chimp/' . $this->api_version;
+	public static function get_namespace() {
+		return 'wp-chimp/' . self::VERSION;
 	}
 
 	/**
@@ -134,7 +134,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @return string
 	 */
-	public function get_rest_base() {
+	public static function get_rest_base() {
 		return 'lists';
 	}
 
@@ -197,10 +197,10 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		 */
 		register_rest_route( $this->namespace, $this->rest_base, [
 			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_items' ],
+				'methods' => WP_REST_Server::READABLE,
+				'callback' => [ $this, 'get_items' ],
 				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-				'args'                => $this->get_collection_params(),
+				'args' => $this->get_collection_params(),
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
 		]);
@@ -212,16 +212,16 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		 */
 		register_rest_route( $this->namespace, $this->rest_base . '/(?P<id>[\w-]+)', [
 			[
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => [ $this, 'get_item' ],
+				'methods' => WP_REST_Server::READABLE,
+				'callback' => [ $this, 'get_item' ],
 				// 'permission_callback' => [ $this, 'get_item_permissions_check' ],
-				'args'                => [
+				'args' => [
 					'context' => $this->get_context_param( [ 'default' => 'view' ] ),
 				],
 			],
 			[
-				'methods'             => WP_REST_Server::EDITABLE,
-				'callback'            => [ $this, 'update_item' ],
+				'methods' => WP_REST_Server::EDITABLE,
+				'callback' => [ $this, 'update_item' ],
 				'permission_callback' => [ $this, 'get_item_permissions_check' ],
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
@@ -275,7 +275,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		$total_pages = null;
 
 		$context = $request->get_param( 'context' );
-		$page    = isset( $request['page'] ) && 0 < $request['page'] ? $request['page'] : 1;
+		$page = isset( $request['page'] ) && 0 < $request['page'] ? $request['page'] : 1;
 
 		if ( 'block' === $context ) {
 
@@ -303,7 +303,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		$items = [];
 		foreach ( $lists as $key => $list ) {
-			$data    = $this->prepare_item_for_response( $list, $request );
+			$data = $this->prepare_item_for_response( $list, $request );
 			$items[] = $this->prepare_response_for_collection( $data );
 		}
 
@@ -336,8 +336,8 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	public function get_item( $request ) {
 
 		$response = [];
-		$list_id  = $request->get_param( 'id' );
-		$data     = $this->get_local_list_by_the_id( $list_id );
+		$list_id = $request->get_param( 'id' );
+		$data = $this->get_local_list_by_the_id( $list_id );
 
 		if ( ! empty( $data ) ) {
 			$item     = $this->prepare_item_for_response( $data, $request );
@@ -358,7 +358,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	public function update_item( $request ) {
 
-		$items    = [];
+		$items = [];
 		$response = rest_ensure_response( $items );
 
 		return $response;
@@ -375,9 +375,9 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 
-		$data   = [];
+		$data = [];
 		$schema = $this->get_item_schema();
-		$props  = $schema['properties'];
+		$props = $schema['properties'];
 
 		if ( ! empty( $props['listId'] ) && isset( $item['list_id'] ) ) {
 			$data['listId'] = wp_strip_all_tags( $item['list_id'], true );
@@ -409,13 +409,13 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		return [
 			'page'    => [
-				'description'       => __( 'Current page of the collection.', 'wp-chimp' ),
-				'type'              => 'integer',
+				'description' => __( 'Current page of the collection.', 'wp-chimp' ),
+				'type' => 'integer',
 				'sanitize_callback' => 'absint',
 			],
 			'context' => $this->get_context_param( [
 				'default' => 'view',
-				'enum'    => [ 'view', 'block' ],
+				'enum' => [ 'view', 'block' ],
 			] ),
 		];
 	}
@@ -430,33 +430,33 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	public function get_item_schema() {
 
 		return [
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => __( 'MailChimp Lists', 'wp-chimp' ),
-			'type'       => 'object',
+			'$schema' => 'http://json-schema.org/draft-04/schema#',
+			'title' => __( 'MailChimp Lists', 'wp-chimp' ),
+			'type' => 'object',
 			'properties' => [
-				'listId'      => [
+				'listId' => [
 					'description' => __( 'A string that uniquely identifies this list.', 'wp-chimp' ),
-					'type'        => 'string',
-					'readonly'    => true,
+					'type' => 'string',
+					'readonly' => true,
 				],
-				'name'        => [
+				'name' => [
 					'description' => __( 'The name of the list.', 'wp-chimp' ),
-					'type'        => 'string',
-					'readonly'    => true,
+					'type' => 'string',
+					'readonly' => true,
 					'arg_options' => 'sanitize_text_field',
 				],
 				'subscribers' => [
 					'description' => __( 'The number of active members in the list.', 'wp-chimp' ),
-					'type'        => 'integer',
-					'readonly'    => true,
+					'type' => 'integer',
+					'readonly' => true,
 					'arg_options' => [
 						'sanitize_callback' => 'absint',
 					],
 				],
 				'doubleOptin' => [
 					'description' => __( 'Whether or not to require the subscriber to confirm subscription via email.', 'wp-chimp' ),
-					'type'        => 'boolean',
-					'readonly'    => true,
+					'type' => 'boolean',
+					'readonly' => true,
 					'arg_options' => [
 						'sanitize_callback' => 'absint',
 					],
@@ -478,7 +478,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	private function get_lists( array $args ) {
 
 		$lists = [];
-		$args  = wp_parse_args( $args, [
+		$args = wp_parse_args( $args, [
 			'count' => $this->get_lists_per_page(),
 		]);
 
@@ -502,16 +502,16 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	private function get_remote_lists( array $args = [] ) {
 
-		$lists    = [];
+		$remote_lists = [];
 		$api_args = [
 			'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin',
-			'count'  => self::get_lists_total_items(),
+			'count' => self::get_lists_total_items(),
 		];
 
-		$response = $this->mailchimp->get( 'lists', $api_args );
+		$lists = $this->mailchimp->get( 'lists', $api_args );
 
 		if ( $this->mailchimp->success() ) {
-			$lists = Utilities\sort_mailchimp_lists( $response['lists'] );
+			$remote_lists = Utilities\sort_mailchimp_lists( $lists['lists'] );
 		}
 
 		/**
@@ -519,14 +519,14 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		 * been instantiated yet. While it is in progress, it should not
 		 * dispatch another new processing.
 		 */
-		if ( 0 !== count( $lists ) && 0 === self::is_lists_init() ) {
-			foreach ( $lists as $list ) {
+		if ( 0 !== count( $remote_lists ) && 0 === self::is_lists_init() ) {
+			foreach ( $remote_lists as $list ) {
 				$this->lists_process->push_to_queue( $list );
 			}
 			$this->lists_process->save()->dispatch();
 		}
 
-		return self::remote_lists_response( $lists, $args );
+		return self::remote_lists_response( $remote_lists, $args );
 	}
 
 	/**
@@ -577,7 +577,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return bool Return true if the data has been initialised,
 	 *              otherwise, returns false.
 	 */
-	static private function is_lists_init() {
+	private static function is_lists_init() {
 		$init = get_option( 'wp_chimp_lists_init', 0 );
 		return absint( $init );
 	}
@@ -590,7 +590,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @return int The total items of the lists.
 	 */
-	static private function get_lists_total_items() {
+	private static function get_lists_total_items() {
 
 		$total_items = get_option( 'wp_chimp_lists_total_items', 0 );
 		return absint( $total_items );
@@ -603,7 +603,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @return integer The nubmer of lists per page.
 	 */
-	static private function get_lists_per_page() {
+	private static function get_lists_per_page() {
 		return 10;
 	}
 
@@ -615,7 +615,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @param int $page The page number requested.
 	 * @return int The offset number of the given page requested.
 	 */
-	static private function get_lists_offset( $page ) {
+	private static function get_lists_offset( $page ) {
 
 		$offset = ( $page - 1 ) * self::get_lists_per_page();
 		return absint( $offset );
@@ -633,7 +633,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @param array $args The arguments passed in the endpoint query strings.
 	 * @return array The filtered MailChimp lists.
 	 */
-	static protected function remote_lists_response( array $lists, array $args ) {
+	protected static function remote_lists_response( array $lists, array $args ) {
 
 		$offset = isset( $args['offset'] ) ? absint( $args['offset'] ) : 0;
 		$count  = self::get_lists_per_page();

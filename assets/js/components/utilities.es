@@ -16,9 +16,9 @@ export function getApiRootStatus() {
 export function getMailChimpApiStatus() {
 
   var status = true;
-  const { apiKey, apiKeyStatus, listsTotalItems } = wpChimpSettingsState;
+  const { mailchimpApiStatus, listsTotalItems } = wpChimpPluginState;
 
-  if ( ! apiKey || ! apiKeyStatus || 0 >= listsTotalItems ) {
+  if ( ! mailchimpApiStatus || 0 >= listsTotalItems ) {
     status = false;
   }
 

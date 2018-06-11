@@ -2,13 +2,15 @@
 /**
  * File containing the Class to register the "Subscription Form"
  *
+ * @since 0.1.0
  * @package WP_Chimp
- * @subpackage WP_Chimp/widgets
+ * @subpackage WP_Chimp/Subscription_Form
  */
 
 namespace WP_Chimp\Subscription_Form;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+/* If this file is called directly, abort. */
+if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
@@ -21,17 +23,44 @@ use WP_Chimp\Includes\Utilities;
  * such as the scripts, styles, widget, shortcode, translateable strings, etc.
  *
  * @since 0.1.0
+ * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
 final class Subscription_Form {
 
 	/**
-	 * The directory
+	 * The unique identifier of this plugin.
 	 *
 	 * @since 0.1.0
+	 * @var string $plugin_name The string used to uniquely identify this plugin.
+	 */
+	protected $plugin_name;
+
+	/**
+	 * The current version of the plugin.
 	 *
+	 * @since 0.1.0
+	 * @var string $version The current version of the plugin.
+	 */
+	protected $version;
+
+	/**
+	 * The filename of plugin.
+	 *
+	 * This might be used for WordPress functions requiring the path to
+	 * the main plugin file, such as `plugin_dir_path()` and `plugin_basename()`.
+	 *
+	 * @since 0.1.0
 	 * @var string
 	 */
-	private $dir;
+	protected $file_path;
+
+	/**
+	 * The plugin directory
+	 *
+	 * @since 0.1.0
+	 * @var string
+	 */
+	protected $dir_path;
 
 	/**
 	 * Undocumented function
@@ -43,6 +72,7 @@ final class Subscription_Form {
 	 * @param string $file_path   The plugin file path.
 	 */
 	public function __construct( $plugin_name, $version, $file_path ) {
+
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->file_path = $file_path;
@@ -101,7 +131,7 @@ final class Subscription_Form {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @return void
+	 * @return void|null Returns `null` if the Gutenberg block is not present.
 	 */
 	public function register_block() {
 
@@ -109,15 +139,13 @@ final class Subscription_Form {
 			return;
 		}
 
-		$locale = get_the_locale_strings();
-
 		register_block_type( 'wp-chimp/subscription-form', [
-			'editor_script'   => 'wp-chimp-subscription-form-editor',
-			'editor_style'    => 'wp-chimp-subscription-form-editor',
-			'script'          => 'wp-chimp-subscription-form',
-			'style'           => 'wp-chimp-subscription-form',
+			'editor_script' => 'wp-chimp-subscription-form-editor',
+			'editor_style' => 'wp-chimp-subscription-form-editor',
+			'script' => 'wp-chimp-subscription-form',
+			'style' => 'wp-chimp-subscription-form',
 			'render_callback' => __NAMESPACE__ . '\\render',
-			'attributes'      => [
+			'attributes' => [
 				'list_id' => [
 					'type' => 'string',
 					'default' => get_the_default_list(),
@@ -130,13 +158,17 @@ final class Subscription_Form {
 					'type' => 'string',
 					'default' => get_the_locale_strings( 'sub_heading_text' ),
 				],
-				'input_email_placeholder' => [
+				'email_placeholder_text' => [
 					'type' => 'string',
-					'default' => get_the_locale_strings( 'input_email_placeholder' ),
+					'default' => get_the_locale_strings( 'email_placeholder_text' ),
 				],
 				'button_text' => [
 					'type' => 'string',
 					'default' => get_the_locale_strings( 'button_text' ),
+				],
+				'footer_text' => [
+					'type' => 'string',
+					'default' => get_the_locale_strings( 'footer_text' ),
 				],
 			],
 		] );
@@ -174,7 +206,53 @@ final class Subscription_Form {
 	public function register_locale_strings() {
 
 		$locale = get_the_locale_strings();
+		$data = Utilities\convert_keys_to_camel_case( $locale );
 
-		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', Utilities\convert_keys_to_camel_case( $locale ) );
+		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', $data );
+	}
+
+	/**
+	 * The name of the plugin used to uniquely identify it within the context of
+	 * WordPress and to define internationalization functionality.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return string The name of the plugin.
+	 */
+	public function get_plugin_name() {
+		return $this->plugin_name;
+	}
+
+	/**
+	 * Retrieve the version number of the plugin.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return string The version number of the plugin.
+	 */
+	public function get_version() {
+		return $this->version;
+	}
+
+	/**
+	 * Retrieve the plugin file path.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return string The plugin file path.
+	 */
+	public function get_file_path() {
+		return $this->file_path;
+	}
+
+	/**
+	 * Retrieve the plugin directory path.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return string The plugin directory path.
+	 */
+	public function get_dir_path() {
+		return $this->dir_path;
 	}
 }

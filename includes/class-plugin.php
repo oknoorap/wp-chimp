@@ -12,7 +12,8 @@
 
 namespace WP_Chimp\Includes;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+/* If this file is called directly, abort. */
+if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
@@ -29,7 +30,7 @@ use DrewM\MailChimp\MailChimp;
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since  0.1.0
+ * @since 0.1.0
  * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
 class Plugin {
@@ -57,18 +58,16 @@ class Plugin {
 	 * This might be used for WordPress functions requiring the path to
 	 * the main plugin file, such as `plugin_dir_path()` and `plugin_basename()`.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
+	 * @since 0.1.0
+	 * @var string
 	 */
 	protected $file_path;
 
 	/**
 	 * The current version of the plugin.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string $version The current version of the plugin.
+	 * @since 0.1.0
+	 * @var string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -275,8 +274,8 @@ class Plugin {
 	 */
 	public function register_settings_state() {
 
-		$state = self::get_settings_state();
-		$data = 'var wpChimpSettingsState = ' . wp_json_encode( $state );
+		$state = self::get_plugin_state();
+		$data = 'var wpChimpPluginState = ' . wp_json_encode( $state );
 
 		wp_add_inline_script( $this->plugin_name, $data, 'before' );
 		wp_add_inline_script( 'wp-chimp-subscription-form-editor', $data, 'before' );
@@ -290,11 +289,11 @@ class Plugin {
 	 *
 	 * @return array
 	 */
-	public static function get_settings_state() {
+	public static function get_plugin_state() {
 
 		return Utilities\convert_keys_to_camel_case( [
-			'api_key' => get_the_mailchimp_api_key(),
-			'api_key_status' => get_the_mailchimp_api_key_status(),
+			'rest_api_url' => get_the_rest_api_url(),
+			'mailchimp_api_status' => get_the_mailchimp_api_status(),
 			'lists_total_items' => get_the_lists_total_items(),
 		] );
 	}
@@ -303,6 +302,7 @@ class Plugin {
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
 	 * @since 0.1.0
+	 * @return void
 	 */
 	public function run() {
 		$this->loader->run();
@@ -312,7 +312,7 @@ class Plugin {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 * @return string The name of the plugin.
 	 */
 	public function get_plugin_name() {
@@ -322,7 +322,7 @@ class Plugin {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 * @return WP_Chimp\Includes\Loader Orchestrates the hooks of the plugins.
 	 */
 	public function get_loader() {
@@ -332,7 +332,7 @@ class Plugin {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 * @return string The version number of the plugin.
 	 */
 	public function get_version() {
@@ -342,7 +342,7 @@ class Plugin {
 	/**
 	 * Retrieve the plugin file path.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 * @return string The plugin file path.
 	 */
 	public function get_file_path() {
