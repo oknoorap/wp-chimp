@@ -6,18 +6,14 @@ import snakeCaseKeys from 'snakecase-keys';
 const wp = window.wp || {};
 const { __ } = wp.i18n;
 const { Component, createElement: el } = wp.element;
-const { Dashicon, Spinner, withAPIData } = wp.components;
+const { Dashicon } = wp.components;
 
-class ListSelect extends Component {
+class FormListSelect extends Component {
 
   render() {
 
     const { className, attributes, setAttributes, lists } = this.props;
     const { listId } = camelCaseKeys( attributes );
-
-    if ( lists.isLoading || 'undefined' === typeof lists.data ) {
-      return el( 'div', { className: `${className}__select-list` }, el( Spinner ) );
-    }
 
     let options = lists.data.map( object => {
       return el( 'option', {
@@ -32,13 +28,11 @@ class ListSelect extends Component {
       el( Dashicon, { icon: 'feedback' }),
       el( 'select', {
         value: listId,
-        onChange: ( text ) => setAttributes( snakeCaseKeys({ listId: event.target.value }) )
+        onChange: () => setAttributes( snakeCaseKeys({ listId: event.target.value }) )
       }, options )
     ]
    );
   }
 }
 
-export default withAPIData( () => {
-  return { lists: '/wp-chimp/v1/lists?context=block' };
-})( ListSelect );
+export default FormListSelect;

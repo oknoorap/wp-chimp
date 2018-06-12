@@ -29,7 +29,8 @@
 		&__heading,
 		&__sub-heading,
 		&__email-field,
-		&__button {
+		&__button,
+		&__footer {
 			display: block;
 			width: 100%;
 			margin: 0;
@@ -72,7 +73,7 @@
 			font-weight: 600;
 		}
 
-		&__footer-text {
+		&__footer {
 			font-size: 0.7em;
 			margin: 1.2em 0 0;
 			line-height: 1.2;
@@ -97,6 +98,42 @@
 
 		&:hover {
 			background-color: darken($color-primary, 5%);
+		}
+	}
+}
+
+.wp-chimp-notice {
+	font-size: 0.85em;
+	background: #fff;
+	border-left: 4px solid #ffb900;
+	padding: 1.5em;
+	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+
+	.widget-inside & {
+		padding: 1em 2em;
+	}
+
+	.wp-chimp-notice {
+
+		&__content {
+			margin: 0;
+			color: #333;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue";
+		}
+
+		&__url {
+			border: 0 !important;
+			color: #0073aa;
+			text-decoration-line: underline;
+			text-decoration-style: solid;
+			text-decoration-color: #0073aa;
+		}
+
+		&__url:hover {
+			color: #00a0d2;
+			text-decoration-line: underline;
+			text-decoration-style: solid;
+			text-decoration-color: #00a0d2;
 		}
 	}
 }

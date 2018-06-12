@@ -10,6 +10,7 @@ const { RichText } = wp.editor;
 class FormView extends Component {
 
   render() {
+
     const { className, attributes, setAttributes } = this.props;
     const { headingText, subHeadingText, emailPlaceholderText, buttonText, footerText } = camelCaseKeys( attributes );
 
@@ -20,7 +21,7 @@ class FormView extends Component {
         key: 'heading',
         format: 'string',
         tagName: 'h3',
-        className: `${className}__heading`,
+        className: `${className}__heading ${className}--editable`,
         value: headingText,
         isSelected: false,
         onChange: ( text ) => setAttributes( snakeCaseKeys({ headingText: text }) )
@@ -29,7 +30,7 @@ class FormView extends Component {
         key: 'sub-heading',
         format: 'string',
         tagName: 'p',
-        className: `${className}__sub-heading`,
+        className: `${className}__sub-heading ${className}--editable`,
         value: subHeadingText,
         isSelected: false,
         onChange: ( text ) => setAttributes( snakeCaseKeys({ subHeadingText: text }) )
@@ -39,7 +40,7 @@ class FormView extends Component {
           key: 'input-email',
           format: 'string',
           tagName: 'div',
-          className: `${className}__email-field`,
+          className: `${className}__email-field ${className}--editable`,
           value: emailPlaceholderText,
           isSelected: false,
           onChange: ( text ) => setAttributes( snakeCaseKeys({ emailPlaceholderText: text }) )
@@ -48,7 +49,7 @@ class FormView extends Component {
           key: 'submit-button',
           format: 'string',
           tagName: 'div',
-          className: `${className}__button`,
+          className: `${className}__button ${className}--editable`,
           value: buttonText,
           isSelected: false,
           onChange: ( text ) => setAttributes( snakeCaseKeys({ buttonText: text }) )
@@ -58,7 +59,7 @@ class FormView extends Component {
         key: 'footer',
         format: 'string',
         tagName: 'p',
-        className: `${className}__footer`,
+        className: `${className}__footer ${className}--editable`,
         value: footerText,
         isSelected: false,
         onChange: ( text ) => setAttributes( snakeCaseKeys({ footerText: text }) )

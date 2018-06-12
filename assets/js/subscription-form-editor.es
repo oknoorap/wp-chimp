@@ -1,16 +1,15 @@
 'use strict';
 
-import camelCaseKeys from 'camelcase-keys';
-
 import { getApiRootStatus, getMailChimpApiStatus } from './components/utilities.es';
-import ListSelect from './components/list-select.es';
-import FormPreview from './components/form-preview.es';
+
+import FormEditor from './components/form-editor.es';
+import FormInactiveNotice from './components/form-inactive-notice.es';
 
 const wp = window.wp || {};
-const locale = camelCaseKeys( wpChimpL10n );
+const locale = wpChimpL10n;
 
-const { registerBlockType, BlockControls } = wp.blocks;
-const { createElement: el, RawHTML } = wp.element;
+const { registerBlockType } = wp.blocks;
+const { createElement: el } = wp.element;
 
 /**
  * Every block starts by registering a new block type definition.
@@ -68,22 +67,12 @@ registerBlockType( 'wp-chimp/subscription-form', {
    */
   edit( props ) {
     props.className = 'wp-chimp-subscription-form';
-    const { className } = props;
 
     if ( false === getApiRootStatus() || false === getMailChimpApiStatus() ) {
-      return el( RawHTML, {
-        key: 'form-controls-inactive',
-        className: 'wp-chimp-notice'
-      }, locale.inactiveNotice );
+      return el( FormInactiveNotice );
     }
 
-    return [
-      el( BlockControls, {
-        key: 'form-controls',
-        className: `${className}__block-controls`
-      }, el( ListSelect, props ) ),
-      el( FormPreview, props )
-    ];
+    return el( FormEditor, props );
   },
 
   /**

@@ -86,11 +86,7 @@ final class Widget extends WP_Widget {
 		echo $args['before_widget']; // phpcs:ignore WordPress.XSS.EscapeOutput
 		echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // phpcs:ignore WordPress.XSS.EscapeOutput
 
-		if ( ! Includes\is_mailchimp_api_valid() ) {
-			the_inactive_notice();
-		} else {
-			echo render( $instance );
-		}
+		echo render( $instance );
 
 		echo $args['after_widget']; // phpcs:ignore WordPress.XSS.EscapeOutput
 	}
@@ -106,9 +102,16 @@ final class Widget extends WP_Widget {
 
 		$options = wp_parse_args( $instance, $this->default_attrs );
 
-		if ( ! Includes\is_mailchimp_api_valid() ) :
+		if ( ! Includes\is_mailchimp_api_valid() || 0 >= get_the_lists_count() ) :
 			the_inactive_notice();
-		else : ?>
+			return;
+		endif;
+		?>
+
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'wp-chimp' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $options['title'] ); ?>">
+		</p>
 		<p class="wp-chimp-list-select">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'list_id' ) ); ?>">
 				<span class="dashicons dashicons-index-card"></span>
@@ -135,15 +138,18 @@ final class Widget extends WP_Widget {
 			<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'sub_heading_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sub_heading_text' ) ); ?>" rows="2"><?php echo esc_html( $options['sub_heading_text'] ); ?></textarea>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'input_email_placeholder' ) ); ?>"><?php esc_attr_e( 'Input Email Placeholder:', 'wp-chimp' ); ?></label>
-			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'input_email_placeholder' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'input_email_placeholder' ) ); ?>" type="text" value="<?php echo esc_attr( $options['input_email_placeholder'] ); ?>">
+			<label for="<?php echo esc_attr( $this->get_field_id( 'email_placeholder_text' ) ); ?>"><?php esc_attr_e( 'Input Email Placeholder:', 'wp-chimp' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'email_placeholder_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'email_placeholder_text' ) ); ?>" type="text" value="<?php echo esc_attr( $options['email_placeholder_text'] ); ?>">
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'button_text' ) ); ?>"><?php esc_attr_e( 'Button Text:', 'wp-chimp' ); ?></label>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'button_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'button_text' ) ); ?>" type="text" value="<?php echo esc_attr( $options['button_text'] ); ?>">
 		</p>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'footer_text' ) ); ?>"><?php esc_attr_e( 'Footer Text:', 'wp-chimp' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'footer_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'footer_text' ) ); ?>" type="text" value="<?php echo esc_attr( $options['footer_text'] ); ?>">
+		</p>
 	<?php
-		endif;
 	}
 
 	/**

@@ -92,7 +92,7 @@ function get_the_locale_strings( $key = '' ) {
 		'footer_text' => __( 'We hate spam too, unsubscribe at any time.', 'wp-chimp' ),
 
 		// translators: %1$s the MailChimp List knowledgebase link URL, %2$s the "Chimp" setting page.
-		'inactive_notice' => sprintf( __( 'Subscription Form is inactive. You might haven\'t yet input the MailChimp API key to %s', 'wp-chimp' ), '<a href="' . admin_url( 'options-general.php?page=wp-chimp' ) . '" target="_blank">' . __( 'the Settings page', 'wp-chimp' ) . '</a>' ),
+		'inactive_notice' => sprintf( __( 'Subscription Form is currently inactive. You might haven\'t yet input the MailChimp API key to %1$s or your MailChimp account might not contain a %2$s.', 'wp-chimp' ), '<a href="' . admin_url( 'options-general.php?page=wp-chimp' ) . '" target="_blank" class="wp-chimp-notice__url">' . __( 'the Settings page', 'wp-chimp' ) . '</a>', '<a href="https://kb.mailchimp.com/lists" target="_blank" class="wp-chimp-notice__url">' . __( 'List', 'wp-chimp' ) . '</a>' ),
 	];
 
 	return isset( $locale[ $key ] ) ? $locale[ $key ] : $locale;
@@ -110,6 +110,7 @@ function the_locale_strings( $key = '' ) {
 		'a' => [
 			'href' => true,
 			'target' => true,
+			'class' => true,
 		],
 	] );
 }
@@ -125,6 +126,7 @@ function get_the_default_attrs() {
 
 	return [
 		'list_id' => get_the_default_list(),
+		'title' => get_the_locale_strings( 'title' ),
 		'heading_text' => get_the_locale_strings( 'heading_text' ),
 		'sub_heading_text' => get_the_locale_strings( 'sub_heading_text' ),
 		'email_placeholder_text' => get_the_locale_strings( 'email_placeholder_text' ),
@@ -148,7 +150,7 @@ function get_the_inactive_notice() {
 		ob_start();
 	?>
 	<div class="wp-chimp-notice wp-chimp-notice--warning">
-		<p><?php the_local_strings( 'inactive_notice' ); ?></p>
+		<p class="wp-chimp-notice__content"><?php the_locale_strings( 'inactive_notice' ); ?></p>
 	</div>
 	<?php
 
@@ -172,7 +174,14 @@ function the_inactive_notice() {
 		'div' => [
 			'class' => true,
 		],
-		'p' => true,
+		'p' => [
+			'class' => true,
+		],
+		'a' => [
+			'href' => true,
+			'target' => true,
+			'class' => true,
+		],
 	] );
 }
 
@@ -190,7 +199,7 @@ function the_inactive_notice() {
  */
 function render( array $attrs ) {
 
-	if ( ! Includes\is_mailchimp_api_valid() || empty( $attrs['list_id'] ) ) {
+	if ( ! Includes\is_mailchimp_api_valid() || empty( $attrs['list_id'] ) || 0 >= get_the_lists_count() ) {
 		return get_the_inactive_notice();
 	}
 
@@ -207,7 +216,7 @@ function render( array $attrs ) {
 			<input class="wp-chimp-subscription-form__email-field" name="email" type="email" placeholder="<?php echo esc_html( $attrs['email_placeholder_text'] ); ?>">
 			<button class="wp-chimp-subscription-form__button"><?php echo esc_html( $attrs['button_text'] ); ?></button>
 		</form>
-		<p class="wp-chimp-subscription-form__footer-text"><?php echo esc_html( $attrs['footer_text'] ); ?></p>
+		<p class="wp-chimp-subscription-form__footer"><?php echo esc_html( $attrs['footer_text'] ); ?></p>
 	</div>
 
 	<?php

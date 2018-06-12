@@ -4,19 +4,16 @@
 
 	margin: 0;
 
-	&__email-field {
-		color: $gray;
-	}
-
-	&__heading,
-	&__sub-heading,
-	&__email-field,
-	&__button {
+	&--editable {
 
 		&:focus {
-			outline: 1px solid $gray;
+			outline: 1px dotted $gray;
 			outline-offset: 3px;
 		}
+	}
+
+	&__email-field {
+		color: $gray;
 	}
 
 	&__select-list {
@@ -38,6 +35,19 @@
 
 		.dashicon {
 			margin: 0 8px;
+		}
+	}
+
+	&__loading-lists {
+		display: table;
+		padding: 3em;
+		background: #f3f3f4;
+		height: 120px;
+		text-align: center;
+		width: 100%;
+
+		.spinner {
+			float: none;
 		}
 	}
 }
