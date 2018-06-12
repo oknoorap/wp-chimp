@@ -73,7 +73,7 @@ registerBlockType( 'wp-chimp/subscription-form', {
     if ( false === getApiRootStatus() || false === getMailChimpApiStatus() ) {
       return el( RawHTML, {
         key: 'form-controls-inactive',
-        className: `${className}__block-controls ${className}__block-controls--inactive`
+        className: 'wp-chimp-notice'
       }, locale.inactiveNotice );
     }
 

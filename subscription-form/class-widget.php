@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_Widget;
 use WP_REST_Request;
-use WP_Chimp\Includes\Utilities;
+use WP_Chimp\Includes;
 
 /**
  * Class to define the "Subscribe Form" widget.
@@ -78,30 +78,21 @@ final class Widget extends WP_Widget {
 	 * @param array $instance The settings for the particular instance of the widget.
 	 */
 	public function widget( $args, $instance ) {
+
 		self::enqueue_scripts();
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
-		echo $args['before_widget'];
-		echo $args['before_title'] . esc_html( $title ) . $args['after_title'];
+		echo $args['before_widget']; // phpcs:ignore WordPress.XSS.EscapeOutput
+		echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // phpcs:ignore WordPress.XSS.EscapeOutput
 
-		if ( empty( $this->lists ) ) : ?>
-			<div>
-			<?php
-				echo wp_kses( $this->locale->inactive_notice, [
-					'a' => [
-						'href' => true,
-						'target' => true,
-					],
-				] );
-				?>
-			</div>
-		<?php
-			else :
-				echo render( $instance );
-			endif;
+		if ( ! Includes\is_mailchimp_api_valid() ) {
+			the_inactive_notice();
+		} else {
+			echo render( $instance );
+		}
 
-			echo $args['after_widget'];
+		echo $args['after_widget']; // phpcs:ignore WordPress.XSS.EscapeOutput
 	}
 
 	/**
@@ -112,17 +103,12 @@ final class Widget extends WP_Widget {
 	 * @param array $instance Current settings.
 	 */
 	public function form( $instance ) {
+
 		$options = wp_parse_args( $instance, $this->default_attrs );
 
-		if ( empty( $this->lists ) ) :
-		?>
-
-		<div class="wp-chimp-notice">
-			<p><?php echo wp_kses_post( $this->locale->inactive_notice ); ?></p>
-		</div>
-
-		<?php else : ?>
-
+		if ( ! Includes\is_mailchimp_api_valid() ) :
+			the_inactive_notice();
+		else : ?>
 		<p class="wp-chimp-list-select">
 			<label for="<?php echo esc_attr( $this->get_field_id( 'list_id' ) ); ?>">
 				<span class="dashicons dashicons-index-card"></span>
@@ -156,7 +142,6 @@ final class Widget extends WP_Widget {
 			<label for="<?php echo esc_attr( $this->get_field_id( 'button_text' ) ); ?>"><?php esc_attr_e( 'Button Text:', 'wp-chimp' ); ?></label>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'button_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'button_text' ) ); ?>" type="text" value="<?php echo esc_attr( $options['button_text'] ); ?>">
 		</p>
-
 	<?php
 		endif;
 	}

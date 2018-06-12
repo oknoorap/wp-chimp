@@ -62,12 +62,13 @@ function get_the_lists_total_items() {
  *
  * @return int
  */
-function get_the_mailchimp_api_status() {
+function is_mailchimp_api_valid() {
 
 	$api_key = (bool) get_the_mailchimp_api_key();
 	$api_key_status = get_the_mailchimp_api_key_status();
+	$total_items = get_the_lists_total_items();
 
-	return $api_key && $api_key_status;
+	return $api_key && $api_key_status && 0 < $total_items;
 }
 
 /**

@@ -293,8 +293,7 @@ class Plugin {
 
 		return Utilities\convert_keys_to_camel_case( [
 			'rest_api_url' => get_the_rest_api_url(),
-			'mailchimp_api_status' => get_the_mailchimp_api_status(),
-			'lists_total_items' => get_the_lists_total_items(),
+			'mailchimp_api_status' => is_mailchimp_api_valid(),
 		] );
 	}
 

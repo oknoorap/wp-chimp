@@ -38,6 +38,19 @@ function get_the_lists() {
 }
 
 /**
+ * Undocumented function
+ *
+ * @return void
+ */
+function get_the_lists_count() {
+
+	$lists = get_the_lists();
+	$lists_count = count( $lists );
+
+	return absint( $lists_count );
+}
+
+/**
  * Function to get the default MailChimp list.
  *
  * The default is currently picked up of the first one
@@ -50,7 +63,7 @@ function get_the_lists() {
 function get_the_default_list() {
 
 	$default = [];
-	$lists   = get_the_lists();
+	$lists = get_the_lists();
 
 	if ( 1 <= count( $lists ) ) {
 		$default = $lists[0]['list_id'];
@@ -79,10 +92,26 @@ function get_the_locale_strings( $key = '' ) {
 		'footer_text' => __( 'We hate spam too, unsubscribe at any time.', 'wp-chimp' ),
 
 		// translators: %1$s the MailChimp List knowledgebase link URL, %2$s the "Chimp" setting page.
-		'inactive_notice' => sprintf( __( 'Subscription Form is inactive. You might haven\'t yet input the MailChimp API key to %1$s or your MailChimp account might not contain a %2$s.', 'wp-chimp' ), '<a href="' . admin_url( 'options-general.php?page=wp-chimp' ) . '" target="_blank">' . __( 'the Settings page', 'wp-chimp' ) . '</a>', '<a href="https://kb.mailchimp.com/lists" target="_blank">' . __( 'List', 'wp-chimp' ) . '</a>' ),
+		'inactive_notice' => sprintf( __( 'Subscription Form is inactive. You might haven\'t yet input the MailChimp API key to %s', 'wp-chimp' ), '<a href="' . admin_url( 'options-general.php?page=wp-chimp' ) . '" target="_blank">' . __( 'the Settings page', 'wp-chimp' ) . '</a>' ),
 	];
 
 	return isset( $locale[ $key ] ) ? $locale[ $key ] : $locale;
+}
+
+/**
+ * Undocumented function
+ *
+ * @param string $key
+ * @return void
+ */
+function the_locale_strings( $key = '' ) {
+	$locale_strings = get_the_locale_strings( $key );
+	echo wp_kses( $locale_strings, [
+		'a' => [
+			'href' => true,
+			'target' => true,
+		],
+	] );
 }
 
 /**
@@ -105,6 +134,49 @@ function get_the_default_attrs() {
 }
 
 /**
+ * Undocumented function
+ *
+ * @since 0.1.0
+ *
+ * @return void
+ */
+function get_the_inactive_notice() {
+
+	$notice = '';
+
+	if ( current_user_can( 'manage_options' ) ) :
+		ob_start();
+	?>
+	<div class="wp-chimp-notice wp-chimp-notice--warning">
+		<p><?php the_local_strings( 'inactive_notice' ); ?></p>
+	</div>
+	<?php
+
+	$notice = ob_get_contents();
+	ob_end_clean();
+	endif;
+
+	return $notice;
+}
+
+/**
+ * Undocumented function
+ *
+ * @since 0.1.0
+ *
+ * @return void
+ */
+function the_inactive_notice() {
+	$notice = get_the_inactive_notice();
+	echo wp_kses( $notice, [
+		'div' => [
+			'class' => true,
+		],
+		'p' => true,
+	] );
+}
+
+/**
  * Function to transform the array keys to camelCase.
  *
  * This function will be used to convert associative array that
@@ -118,8 +190,8 @@ function get_the_default_attrs() {
  */
 function render( array $attrs ) {
 
-	if ( empty( $attrs['list_id'] ) ) {
-		return;
+	if ( ! Includes\is_mailchimp_api_valid() || empty( $attrs['list_id'] ) ) {
+		return get_the_inactive_notice();
 	}
 
 	$attrs = wp_parse_args( $attrs, get_the_default_attrs() );
