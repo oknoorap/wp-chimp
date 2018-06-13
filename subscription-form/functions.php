@@ -99,12 +99,19 @@ function get_the_locale_strings( $key = '' ) {
 }
 
 /**
- * Undocumented function
+ * Echo the locale strings.
  *
- * @param string $key
+ * @since 0.1.0
+ *
+ * @param string $key (Required) An array key to select the string from `get_locale_strings`.
  * @return void
  */
-function the_locale_strings( $key = '' ) {
+function the_locale_strings( $key ) {
+
+	if ( empty( $key ) ) {
+		return;
+	}
+
 	$locale_strings = get_the_locale_strings( $key );
 	echo wp_kses( $locale_strings, [
 		'a' => [
@@ -146,7 +153,7 @@ function get_the_inactive_notice() {
 
 	$notice = '';
 
-	if ( current_user_can( 'manage_options' ) ) :
+	if ( current_user_can( 'administrator' ) ) :
 		ob_start();
 	?>
 	<div class="wp-chimp-notice wp-chimp-notice--warning">
@@ -162,7 +169,9 @@ function get_the_inactive_notice() {
 }
 
 /**
- * Undocumented function
+ * Echo the Subscription Form inactive notice.
+ *
+ * The notification will only appear to the admin.
  *
  * @since 0.1.0
  *

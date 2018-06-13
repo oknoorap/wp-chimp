@@ -257,7 +257,7 @@ final class Query {
 	 *
 	 * @return int The number of rows in the table
 	 */
-	public function count_rows() {
+	public static function count_rows() {
 		global $wpdb;
 		return absint( $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->chimp_lists" ) );
 	}
