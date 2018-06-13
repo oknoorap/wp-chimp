@@ -6,12 +6,18 @@ import snakeCaseKeys from 'snakecase-keys';
 const wp = window.wp || {};
 const { Component, createElement: el } = wp.element;
 const { RichText } = wp.editor;
+const { withState } = wp.components;
 
 class FormView extends Component {
 
+  onSetActiveEditable( newEditable ) {
+    const { setState } = this.props;
+    setState({ editable: newEditable });
+  }
+
   render() {
 
-    const { className, attributes, setAttributes } = this.props;
+    const { attributes, setAttributes, isSelected, className, editable } = this.props;
     const { headingText, subHeadingText, emailPlaceholderText, buttonText, footerText } = camelCaseKeys( attributes );
 
     return el( 'div', {
@@ -23,7 +29,7 @@ class FormView extends Component {
         tagName: 'h3',
         className: `${className}__heading ${className}--editable`,
         value: headingText,
-        isSelected: false,
+        formattingControls: [],
         onChange: ( text ) => setAttributes( snakeCaseKeys({ headingText: text }) )
       }),
       el( RichText, {
@@ -32,7 +38,7 @@ class FormView extends Component {
         tagName: 'p',
         className: `${className}__sub-heading ${className}--editable`,
         value: subHeadingText,
-        isSelected: false,
+        formattingControls: [ 'bold', 'italic', 'link' ],
         onChange: ( text ) => setAttributes( snakeCaseKeys({ subHeadingText: text }) )
       }),
       el( 'div', { className: `${className}__inputs` }, [
@@ -42,7 +48,7 @@ class FormView extends Component {
           tagName: 'div',
           className: `${className}__email-field ${className}--editable`,
           value: emailPlaceholderText,
-          isSelected: false,
+          formattingControls: [],
           onChange: ( text ) => setAttributes( snakeCaseKeys({ emailPlaceholderText: text }) )
         }),
         el( RichText, {
@@ -51,7 +57,7 @@ class FormView extends Component {
           tagName: 'div',
           className: `${className}__button ${className}--editable`,
           value: buttonText,
-          isSelected: false,
+          formattingControls: [],
           onChange: ( text ) => setAttributes( snakeCaseKeys({ buttonText: text }) )
         })
       ]),
@@ -61,11 +67,13 @@ class FormView extends Component {
         tagName: 'p',
         className: `${className}__footer ${className}--editable`,
         value: footerText,
-        isSelected: false,
+        formattingControls: [ 'bold', 'italic', 'link' ],
         onChange: ( text ) => setAttributes( snakeCaseKeys({ footerText: text }) )
       })
     ]);
   }
 }
 
-export default FormView;
+export default withState({
+	editable: null
+})( FormView );

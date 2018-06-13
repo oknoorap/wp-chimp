@@ -49,6 +49,26 @@
 			color: $gray-dark;
 		}
 
+		&__sub-heading,
+		&__footer {
+
+			a {
+				border: 0;
+				color: $color-url;
+				text-decoration-line: underline;
+				text-decoration-style: solid;
+				text-decoration-color: $color-url;
+			}
+
+			a:hover {
+				border: 0;
+				color: $color-url-hover;
+				text-decoration-line: underline;
+				text-decoration-style: solid;
+				text-decoration-color: $color-url-hover;
+			}
+		}
+
 		&__inputs {
 			margin-top: 1em;
 		}
@@ -123,17 +143,17 @@
 
 		&__url {
 			border: 0 !important;
-			color: #0073aa;
+			color: $color-url;
 			text-decoration-line: underline;
 			text-decoration-style: solid;
-			text-decoration-color: #0073aa;
+			text-decoration-color: $color-url;
 		}
 
 		&__url:hover {
-			color: #00a0d2;
+			color: $color-url-hover;
 			text-decoration-line: underline;
 			text-decoration-style: solid;
-			text-decoration-color: #00a0d2;
+			text-decoration-color: $color-url-hover;
 		}
 	}
 }

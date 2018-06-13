@@ -166,7 +166,7 @@ final class Query {
 			return new WP_Error( 'wp_chimp_list_id_exists', esc_html__( 'That MailChimp list ID already exists. Consider using the the update method to update the existing list.', 'wp-chimp' ), $this );
 		}
 
-		$inserted = $wpdb->insert( $wpdb->chimp_lists, self::sanitize_values( $data ),
+		$inserted = $wpdb->insert( $wpdb->chimp_lists, $this->sanitize_values( $data ),
 			[ '%s', '%s', '%d', '%d', '%s' ]
 		);
 
@@ -198,7 +198,7 @@ final class Query {
 
 		unset( $data['list_id'] ); // Remove the `list_id` from the updated column.
 
-		$updated = $wpdb->update( $wpdb->chimp_lists, self::sanitize_values( $data ),
+		$updated = $wpdb->update( $wpdb->chimp_lists, $this->sanitize_values( $data ),
 			[ 'list_id' => $id ],
 			[ '%s', '%d', '%d', '%s' ],
 			[ '%s' ]
@@ -257,7 +257,7 @@ final class Query {
 	 *
 	 * @return int The number of rows in the table
 	 */
-	public static function count_rows() {
+	public function count_rows() {
 		global $wpdb;
 		return absint( $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->chimp_lists" ) );
 	}
@@ -318,7 +318,7 @@ final class Query {
 	 * @param  array $data The unsanitize data.
 	 * @return array Sanitized values.
 	 */
-	static private function sanitize_values( array $data ) {
+	private function sanitize_values( array $data ) {
 
 		$sanitized_data = [];
 		foreach ( $data as $key => $value ) {

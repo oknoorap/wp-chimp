@@ -220,12 +220,34 @@ function render( array $attrs ) {
 
 	<div class="wp-chimp-subscription-form">
 		<h3 class="wp-chimp-subscription-form__heading"><?php echo esc_html( $attrs['heading_text'] ); ?></h3>
-		<p class="wp-chimp-subscription-form__sub-heading"><?php echo esc_html( $attrs['sub_heading_text'] ); ?></p>
+		<p class="wp-chimp-subscription-form__sub-heading">
+		<?php
+			echo wp_kses( $attrs['sub_heading_text'], [
+				'strong' => true,
+				'em' => true,
+				'a' => [
+					'href' => true,
+					'target' => true,
+				],
+			] );
+		?>
+		</p>
 		<form class="wp-chimp-subscription-form__inputs" method="POST" action="<?php echo esc_attr( $action_url ); ?>">
 			<input class="wp-chimp-subscription-form__email-field" name="email" type="email" placeholder="<?php echo esc_html( $attrs['email_placeholder_text'] ); ?>">
 			<button class="wp-chimp-subscription-form__button"><?php echo esc_html( $attrs['button_text'] ); ?></button>
 		</form>
-		<p class="wp-chimp-subscription-form__footer"><?php echo esc_html( $attrs['footer_text'] ); ?></p>
+		<p class="wp-chimp-subscription-form__footer">
+		<?php
+			echo wp_kses( $attrs['footer_text'], [
+				'strong' => true,
+				'em' => true,
+				'a' => [
+					'href' => true,
+					'target' => true,
+				],
+			] );
+		?>
+		</p>
 	</div>
 
 	<?php
