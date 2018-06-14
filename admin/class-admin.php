@@ -131,7 +131,7 @@ class Admin {
 	 *
 	 * @return void
 	 */
-	public function register_locale_strings() {
+	public function enqueue_locale_scripts() {
 
 		$screen = get_current_screen();
 

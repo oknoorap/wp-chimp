@@ -85,11 +85,19 @@ function get_the_locale_strings( $key = '' ) {
 	$locale = [
 		'title' => __( 'Subscription Form', 'wp-chimp' ),
 		'description' => __( 'Display a MailChimp subscription form.', 'wp-chimp' ),
+
+		// Default text in the "Subscription Form".
 		'heading_text' => __( 'Subscribe', 'wp-chimp' ),
 		'sub_heading_text' => __( 'Get notified of our next update right to your inbox', 'wp-chimp' ),
 		'email_placeholder_text' => __( 'Enter your email address', 'wp-chimp' ),
 		'button_text' => __( 'Submit', 'wp-chimp' ),
 		'footer_text' => __( 'We hate spam too, unsubscribe at any time.', 'wp-chimp' ),
+
+		// Notices message.
+		'subscribed_notice' => __( 'You\'ve sucessfully subscribed.', 'wp-chimp' ),
+		'error_notice' => __( 'Oops!, an unexpected error occured. Please try it again in a moment.', 'wp-chimp' ),
+		'email_invalid_notice' => __( 'Oops!, it looks like your email address is invalid.', 'wp-chimp' ),
+		'double_optin_notice' => __( 'You\'re almost done. Please check your email box to confirm your subscription.', 'wp-chimp' ),
 
 		// translators: %1$s the MailChimp List knowledgebase link URL, %2$s the "Chimp" setting page.
 		'inactive_notice' => sprintf( __( 'Subscription Form is currently inactive. You might haven\'t yet input the MailChimp API key to %1$s or your MailChimp account might not contain a %2$s.', 'wp-chimp' ), '<a href="' . admin_url( 'options-general.php?page=wp-chimp' ) . '" target="_blank" class="wp-chimp-notice__url">' . __( 'the Settings page', 'wp-chimp' ) . '</a>', '<a href="https://kb.mailchimp.com/lists" target="_blank" class="wp-chimp-notice__url">' . __( 'List', 'wp-chimp' ) . '</a>' ),
@@ -147,12 +155,9 @@ function get_the_default_attrs() {
  *
  * @since 0.1.0
  *
- * @return void
+ * @return string
  */
 function get_the_inactive_notice() {
-
-	$notice = '';
-
 	if ( current_user_can( 'administrator' ) ) :
 		ob_start();
 	?>
@@ -195,16 +200,15 @@ function the_inactive_notice() {
 }
 
 /**
- * Function to transform the array keys to camelCase.
+ * Render the "Subscription Form" HTML.
  *
- * This function will be used to convert associative array that
- * will be used in JavaScript.
+ * This function will handle "Subscription Form" output from the Widget,
+ * Block, and Shortcode.
  *
  * @since 0.1.0
  *
  * @param  array $attrs The attributes to assign to the .
- * @return null|string Associative array with the key converted to camelcase,
- *                     otherwise 'null' if the list ID is not present.
+ * @return string The "Subscription Form" HTML markup or a notice if it's inactive.
  */
 function render( array $attrs ) {
 
@@ -213,7 +217,7 @@ function render( array $attrs ) {
 	}
 
 	$attrs = wp_parse_args( $attrs, get_the_default_attrs() );
-	$action_url = Includes\get_the_rest_api_url() . "lists/{$attrs['list_id']}";
+	$action_url = Includes\get_the_rest_api_url() . "/lists/{$attrs['list_id']}";
 
 	ob_start();
 	?>
@@ -221,32 +225,34 @@ function render( array $attrs ) {
 	<div class="wp-chimp-subscription-form">
 		<h3 class="wp-chimp-subscription-form__heading"><?php echo esc_html( $attrs['heading_text'] ); ?></h3>
 		<p class="wp-chimp-subscription-form__sub-heading">
-		<?php
-			echo wp_kses( $attrs['sub_heading_text'], [
-				'strong' => true,
-				'em' => true,
-				'a' => [
-					'href' => true,
-					'target' => true,
-				],
-			] );
-		?>
+	<?php
+		echo wp_kses( $attrs['sub_heading_text'], [
+			'strong' => [],
+			'em' => [],
+			'a' => [
+				'href' => true,
+				'target' => true,
+			],
+		] );
+	?>
 		</p>
-		<form class="wp-chimp-subscription-form__inputs" method="POST" action="<?php echo esc_attr( $action_url ); ?>">
-			<input class="wp-chimp-subscription-form__email-field" name="email" type="email" placeholder="<?php echo esc_html( $attrs['email_placeholder_text'] ); ?>">
-			<button class="wp-chimp-subscription-form__button"><?php echo esc_html( $attrs['button_text'] ); ?></button>
+		<form class="wp-chimp-subscription-form__form" method="POST" action="<?php echo esc_attr( $action_url ); ?>">
+			<fieldset class="wp-chimp-subscription-form__fieldset">
+				<input class="wp-chimp-subscription-form__email-field" name="email" type="email" placeholder="<?php echo esc_html( $attrs['email_placeholder_text'] ); ?>" required>
+				<button class="wp-chimp-subscription-form__button" type="submit"><?php echo esc_html( $attrs['button_text'] ); ?></button>
+			</fieldset>
 		</form>
 		<p class="wp-chimp-subscription-form__footer">
-		<?php
-			echo wp_kses( $attrs['footer_text'], [
-				'strong' => true,
-				'em' => true,
-				'a' => [
-					'href' => true,
-					'target' => true,
-				],
-			] );
-		?>
+	<?php
+		echo wp_kses( $attrs['footer_text'], [
+			'strong' => [],
+			'em' => [],
+			'a' => [
+				'href' => true,
+				'target' => true,
+			],
+		] );
+	?>
 		</p>
 	</div>
 

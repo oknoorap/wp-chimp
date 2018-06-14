@@ -69,7 +69,7 @@ final class Query {
 
 		$args = wp_parse_args( $args, [
 			'count'  => 10,
-			'offset' => 0
+			'offset' => 0,
 		]);
 
 		$lists = $wpdb->get_results( $wpdb->prepare("
@@ -121,16 +121,28 @@ final class Query {
 	public function get_by_the_id( $id = '' ) {
 		global $wpdb;
 
-		if ( is_string( $id ) && ! empty( $id ) ) {
-
+		if ( ! empty( $list_id ) ) {
 			$list = $wpdb->get_row( $wpdb->prepare("
 				SELECT list_id, name, subscribers, double_optin
 				FROM $wpdb->chimp_lists
 				WHERE list_id = %s
-			", [ $id ] ), ARRAY_A );
+			", [ $list_id ] ), ARRAY_A );
 		}
 
 		return null === $list ? [] : $list;
+	}
+
+	/**
+	 * Check if the
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param  string $id The MailChimp list ID {@link https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id}.
+	 * @return bool
+	 */
+	public function is_double_optin( $id ) {
+		$list = $this->get_by_the_id( $id );
+		return isset( $list['double_option'] ) && 1 === $list['double_option'];
 	}
 
 	/**

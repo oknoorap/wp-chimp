@@ -135,7 +135,7 @@ final class Widget extends WP_Widget {
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'sub_heading_text' ) ); ?>"><?php esc_attr_e( 'Sub-heading Text:', 'wp-chimp' ); ?></label>
-			<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'sub_heading_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sub_heading_text' ) ); ?>" rows="2"><?php echo esc_html( $options['sub_heading_text'] ); ?></textarea>
+			<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'sub_heading_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sub_heading_text' ) ); ?>" rows="2"><?php echo esc_textarea( $options['sub_heading_text'] ); ?></textarea>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'email_placeholder_text' ) ); ?>"><?php esc_attr_e( 'Input Email Placeholder:', 'wp-chimp' ); ?></label>
@@ -147,7 +147,7 @@ final class Widget extends WP_Widget {
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'footer_text' ) ); ?>"><?php esc_attr_e( 'Footer Text:', 'wp-chimp' ); ?></label>
-			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'footer_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'footer_text' ) ); ?>" type="text" value="<?php echo esc_attr( $options['footer_text'] ); ?>">
+			<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'footer_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'footer_text' ) ); ?>" rows="2"><?php echo esc_textarea( $options['footer_text'] ); ?></textarea>
 		</p>
 	<?php
 	}

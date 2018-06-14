@@ -155,7 +155,7 @@ class Plugin {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'register_locale_strings' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_locale_scripts' );
 
 		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
 		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
@@ -245,7 +245,10 @@ class Plugin {
 		$this->loader->add_action( 'init', $subscription_form, 'register_block' );
 		$this->loader->add_action( 'init', $subscription_form, 'register_shortcode' );
 		$this->loader->add_action( 'widgets_init', $subscription_form, 'register_widget' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $subscription_form, 'register_locale_strings', 30 );
+
+		$this->loader->add_action( 'wp_enqueue_scripts', $subscription_form, 'enqueue_scripts', 30 );
+		$this->loader->add_action( 'wp_enqueue_scripts', $subscription_form, 'enqueue_locale_scripts', 30 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $subscription_form, 'admin_enqueue_locale_scripts', 30 );
 	}
 
 	/**
@@ -256,7 +259,7 @@ class Plugin {
 	 * @return void
 	 */
 	private function define_settings_hooks() {
-		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'register_settings_state', 30 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_setting_state', 30 );
 	}
 
 	/**
@@ -272,10 +275,10 @@ class Plugin {
 	 *
 	 * @return void
 	 */
-	public function register_settings_state() {
+	public function enqueue_setting_state() {
 
-		$state = self::get_plugin_state();
-		$data = 'var wpChimpPluginState = ' . wp_json_encode( $state );
+		$state = self::get_setting_state();
+		$data = 'var wpChimpSettingState = ' . wp_json_encode( $state );
 
 		wp_add_inline_script( $this->plugin_name, $data, 'before' );
 		wp_add_inline_script( 'wp-chimp-subscription-form-editor', $data, 'before' );
@@ -289,8 +292,7 @@ class Plugin {
 	 *
 	 * @return array
 	 */
-	public static function get_plugin_state() {
-
+	public static function get_setting_state() {
 		return Utilities\convert_keys_to_camel_case( [
 			'rest_api_url' => get_the_rest_api_url(),
 			'mailchimp_api_status' => is_mailchimp_api_valid(),

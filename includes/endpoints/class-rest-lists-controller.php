@@ -96,7 +96,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @access protected
 	 * @var    Storage\Query
 	 */
-	protected $list_query;
+	protected $lists_query;
 
 	/**
 	 * The class constructor.
@@ -214,7 +214,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			[
 				'methods' => WP_REST_Server::READABLE,
 				'callback' => [ $this, 'get_item' ],
-				// 'permission_callback' => [ $this, 'get_item_permissions_check' ],
+				'permission_callback' => [ $this, 'get_item_permissions_check' ],
 				'args' => [
 					'context' => $this->get_context_param( [ 'default' => 'view' ] ),
 				],
@@ -348,7 +348,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Function to update a list ID in '/list' API endpoint.
+	 * Subscribe an email to a MailChimp list.
 	 *
 	 * @since  0.1.0
 	 * @access public
@@ -358,10 +358,22 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 */
 	public function update_item( $request ) {
 
-		$items = [];
-		$response = rest_ensure_response( $items );
+		$response = [];
+		$list_id = $request->get_param( 'id' );
+		$email = $request->get_param( 'email' );
 
-		return $response;
+		if ( is_email( $email ) && ! empty( $list_id ) ) {
+
+			$status = $this->lists_query->is_double_optin() ? 'pending' : 'subscribed';
+			$subscribe = $this->mailchimp->post( "lists/{$list_id}/members", [
+				'email_address' => $email,
+				'status' => $status, // Valid values: subscribed, unsubscribed, cleaned, pending.
+			]);
+		} else {
+			return new WP_Error( 'wp_chimp_invalid_email', __( 'Your email address is invalid.', 'wp-chimp' ), $email );
+		}
+
+		return rest_ensure_response( $response );
 	}
 
 	/**
@@ -601,7 +613,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @return integer The nubmer of lists per page.
+	 * @return int The nubmer of lists per page.
 	 */
 	private static function get_lists_per_page() {
 		return 10;

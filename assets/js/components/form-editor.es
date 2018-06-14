@@ -11,14 +11,13 @@ const { Spinner, withAPIData } = wp.components;
 class FormEditor extends Component {
 
   render() {
-
     const { className, lists } = this.props;
 
-    if ( lists.isLoading ) {
+    if ( lists.isLoading || 'undefined' === typeof lists.data ) {
       return el( 'div', { className: `${className}__loading-lists` }, el( Spinner ) );
     }
 
-    if ( 'undefined' === typeof lists.data || 0 >= lists.data.length ) {
+    if ( 0 >= lists.data.length ) {
       return el( FormInactiveNotice );
     }
 
@@ -33,5 +32,7 @@ class FormEditor extends Component {
 }
 
 export default withAPIData( () => {
-  return { lists: '/wp-chimp/v1/lists?context=block' };
+  return {
+    lists: '/wp-chimp/v1/lists?context=block'
+  };
 })( FormEditor );

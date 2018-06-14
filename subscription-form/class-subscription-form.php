@@ -20,7 +20,7 @@ use WP_Chimp\Includes\Utilities;
  * Class to register "Subscription Form".
  *
  * The Class will register the components surrounding the "Subscription Form"
- * such as the scripts, styles, widget, shortcode, translateable strings, etc.
+ * including scripts, styles, widget, shortcode, locale strings, etc.
  *
  * @since 0.1.0
  * @author Thoriq Firdaus <thoriqoe@gmail.com>
@@ -142,7 +142,6 @@ final class Subscription_Form {
 		register_block_type( 'wp-chimp/subscription-form', [
 			'editor_script' => 'wp-chimp-subscription-form-editor',
 			'editor_style' => 'wp-chimp-subscription-form-editor',
-			'script' => 'wp-chimp-subscription-form',
 			'style' => 'wp-chimp-subscription-form',
 			'render_callback' => __NAMESPACE__ . '\\render',
 			'attributes' => [
@@ -203,12 +202,43 @@ final class Subscription_Form {
 	 *
 	 * @return void
 	 */
-	public function register_locale_strings() {
+	public function admin_enqueue_locale_scripts() {
 
 		$locale = get_the_locale_strings();
 		$data = Utilities\convert_keys_to_camel_case( $locale );
 
 		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', $data );
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_locale_scripts() {
+
+		$locale = [
+			'subscribed_notice' => get_the_locale_strings( 'subscribed_notice' ),
+			'email_invalid_notice' => get_the_locale_strings( 'email_invalid_notice' ),
+			'error_notice' => get_the_locale_strings( 'error_notice' ),
+			'double_optin_notice' => get_the_locale_strings( 'double_optin_notice' ),
+		];
+		$data = Utilities\convert_keys_to_camel_case( $locale );
+
+		wp_localize_script( 'wp-chimp-subscription-form', 'wpChimpL10n', $data );
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_scripts() {
+		wp_enqueue_script( 'wp-chimp-subscription-form' );
 	}
 
 	/**
