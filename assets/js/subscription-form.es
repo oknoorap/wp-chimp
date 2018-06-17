@@ -32,7 +32,7 @@ jQuery( ( $ ) => {
     let noticeMessage;
 
     switch ( response ) {
-      case 'subscribed':
+      case 'success':
         className = 'wp-chimp-notice--success';
         noticeMessage = locale.subscribedNotice;
         break;
@@ -95,8 +95,8 @@ jQuery( ( $ ) => {
     .done( ( response ) => {
       let status;
 
-      if ( 'success' === response.status || 'Member Exists' === response.title ) {
-        status = 'subscribed';
+      if ( 'subscribed' === response.status || 'Member Exists' === response.title ) {
+        status = 'success';
       }
 
       if ( 'invalid_email' === response.status ) {
