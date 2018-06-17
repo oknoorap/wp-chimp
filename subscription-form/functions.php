@@ -30,11 +30,9 @@ function get_the_lists() {
 	$request->set_query_params( [
 		'context' => 'block',
 	] );
-
 	$response = rest_do_request( $request );
-	$data = $response->get_data();
 
-	return Utilities\convert_keys_to_snake_case( $data );
+	return $response->get_data();
 }
 
 /**

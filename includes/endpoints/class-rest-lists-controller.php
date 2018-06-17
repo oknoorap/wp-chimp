@@ -397,8 +397,8 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		$schema = $this->get_item_schema();
 		$props = $schema['properties'];
 
-		if ( ! empty( $props['listId'] ) && isset( $item['list_id'] ) ) {
-			$data['listId'] = wp_strip_all_tags( $item['list_id'], true );
+		if ( ! empty( $props['list_id'] ) && isset( $item['list_id'] ) ) {
+			$data['list_id'] = wp_strip_all_tags( $item['list_id'], true );
 		}
 
 		if ( ! empty( $props['name'] ) && isset( $item['name'] ) ) {
@@ -409,8 +409,8 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			$data['subscribers'] = absint( $item['subscribers'] );
 		}
 
-		if ( ! empty( $props['doubleOptin'] ) && isset( $item['double_optin'] ) ) {
-			$data['doubleOptin'] = absint( $item['double_optin'] );
+		if ( ! empty( $props['double_optin'] ) && isset( $item['double_optin'] ) ) {
+			$data['double_optin'] = absint( $item['double_optin'] );
 		}
 
 		return rest_ensure_response( $data ); // Wrap the data in a response object.
@@ -452,7 +452,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			'title' => __( 'MailChimp Lists', 'wp-chimp' ),
 			'type' => 'object',
 			'properties' => [
-				'listId' => [
+				'list_id' => [
 					'description' => __( 'A string that uniquely identifies this list.', 'wp-chimp' ),
 					'type' => 'string',
 					'readonly' => true,
@@ -471,7 +471,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 						'sanitize_callback' => 'absint',
 					],
 				],
-				'doubleOptin' => [
+				'double_optin' => [
 					'description' => __( 'Whether or not to require the subscriber to confirm subscription via email.', 'wp-chimp' ),
 					'type' => 'boolean',
 					'readonly' => true,

@@ -27,10 +27,10 @@ class TableRow {
    *
    * @since 0.1.0
    *
-   * @param {Object} list
+   * @param {Object} data
    */
-  update( list ) {
-    setChildren( this.el, this.getTableData( list ) );
+  update( data ) {
+    setChildren( this.el, this.getTableData( data ) );
   }
 
   /**
@@ -39,10 +39,11 @@ class TableRow {
    *
    * @since 0.1.0
    *
-   * @param {Object} list
+   * @param {Object} data
    */
-  getTableData( list ) {
+  getTableData( data ) {
 
+    const list = camelCaseKeys( data );
     const dashiconsNo = el( 'span', { className: 'dashicons dashicons-no-alt' });
     const dashiconsYes = el( 'span', { className: 'dashicons dashicons-yes' });
 
