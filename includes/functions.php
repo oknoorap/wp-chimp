@@ -59,6 +59,12 @@ function get_the_lists_total_items() {
 	return absint( $total_items );
 }
 
+function is_lists_init() {
+
+	$init = get_option( 'wp_chimp_lists_init', 0 );
+	return 1 === absint( $init );
+}
+
 /**
  * Check the MailChimp API status.
  *

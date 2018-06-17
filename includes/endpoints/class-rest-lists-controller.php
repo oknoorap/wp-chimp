@@ -20,6 +20,7 @@ use WP_REST_Server;
 use WP_REST_Response;
 use WP_REST_Controller;
 
+use WP_Chimp\Includes;
 use WP_Chimp\Includes\Lists;
 use WP_Chimp\Includes\Utilities;
 
@@ -371,10 +372,10 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 		if ( ! empty( $list_id ) ) {
 
-			$status = $this->lists_query->is_double_optin() ? 'pending' : 'subscribed';
+			$status = $this->get_subscription_status();
 			$response = $this->mailchimp->post( "lists/{$list_id}/members", [
 				'email_address' => $email,
-				'status' => $status, // Valid values: subscribed, unsubscribed, cleaned, pending.
+				'status' => $status, // subscribed OR pending.
 			]);
 
 			return rest_ensure_response( $response );
@@ -499,7 +500,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			'count' => $this->get_lists_per_page(),
 		]);
 
-		if ( 1 !== self::is_lists_init() ) {
+		if ( false === self::is_lists_init() ) {
 			$lists = $this->get_remote_lists( $args );
 		} else {
 			$lists = $this->get_local_lists( $args );
@@ -536,7 +537,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		 * been instantiated yet. While it is in progress, it should not
 		 * dispatch another new processing.
 		 */
-		if ( 0 !== count( $remote_lists ) && 0 === self::is_lists_init() ) {
+		if ( 0 !== count( $remote_lists ) && false === self::is_lists_init() ) {
 			foreach ( $remote_lists as $list ) {
 				$this->lists_process->push_to_queue( $list );
 			}
@@ -570,6 +571,18 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Undocumented function
+	 *
+	 * @param [type] $list_id
+	 * @return string
+	 */
+	private function get_subscription_status( $list_id ) {
+
+		$list = $this->get_local_list_by_the_id( $list_id );
+		return isset( $list['double_option'] ) && 1 === absint( $list['double_option'] ) ? 'pending' : 'subscribed';
+	}
+
+	/**
 	 * Function get the MailChimp API key set.
 	 *
 	 * @since 0.1.0
@@ -578,7 +591,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *                yet been set.
 	 */
 	private static function get_mailchimp_api_key() {
-		return get_option( 'wp_chimp_api_key', '' );
+		return Includes\get_the_mailchimp_api_key();
 	}
 
 	/**
@@ -595,8 +608,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *              otherwise, returns false.
 	 */
 	private static function is_lists_init() {
-		$init = get_option( 'wp_chimp_lists_init', 0 );
-		return absint( $init );
+		return Includes\is_lists_init();
 	}
 
 	/**
@@ -608,8 +620,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return int The total items of the lists.
 	 */
 	private static function get_lists_total_items() {
-		$total_items = get_option( 'wp_chimp_lists_total_items', 0 );
-		return absint( $total_items );
+		return Includes\get_the_lists_total_items();
 	}
 
 	/**
