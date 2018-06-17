@@ -123,7 +123,10 @@ class Page {
 		} ?>
 
 		<div class="wrap wp-chimp-wrap" id="wp-chimp-settings">
-			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+			<header>
+				<h1 class="wp-heading-inline"><?php echo esc_html( get_admin_page_title() ); ?></h1>
+				<button id="wp-chimp-sync-lists" class="page-title-action"><?php esc_html_e( 'Synchronize Lists', 'wp-chimp' ); ?></button>
+			</header>
 
 			<div id="wp-chimp-lists">
 				<table class="widefat striped wp-chimp-table" id="wp-chimp-table-lists">
