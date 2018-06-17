@@ -81,7 +81,7 @@ class Plugin {
 	 * @since 0.1.0
 	 * @param string $plugin_name The name of this plugin.
 	 * @param string $version     The version of this plugin.
-	 * @param string $file_path   The full path and filename of the main plugin file.
+	 * @param string $file_path   The full path of the main plugin file.
 	 */
 	public function __construct( $plugin_name, $version, $file_path ) {
 
@@ -128,9 +128,7 @@ class Plugin {
 	 * @access private
 	 */
 	private function define_languages_hooks() {
-
-		$languages = new Languages( $this->plugin_name, $this->version );
-
+		$languages = new Languages( $this->plugin_name, $this->version, $this->file_path );
 		$this->loader->add_action( 'plugins_loaded', $languages, 'load_plugin_textdomain' );
 	}
 

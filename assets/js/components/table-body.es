@@ -43,8 +43,8 @@ class TableRow {
    */
   getTableData( list ) {
 
-    const dashiconsNo = el( 'span', { 'class': 'dashicons dashicons-no-alt' });
-    const dashiconsYes = el( 'span', { 'class': 'dashicons dashicons-yes' });
+    const dashiconsNo = el( 'span', { className: 'dashicons dashicons-no-alt' });
+    const dashiconsYes = el( 'span', { className: 'dashicons dashicons-yes' });
 
     return [
       el( 'td', {

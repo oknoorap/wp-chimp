@@ -3,7 +3,7 @@
 import { getApiRootStatus, getMailChimpApiStatus } from './components/utilities.es';
 
 import FormEditor from './components/form-editor.es';
-import FormInactiveNotice from './components/form-inactive-notice.es';
+import FormInactive from './components/form-inactive.es';
 
 const wp = window.wp || {};
 const locale = wpChimpL10n;
@@ -57,7 +57,9 @@ registerBlockType( 'wp-chimp/subscription-form', {
   keywords: [ 'form', 'subcribe', 'mailchimp' ],
 
   /**
-   * The edit function describes the structure of your block in the context of the editor.
+   * The edit function describes the structure of your block in the context
+   * of the editor.
+   *
    * This represents what the editor will render when the block is used.
    *
    * @see https://wordpress.org/gutenberg/handbook/block-edit-save/#edit
@@ -66,13 +68,16 @@ registerBlockType( 'wp-chimp/subscription-form', {
    * @return {Element}       Element to render.
    */
   edit( props ) {
-    props.className = 'wp-chimp-subscription-form';
-
     if ( false === getApiRootStatus() || false === getMailChimpApiStatus() ) {
-      return el( FormInactiveNotice );
+      return el( FormInactive, {
+        className: 'wp-chimp-inactive'
+      });
     }
 
-    return el( FormEditor, props );
+    return el( FormEditor, {
+      ...props,
+      className: 'wp-chimp-subscription-form'
+    });
   },
 
   /**

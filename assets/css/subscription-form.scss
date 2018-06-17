@@ -28,8 +28,6 @@
 
 		&__heading,
 		&__sub-heading,
-		&__email-field,
-		&__button,
 		&__footer {
 			display: block;
 			width: 100%;
@@ -69,12 +67,24 @@
 			}
 		}
 
-		&__form {
-			margin-top: 1em;
+		&__footer {
+			font-size: 0.7em;
+			margin: 1.2em 0 0;
+			line-height: 1.2;
+			color: $gray;
 		}
+	}
+
+	.wp-chimp-form {
+
+		margin-top: 1em;
 
 		&__email-field,
 		&__button {
+			display: block;
+			width: 100%;
+			margin: 0;
+
 			border-radius: 3px;
 			font-size: 0.9em;
 			padding: 1em;
@@ -91,13 +101,6 @@
 			color: #fff;
 			text-align: center;
 			font-weight: 600;
-		}
-
-		&__footer {
-			font-size: 0.7em;
-			margin: 1.2em 0 0;
-			line-height: 1.2;
-			color: $gray;
 		}
 	}
 
@@ -123,6 +126,41 @@
 }
 
 .wp-chimp-notice {
+	display: none;
+	font-size: 0.64em;
+	padding: 0.8em 1em;
+	border-radius: 3px;
+	background-color: $gray;
+	color: $gray-dark;
+	margin-top: 0.8em;
+	margin-bottom: 0.6em;
+
+	&--warning {
+		background-color: $color-warning;
+		color: #fff;
+	}
+
+	&--success {
+		background-color: $color-success;
+		color: #fff;
+	}
+
+	&--error {
+		background-color: $color-error;
+		color: #fff;
+	}
+
+	&--info {
+		background-color: $color-info;
+		color: #fff;
+	}
+
+	&.is-displayed {
+		display: block;
+	}
+}
+
+.wp-chimp-inactive {
 	font-size: 0.85em;
 	background: #fff;
 	border-left: 4px solid #ffb900;
@@ -133,7 +171,7 @@
 		padding: 1em 2em;
 	}
 
-	.wp-chimp-notice {
+	.wp-chimp-inactive {
 
 		&__content {
 			margin: 0;

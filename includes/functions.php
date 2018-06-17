@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WP_Chimp\Includes\Endpoints;
 
 /**
- * Function to retrieve the MailChimp API key saved.
+ * Retrieve the MailChimp API key.
  *
  * @since 0.1.0
  *
@@ -33,34 +33,45 @@ function get_the_mailchimp_api_key() {
  * this option is set to `invalid`.
  *
  * @since 0.1.0
- * @see Admin\Page\updated_option();
+ * @see Admin\Page()->updated_option();
  *
  * @return bool Returns `true` if the MailChimp API key is a valid key
  *              else `false`.
  */
 function get_the_mailchimp_api_key_status() {
+
 	$api_key_status = (string) get_option( 'wp_chimp_api_key_status', 'invalid' );
 	return 'invalid' === $api_key_status ? false : true;
 }
 
 /**
- * Function to retrive the number of lists retrieved from the MailChimp accounts.
+ * Retrieve the number of mail lists on the MailChimp account.
+ *
+ * The total items are retrieved from the MailChimp API response when
+ * the API key is added or when the data is resynced.
  *
  * @since 0.1.0
+ * @see Admin\Page()->updated_option();
  *
- * @return int The lists total items.
+ * @return int The Lists total items.
  */
 function get_the_lists_total_items() {
+
 	$total_items = get_option( 'wp_chimp_lists_total_items', 0 );
 	return absint( $total_items );
 }
 
 /**
- * Function to retrieve the MailChimp API status.
+ * Check the MailChimp API status.
+ *
+ * The function check whether the MailChimp API key is set and present,
+ * it's a valid API key, and there's at least 1 mail list in the
+ * account. If these all are met, we can safely assume that
+ * the MailChimp API is valid.
  *
  * @since 0.1.0
  *
- * @return int
+ * @return bool Returns `true` if all conditions are met, otherwise `false`
  */
 function is_mailchimp_api_valid() {
 
@@ -72,22 +83,22 @@ function is_mailchimp_api_valid() {
 }
 
 /**
- * Function to retrieve the WP-Chimp REST API base/namespace.
+ * Retrieve the WP-Chimp REST API base/namespace.
  *
  * @since 0.1.0
  *
- * @return string
+ * @return string The WP-Chimp REST API endpont base URL.
  */
 function get_the_rest_api_namespace() {
 	return Endpoints\REST_Lists_Controller::get_namespace();
 }
 
 /**
- * Function to retrieve the WP-Chimp REST API base URL.
+ * Retrieve the WP-Chimp REST API base URL.
  *
  * @since 0.1.0
  *
- * @return string
+ * @return string The full URL of the WP-Chimp REST API endpoint.
  */
 function get_the_rest_api_url() {
 	return rest_url( get_the_rest_api_namespace() );

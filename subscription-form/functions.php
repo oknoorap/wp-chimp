@@ -1,8 +1,8 @@
 <?php
 /**
- * File to contains the core functions used in the "Subscription Form"
+ * File containing the core functions used in the "Subscription Form"
  *
- * @since 0.1.0
+ * @since   0.1.0
  * @package WP_Chimp\Subscription_Form
  */
 
@@ -18,11 +18,11 @@ use WP_Chimp\Includes;
 use WP_Chimp\Includes\Utilities;
 
 /**
- * Function to get the lists using WP REST API.
+ * Retrieve the MailChimp lists using WP REST API.
  *
  * @since 0.1.0
  *
- * @return array
+ * @return array The MailChimp lists (array keys are converted to snake_case).
  */
 function get_the_lists() {
 
@@ -38,9 +38,14 @@ function get_the_lists() {
 }
 
 /**
- * Undocumented function
+ * Retrieve the MailChimp lists count
  *
- * @return void
+ * It's meant to count the list the actual number of list items retrieved
+ * from the database.
+ *
+ * @since 0.1.0
+ *
+ * @return int The list count number.
  */
 function get_the_lists_count() {
 
@@ -78,7 +83,7 @@ function get_the_default_list() {
  * @since 0.1.0
  *
  * @param string $key The array key to retrieve a specific locale string.
- * @return array The list of translateable strings.
+ * @return array|string The list of translateable strings or a string if the `$key` is defined.
  */
 function get_the_locale_strings( $key = '' ) {
 
@@ -96,7 +101,7 @@ function get_the_locale_strings( $key = '' ) {
 		// Notices message.
 		'subscribed_notice' => __( 'You\'ve sucessfully subscribed.', 'wp-chimp' ),
 		'error_notice' => __( 'Oops!, an unexpected error occured. Please try it again in a moment.', 'wp-chimp' ),
-		'email_invalid_notice' => __( 'Oops!, it looks like your email address is invalid.', 'wp-chimp' ),
+		'email_invalid_notice' => __( 'It looks like your email address is invalid.', 'wp-chimp' ),
 		'double_optin_notice' => __( 'You\'re almost done. Please check your email box to confirm your subscription.', 'wp-chimp' ),
 
 		// translators: %1$s the MailChimp List knowledgebase link URL, %2$s the "Chimp" setting page.
@@ -107,7 +112,10 @@ function get_the_locale_strings( $key = '' ) {
 }
 
 /**
- * Echo the locale strings.
+ * Echo a translate-able string.
+ *
+ * This function is meant to echo out a single translate-able string thus the `$key`
+ * paramater is required.
  *
  * @since 0.1.0
  *
@@ -131,11 +139,11 @@ function the_locale_strings( $key ) {
 }
 
 /**
- * Retrieve the "Subscription Form" default attributes.
+ * Retrieve the list of attributes as the default values on the "Subscription Form".
  *
  * @since 0.1.0
  *
- * @return array
+ * @return array The list of attributes.
  */
 function get_the_default_attrs() {
 
@@ -161,8 +169,8 @@ function get_the_inactive_notice() {
 	if ( current_user_can( 'administrator' ) ) :
 		ob_start();
 	?>
-	<div class="wp-chimp-notice wp-chimp-notice--warning">
-		<p class="wp-chimp-notice__content"><?php the_locale_strings( 'inactive_notice' ); ?></p>
+	<div class="wp-chimp-inactive">
+		<p class="wp-chimp-inactive__content"><?php the_locale_strings( 'inactive_notice' ); ?></p>
 	</div>
 	<?php
 
@@ -200,10 +208,10 @@ function the_inactive_notice() {
 }
 
 /**
- * Render the "Subscription Form" HTML.
+ * Render the "Subscription Form" HTML output.
  *
- * This function will handle "Subscription Form" output from the Widget,
- * Block, and Shortcode.
+ * Handles "Subscription Form" output from the Widget, the Gutenberg Block,
+ * and the Shortcode.
  *
  * @since 0.1.0
  *
@@ -236,10 +244,11 @@ function render( array $attrs ) {
 		] );
 	?>
 		</p>
-		<form class="wp-chimp-subscription-form__form" method="POST" action="<?php echo esc_attr( $action_url ); ?>">
-			<fieldset class="wp-chimp-subscription-form__fieldset">
-				<input class="wp-chimp-subscription-form__email-field" name="email" type="email" placeholder="<?php echo esc_html( $attrs['email_placeholder_text'] ); ?>" required>
-				<button class="wp-chimp-subscription-form__button" type="submit"><?php echo esc_html( $attrs['button_text'] ); ?></button>
+		<div class="wp-chimp-notice"></div>
+		<form class="wp-chimp-form" method="POST" action="<?php echo esc_attr( $action_url ); ?>">
+			<fieldset class="wp-chimp-form__fieldset">
+				<input class="wp-chimp-form__email-field" name="email" type="email" placeholder="<?php echo esc_html( $attrs['email_placeholder_text'] ); ?>" required>
+				<button class="wp-chimp-form__button" type="submit"><?php echo esc_html( $attrs['button_text'] ); ?></button>
 			</fieldset>
 		</form>
 		<p class="wp-chimp-subscription-form__footer">

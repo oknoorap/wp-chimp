@@ -1,4 +1,3 @@
-
 export function getApiRootStatus() {
 
   var status = true;

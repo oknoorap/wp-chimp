@@ -12,8 +12,8 @@ class TablePagination {
   constructor() {
 
     this.el = el( 'div', {
-      'id': 'wp-chimp-table-pagination',
-      'class': 'tablenav-pages'
+      id: 'wp-chimp-table-pagination',
+      className: 'tablenav-pages'
     });
 
     this.nextButton = this.getNextButton();

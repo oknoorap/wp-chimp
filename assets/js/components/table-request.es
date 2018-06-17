@@ -83,6 +83,11 @@ class TableRequest {
       this.configs.data.page = 1 > page ? 1 : page;
     }
 
+    /**
+     * TODO: Phasing out jQuery.
+     *
+     * Make the code less reliant on jQuery.
+     */
     jQuery
       .ajax( this.configs )
       .done( this.onSuccess.bind( this ) )

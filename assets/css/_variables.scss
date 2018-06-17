@@ -6,5 +6,10 @@ $gray-darker    : #2e4453;
 $color-primary  : #d54e21;
 $color-secondary: #0087be;
 
-$color-url: #0073aa;
-$color-url-hover: #00a0d2;
+$color-url      : #0087be;
+$color-url-hover: lighten($color-url, 3%);
+
+$color-success  : #4ab866;
+$color-warning  : #f0821e;
+$color-error    : #d54e21;
+$color-info     : #0087be;

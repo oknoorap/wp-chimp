@@ -2,7 +2,7 @@
 
 import FormView from './form-view.es';
 import FormListSelect from './form-list-select.es';
-import FormInactiveNotice from './form-inactive-notice.es';
+import FormInactive from './form-inactive.es';
 
 const { BlockControls } = wp.blocks;
 const { Component, createElement: el } = wp.element;
@@ -10,15 +10,21 @@ const { Spinner, withAPIData } = wp.components;
 
 class FormEditor extends Component {
 
+  constructor() {
+		super( ...arguments );
+	}
+
   render() {
     const { className, lists } = this.props;
 
     if ( lists.isLoading || 'undefined' === typeof lists.data ) {
-      return el( 'div', { className: `${className}__loading-lists` }, el( Spinner ) );
+      return el( 'div', { className: `${className} is-loading` }, el( Spinner ) );
     }
 
     if ( 0 >= lists.data.length ) {
-      return el( FormInactiveNotice );
+      return el( FormInactive, {
+        className: 'wp-chimp-inactive'
+      });
     }
 
     return [

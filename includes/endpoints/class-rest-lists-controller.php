@@ -362,18 +362,23 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		$list_id = $request->get_param( 'id' );
 		$email = $request->get_param( 'email' );
 
-		if ( is_email( $email ) && ! empty( $list_id ) ) {
+		if ( ! is_email( $email ) ) {
+			return rest_ensure_response([
+				'email_address' => $email,
+				'status' => 'invalid_email',
+			]);
+		}
+
+		if ( ! empty( $list_id ) ) {
 
 			$status = $this->lists_query->is_double_optin() ? 'pending' : 'subscribed';
-			$subscribe = $this->mailchimp->post( "lists/{$list_id}/members", [
+			$response = $this->mailchimp->post( "lists/{$list_id}/members", [
 				'email_address' => $email,
 				'status' => $status, // Valid values: subscribed, unsubscribed, cleaned, pending.
 			]);
-		} else {
-			return new WP_Error( 'wp_chimp_invalid_email', __( 'Your email address is invalid.', 'wp-chimp' ), $email );
-		}
 
-		return rest_ensure_response( $response );
+			return rest_ensure_response( $response );
+		}
 	}
 
 	/**
@@ -572,7 +577,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return string The MailChimp API key or an empty string if it has not
 	 *                yet been set.
 	 */
-	static private function get_mailchimp_api_key() {
+	private static function get_mailchimp_api_key() {
 		return get_option( 'wp_chimp_api_key', '' );
 	}
 
@@ -603,7 +608,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return int The total items of the lists.
 	 */
 	private static function get_lists_total_items() {
-
 		$total_items = get_option( 'wp_chimp_lists_total_items', 0 );
 		return absint( $total_items );
 	}
@@ -628,7 +632,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return int The offset number of the given page requested.
 	 */
 	private static function get_lists_offset( $page ) {
-
 		$offset = ( $page - 1 ) * self::get_lists_per_page();
 		return absint( $offset );
 	}

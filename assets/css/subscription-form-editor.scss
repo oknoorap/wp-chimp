@@ -4,18 +4,6 @@
 
 	margin: 0;
 
-	&--editable {
-
-		&:focus {
-			outline: 1px solid $gray;
-			outline-offset: 2px;
-		}
-	}
-
-	&__email-field {
-		color: $gray;
-	}
-
 	&__select-list {
 		margin: 0;
 		height: 36px;
@@ -25,12 +13,8 @@
 
 		select {
 			width: 100%;
-			max-width: 280px;
+			max-width: 260px;
 			border-radius: 0;
-		}
-
-		.spinner {
-			margin-top: 0;
 		}
 
 		.dashicon {
@@ -38,16 +22,35 @@
 		}
 	}
 
-	&__loading-lists {
+	&.is-loading {
 		display: table;
 		padding: 3em;
-		background: #f3f3f4;
 		height: 120px;
 		text-align: center;
 		width: 100%;
 
 		.spinner {
 			float: none;
+		}
+	}
+
+	// The Form element.
+	.wp-chimp-form {
+
+		&__email-field {
+			color: $gray;
+		}
+	}
+}
+
+.wp-chimp-subscription-form,
+.wp-chimp-subscription-form .wp-chimp-form {
+
+	&.is-editable {
+
+		&:focus {
+			outline: 1px solid $gray;
+			outline-offset: 2px;
 		}
 	}
 }

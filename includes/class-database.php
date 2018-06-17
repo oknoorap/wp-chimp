@@ -7,8 +7,7 @@
  * @version 1.4.0
  * @license https://www.gnu.org/licenses/gpl-2.0.html
  *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/includes/abstract
+ * @package WP_Chimp/Includes
  */
 
 namespace WP_Chimp\Includes;

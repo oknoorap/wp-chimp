@@ -44,11 +44,13 @@ class Languages {
 	 *
 	 * @param string $plugin_name The name of this plugin.
 	 * @param string $version     The version of this plugin.
+	 * @param string $file_path   The full path of the main plugin file.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version, $file_path ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+		$this->version = $version;
+		$this->file_path = $file_path;
 	}
 
 	/**
@@ -57,34 +59,6 @@ class Languages {
 	 * @since 0.1.0
 	 */
 	public function load_plugin_textdomain() {
-
-		load_plugin_textdomain( self::DOMAIN, false, dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/' );
-	}
-
-	/**
-	 * Load the scripts related to i18n of the plugin.
-	 *
-	 * @since 0.1.0
-	 */
-	public function enqueue_scripts() {
-
-		/**
-		 * The translatable strings for the Subscribe Form.
-		 *
-		 * @var array
-		 */
-		$subscription_form_locale = [
-			'subscription_form' => Subscription_Form\get_the_locale_strings(),
-		];
-
-		/**
-		 * The translatable strings with the keys converted to camelCase
-		 *
-		 * @var array
-		 */
-		$locale = Utilities\convert_keys_to_camel_case( $subscription_form_locale );
-
-		wp_localize_script( $this->plugin_name, 'wpChimpL10n', $locale );
-		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', $locale );
+		load_plugin_textdomain( self::DOMAIN, false, dirname( plugin_basename( $this->file_path ) ) . '/languages/' );
 	}
 }

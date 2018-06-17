@@ -10,6 +10,10 @@ const { Dashicon } = wp.components;
 
 class FormListSelect extends Component {
 
+  constructor() {
+    super( ...arguments );
+	}
+
   render() {
 
     const { className, attributes, setAttributes, lists } = this.props;
