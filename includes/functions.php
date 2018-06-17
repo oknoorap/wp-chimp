@@ -13,8 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
-use WP_Chimp\Includes\Endpoints;
-
 /**
  * Retrieve the MailChimp API key.
  *
