@@ -242,7 +242,7 @@ class Page {
 				add_settings_error( 'wp-chimp-invalid-api-key', '401', $e->getMessage() );
 			}
 
-			if ( is_object( $mailchimp ) && $mailchimp instanceof MailChimp ) {
+			if ( $mailchimp instanceof MailChimp ) {
 				$response = $mailchimp->get( 'lists', [
 					'fields' => 'total_items',
 				]);
