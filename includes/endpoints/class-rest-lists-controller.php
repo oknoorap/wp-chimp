@@ -282,7 +282,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 
 			$total_items = $this->get_lists_total_items();
 			$local_lists = $this->get_local_lists([
-				'count' => $total_items,
+				'per_page' => $total_items,
 			]);
 
 			foreach ( $local_lists as $key => $value ) {
@@ -505,9 +505,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	protected function get_lists( array $args ) {
 
 		$lists = [];
-		$args = wp_parse_args( $args, [
-			'count' => $this->get_lists_per_page(),
-		]);
 
 		if ( false === self::is_lists_init() ) {
 			$lists = $this->get_remote_lists( $args );
@@ -549,7 +546,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		 * been instantiated yet. While it is in progress, it should not
 		 * dispatch another new processing.
 		 */
-		if ( 0 !== count( $remote_lists ) && false === self::is_lists_init() ) {
+		if ( 0 < count( $remote_lists ) && false === self::is_lists_init() ) {
 			foreach ( $remote_lists as $list ) {
 				$this->lists_process->push_to_queue( $list );
 			}
@@ -608,6 +605,13 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		return absint( $offset );
 	}
 
+	/**
+	 * Undocumented function
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return int
+	 */
 	protected static function get_lists_total_pages() {
 
 		$total_items = self::get_lists_total_items();
@@ -624,7 +628,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return int The nubmer of lists per page.
 	 */
 	protected static function get_lists_per_page() {
-		return 10;
+		return Includes\get_the_lists_per_page();
 	}
 
 	/**
@@ -683,8 +687,8 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	protected static function remote_lists_response( array $lists, array $args ) {
 
 		$offset = isset( $args['offset'] ) ? absint( $args['offset'] ) : 0;
-		$count  = self::get_lists_per_page();
+		$per_page = self::get_lists_per_page();
 
-		return array_slice( $lists, $offset, $count );
+		return array_slice( $lists, $offset, $per_page );
 	}
 }

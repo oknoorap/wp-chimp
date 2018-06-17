@@ -17,6 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 }
 
 use WP_Error;
+use WP_Chimp\Includes;
 
 /**
  * The class to query the *_chimp_lists table
@@ -68,7 +69,7 @@ final class Query {
 		global $wpdb;
 
 		$args = wp_parse_args( $args, [
-			'count'  => 10,
+			'per_page' => Includes\get_the_lists_per_page(),
 			'offset' => 0,
 		]);
 
@@ -77,7 +78,7 @@ final class Query {
 			FROM $wpdb->chimp_lists
 			LIMIT %d
 			OFFSET %d
-		", [ $args['count'], $args['offset'] ] ), ARRAY_A );
+		", [ $args['per_page'], $args['offset'] ] ), ARRAY_A );
 
 		return $lists;
 	}
