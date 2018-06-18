@@ -28,11 +28,13 @@ function get_the_lists() {
 
 	$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
 	$request->set_query_params( [
-		'context' => 'block',
+		'per_page' => Includes\get_the_lists_total_items(),
 	] );
-	$response = rest_do_request( $request );
 
-	return $response->get_data();
+	$response = rest_do_request( $request );
+	$data = $response->get_data();
+
+	return $data;
 }
 
 /**
