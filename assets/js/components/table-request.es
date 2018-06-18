@@ -27,7 +27,9 @@ class TableRequest {
         'X-WP-Nonce': wpApiSettings.nonce
       },
       beforeSend: this.tableBody.mountPlaceholder(),
-      data: {}
+      data: {
+        'per_page': 10
+      }
     };
 
     this.bindEvents();
