@@ -4,6 +4,8 @@ import FormView from './form-view.es';
 import FormListSelect from './form-list-select.es';
 import FormInactive from './form-inactive.es';
 
+const { listsTotalItems } = wpChimpSettingState;
+
 const { BlockControls } = wp.blocks;
 const { Component, createElement: el } = wp.element;
 const { Spinner, withAPIData } = wp.components;
@@ -16,12 +18,13 @@ class FormEditor extends Component {
 
   render() {
     const { className, lists } = this.props;
+    const { isLoading, data } = lists;
 
-    if ( lists.isLoading || 'undefined' === typeof lists.data ) {
+    if ( isLoading || 'undefined' === typeof data ) {
       return el( 'div', { className: `${className} is-loading` }, el( Spinner ) );
     }
 
-    if ( 0 >= lists.data.length ) {
+    if ( 0 >= data.length ) {
       return el( FormInactive, {
         className: 'wp-chimp-inactive'
       });
@@ -39,6 +42,6 @@ class FormEditor extends Component {
 
 export default withAPIData( () => {
   return {
-    lists: '/wp-chimp/v1/lists?context=block'
+    lists: `/wp-chimp/v1/lists?per_page=${listsTotalItems}`
   };
 })( FormEditor );

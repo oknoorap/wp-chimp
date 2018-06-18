@@ -1,12 +1,14 @@
 'use strict';
 
-import { getApiRootStatus, getMailChimpApiStatus } from './components/utilities.es';
+import { getApiRootStatus } from './components/utilities.es';
 
 import FormEditor from './components/form-editor.es';
 import FormInactive from './components/form-inactive.es';
 
 const wp = window.wp || {};
+
 const locale = wpChimpL10n;
+const { mailchimpApiStatus } = wpChimpSettingState;
 
 const { registerBlockType } = wp.blocks;
 const { createElement: el } = wp.element;
@@ -68,7 +70,7 @@ registerBlockType( 'wp-chimp/subscription-form', {
    * @return {Element}       Element to render.
    */
   edit( props ) {
-    if ( false === getApiRootStatus() || false === getMailChimpApiStatus() ) {
+    if ( false === getApiRootStatus() || false === mailchimpApiStatus ) {
       return el( FormInactive, {
         className: 'wp-chimp-inactive'
       });

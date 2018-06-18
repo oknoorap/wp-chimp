@@ -12,8 +12,3 @@ export function getApiRootStatus() {
 
   return status;
 }
-
-export function getMailChimpApiStatus() {
-  const { mailchimpApiStatus } = wpChimpSettingState;
-  return mailchimpApiStatus;
-}
