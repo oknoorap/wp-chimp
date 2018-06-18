@@ -439,7 +439,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			],
 			'context' => $this->get_context_param( [
 				'default' => 'view',
-				'enum' => [ 'view', 'block' ],
+				'enum' => [ 'view' ],
 			] ),
 		];
 	}
