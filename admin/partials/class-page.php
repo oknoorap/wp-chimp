@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 }
 
 use Exception;
+use WP_Chimp\Includes;
 use WP_Chimp\Includes\Utilities;
 use DrewM\MailChimp\MailChimp;
 
@@ -45,24 +46,6 @@ class Page {
 	 * @var    string  $version The current version of this plugin.
 	 */
 	private $version;
-
-	/**
-	 * The plugin settings.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 * @var    array   $settings The list value of the plugin settings.
-	 */
-	private $settings;
-
-	/**
-	 * The MailChimp API key.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 * @var    string  $mailchimp_api_key The value of user.
-	 */
-	private $mailchimp_api_key;
 
 	/**
 	 * The class constructor.
@@ -123,10 +106,15 @@ class Page {
 		} ?>
 
 		<div class="wrap wp-chimp-wrap" id="wp-chimp-settings">
-			<header>
+
+			<header id="wp-chimp-settings-header">
 				<h1 class="wp-heading-inline"><?php echo esc_html( get_admin_page_title() ); ?></h1>
-				<button id="wp-chimp-sync-lists" class="page-title-action"><?php esc_html_e( 'Synchronize Lists', 'wp-chimp' ); ?></button>
+				<?php if ( Includes\is_mailchimp_api_valid() ) : ?>
+					<button class="page-title-action" id="wp-chimp-sync-lists"><?php esc_html_e( 'Synchronize Lists', 'wp-chimp' ); ?></button>
+				<?php endif; ?>
 			</header>
+
+			<hr class="wp-header-end">
 
 			<div id="wp-chimp-lists">
 				<table class="widefat striped wp-chimp-table" id="wp-chimp-table-lists">
