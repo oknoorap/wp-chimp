@@ -53,13 +53,19 @@ final class Process extends WP_Background_Process {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param mixed $item Queue item to iterate over.
+	 * @param mixed $data Queue item to iterate over.
 	 * @return mixed
 	 */
-	protected function task( $item ) {
+	protected function task( $data ) {
 
-		$item['synced_at'] = date( 'Y-m-d H:i:s' );
-		$this->lists_query->insert( $item );
+		$list = $this->lists_query->get_by_the_id( $data['list_id'] );
+		$data['synced_at'] = date( 'Y-m-d H:i:s' );
+
+		if ( ! empty( $list ) && isset( $list['list_id'] ) && $list['list_id'] === $data['list_id'] ) {
+			$this->lists_query->update( $data['list_id'], (array) $data );
+		} else {
+			$this->lists_query->insert( (array) $data );
+		}
 
 		return false;
 	}

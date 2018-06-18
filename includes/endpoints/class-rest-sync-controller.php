@@ -32,7 +32,7 @@ use DrewM\MailChimp\MailChimp;
  * @since  0.1.0
  * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
-final class REST_Lists_Sync_Controller extends WP_REST_Controller {
+final class REST_Sync_Controller extends WP_REST_Controller {
 
 	/**
 	 * The plugin API version.
@@ -136,7 +136,7 @@ final class REST_Lists_Sync_Controller extends WP_REST_Controller {
 	 * @return string
 	 */
 	public static function get_rest_base() {
-		return 'lists';
+		return 'sync';
 	}
 
 	/**
@@ -192,7 +192,7 @@ final class REST_Lists_Sync_Controller extends WP_REST_Controller {
 	public function register_routes() {
 
 		/**
-		 * Register the '/lists' route to retrieve a collection of MailChimp list.
+		 * Register the '/sync/lists' route to retrieve a collection of MailChimp list.
 		 *
 		 * @uses WP_REST_Server
 		 */
@@ -201,6 +201,7 @@ final class REST_Lists_Sync_Controller extends WP_REST_Controller {
 				'methods' => WP_REST_Server::READABLE,
 				'callback' => [ $this, 'get_items' ],
 				'permission_callback' => [ $this, 'get_items_permissions_check' ],
+				'args' => $this->get_collection_params(),
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
 		]);
@@ -317,6 +318,7 @@ final class REST_Lists_Sync_Controller extends WP_REST_Controller {
 		$per_page = absint( $request->get_param( 'per_page' ) );
 
 		$lists = $this->get_lists( [
+			'page' => $page_num,
 			'per_page' => $per_page,
 			'offset' => self::get_lists_offset( $page_num, $per_page ),
 		] );
@@ -414,26 +416,32 @@ final class REST_Lists_Sync_Controller extends WP_REST_Controller {
 				'count' => self::get_lists_total_items(),
 			]);
 
-			if ( $this->mailchimp->success() ) {
+			if ( $this->mailchimp->success() && is_array( $lists ) && ! empty( $lists ) ) {
+
 				$lists = Utilities\sort_mailchimp_lists( $lists['lists'] );
+				$this->process_lists( $lists ); // Add lists to the "Background Process".
 			}
 		}
 
-		/**
-		 * Make sure to only kick-in the "background processing" when it hasn't
-		 * been instantiated yet. While it is in progress, it should not
-		 * dispatch another new processing.
-		 */
-		if ( 0 < count( $lists ) ) {
+		return self::remote_lists_response( (array) $lists, $args );
+	}
 
+	/**
+	 * Add Lists to the Background Process to add each of the Lists to the database.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $lists The Lists data retrieved from the MailChimp API response.
+	 * @return void
+	 */
+	protected function process_lists( array $lists ) {
+
+		if ( 0 < count( $lists ) ) {
 			foreach ( $lists as $list ) {
 				$this->lists_process->push_to_queue( $list );
 			}
-
 			$this->lists_process->save()->dispatch();
 		}
-
-		return self::remote_lists_response( $lists, $args );
 	}
 
 	/**
@@ -487,6 +495,23 @@ final class REST_Lists_Sync_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Retrieve the number of items.
+	 *
+	 * The number is obtained from the MailChimp API response during the initialization,
+	 * when the API key is first added.
+	 *
+	 * @since 0.1.0
+	 * @see Admin\Page->updated_option();
+	 *
+	 * @return int The total items of the lists.
+	 */
+	protected static function get_lists_total_items() {
+
+		$total_items = Includes\get_the_lists_total_items();
+		return absint( $total_items );
+	}
+
+	/**
 	 * Function to filter the lists output for WP-API response.
 	 *
 	 * Ensure that the output follows the parameter passsed in the endpoint
@@ -498,11 +523,13 @@ final class REST_Lists_Sync_Controller extends WP_REST_Controller {
 	 * @param array $args The arguments passed in the endpoint query strings.
 	 * @return array The filtered MailChimp lists.
 	 */
-	protected static function remote_lists_response( array $lists, array $args ) {
+	protected static function remote_lists_response( array $lists, array $args = [] ) {
 
-		$offset = isset( $args['offset'] ) ? absint( $args['offset'] ) : 0;
-		$per_page = isset( $args['per_page'] ) ? absint( $args['per_page'] ) : self::get_lists_total_items();
+		$args = wp_parse_args( $args, [
+			'offset' => 0,
+			'per_page' => self::get_lists_total_items(),
+		] );
 
-		return array_slice( $lists, $offset, $per_page );
+		return array_slice( $lists, $args['offset'], $args['per_page'] );
 	}
 }

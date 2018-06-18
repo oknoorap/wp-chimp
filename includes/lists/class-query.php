@@ -58,9 +58,10 @@ final class Query {
 	 * @since 0.1.0
 	 *
 	 * @param array $args {
-	 *		The query arguments.
-	 * 		@type integer $count  The number of lists to retrieve.
-	 *  	@type integer $offset The number of lists to displace or pass over.
+	 *      The query arguments.
+	 *
+	 *      @type integer $per_page  The number of lists to retrieve.
+	 *      @type integer $offset The number of lists to displace or pass over.
 	 * }
 	 * @return array An associative array of the MailChimp list ID.
 	 *               Or, an empty array if the table is empty.
@@ -111,15 +112,14 @@ final class Query {
 	/**
 	 * Function to get the MailChimp list by the List ID.
 	 *
-	 * @since  0.1.0
-	 * @access public
+	 * @since 0.1.0
 	 *
-	 * @param  string $id The MailChimp list ID {@link https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id}.
+	 * @param string $list_id The MailChimp list ID {@link https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id}.
 	 * @return array An associative array of the List from the database.
 	 *               Or, an empty array if the list is not present,
 	 *               with the $id is not present.
 	 */
-	public function get_by_the_id( $id = '' ) {
+	public function get_by_the_id( $list_id = '' ) {
 		global $wpdb;
 
 		if ( ! empty( $list_id ) ) {
@@ -134,10 +134,9 @@ final class Query {
 	}
 
 	/**
-	 * Function to insert a new entry of MailChimp List to the table.
+	 * Insert a new entry of MailChimp List to the table.
 	 *
 	 * @since  0.1.0
-	 * @access public
 	 *
 	 * @param  array $data The data to add into the table.
 	 * @return int|bool|WP_Error Should return 1 the data has been success fully added.
@@ -179,14 +178,13 @@ final class Query {
 	}
 
 	/**
-	 * Function to update the existing entry in the MailChimp List table.
+	 * Update the existing entry in the MailChimp List table.
 	 *
-	 * @since  0.1.0
-	 * @access public
+	 * @since 0.1.0
 	 *
-	 * @param  string $id   The MailChimp list ID {@link https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id}
-	 *                      to be updated.
-	 * @param  array  $data An array of data to be updated to the $id.
+	 * @param string $id   The MailChimp list ID {@link https://kb.mailchimp.com/lists/manage-contacts/find-your-list-id}
+	 *                     to be updated.
+	 * @param array  $data An array of data to be updated to the $id.
 	 * @return int|false Number of rows affected/selected or false on error
 	 */
 	public function update( $id = '', array $data ) {

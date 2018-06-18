@@ -199,7 +199,9 @@ class Plugin {
 
 		$lists_query = new Lists\Query();
 		$lists_process = new Lists\Process();
+
 		$lists_rest = new Endpoints\REST_Lists_Controller( $this->plugin_name, $this->version );
+		$sync_rest = new Endpoints\REST_Sync_Controller( $this->plugin_name, $this->version );
 
 		/**
 		 * The MailChimp API key.
@@ -209,8 +211,11 @@ class Plugin {
 		$api_key = (string) get_option( 'wp_chimp_api_key', '' );
 
 		if ( ! empty( $api_key ) ) {
+
 			$mailchimp = new MailChimp( $api_key );
+
 			$lists_rest->set_mailchimp( $mailchimp );
+			$sync_rest->set_mailchimp( $mailchimp );
 		}
 
 		/**
@@ -219,6 +224,7 @@ class Plugin {
 		 */
 		$lists_process->set_lists_query( $lists_query );
 		$lists_rest->set_lists_query( $lists_query );
+		$sync_rest->set_lists_query( $lists_query );
 
 		/**
 		 * Add Lists\Process instance to Endpoints\REST_Lists_Controller
@@ -226,8 +232,10 @@ class Plugin {
 		 * MailChimp API response.
 		 */
 		$lists_rest->set_lists_process( $lists_process );
+		$sync_rest->set_lists_process( $lists_process );
 
-		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' ); // Register the `/lists` API endpoint.
+		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' ); // Register `/lists` endpoint.
+		$this->loader->add_action( 'rest_api_init', $sync_rest, 'register_routes' ); // Register `/lists/sync` endpoint.
 	}
 
 	/**

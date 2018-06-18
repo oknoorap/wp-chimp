@@ -337,6 +337,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$per_page = absint( $request->get_param( 'per_page' ) );
 
 		$lists = $this->get_lists( [
+			'page' => $page_num,
 			'per_page' => $per_page,
 			'offset' => self::get_lists_offset( $page_num, $per_page ),
 		] );
@@ -378,11 +379,12 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	public function get_item( $request ) {
 
 		$response = [];
-		$list_id = $request->get_param( 'id' );
-		$data = $this->get_local_list_by_the_id( $list_id );
 
-		if ( ! empty( $data ) ) {
-			$item     = $this->prepare_item_for_response( $data, $request );
+		$list_id = $request->get_param( 'id' );
+		$list = $this->lists_query->get_by_the_id( $list_id );
+
+		if ( ! empty( $list ) ) {
+			$item = $this->prepare_item_for_response( $list, $request );
 			$response = rest_ensure_response( $item );
 		}
 
