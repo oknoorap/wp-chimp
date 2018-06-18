@@ -437,6 +437,12 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 				'sanitize_callback' => 'absint',
 				'default' => 1,
 			],
+			'per_page' => [
+				'description' => __( 'Maximum number of items to be returned in result set.', 'wp-chimp' ),
+				'type' => 'integer',
+				'sanitize_callback' => 'absint',
+				'default' => self::get_lists_per_page(), // 10.
+			],
 			'context' => $this->get_context_param( [
 				'default' => 'view',
 				'enum' => [ 'view' ],
