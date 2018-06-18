@@ -226,7 +226,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		]);
 	}
 
-		/**
+	/**
 	 * Get the query params for collections
 	 *
 	 * @since 0.1.0
@@ -248,15 +248,11 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 				'sanitize_callback' => 'absint',
 				'default' => self::get_lists_total_items(),
 			],
-			'context' => $this->get_context_param( [
-				'default' => 'view',
-				'enum' => [ 'view' ],
-			] ),
 		];
 	}
 
 	/**
-	 * Retrieves the list's schema, conforming to JSON Schema.
+	 * Retrieves the Lists schema, conforming to JSON Schema.
 	 *
 	 * @since 0.1.0
 	 *
@@ -310,14 +306,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return bool
 	 */
 	public function get_items_permissions_check( $request ) {
-
-		$method = $request->get_method();
-
-		if ( 'GET' === $method ) {
-			return current_user_can( 'manage_options' );
-		} else {
-			return true;
-		}
+		return true;
 	}
 
 	/**
@@ -353,7 +342,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		] );
 
 		$total_items = self::get_lists_total_items();
-		$total_pages = self::get_lists_total_pages();
+		$total_pages = self::get_lists_total_pages( $per_page );
 
 		foreach ( $lists as $key => $list ) {
 			$data = $this->prepare_item_for_response( $list, $request );
