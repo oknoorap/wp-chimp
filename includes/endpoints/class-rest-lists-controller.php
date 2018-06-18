@@ -216,9 +216,6 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 				'methods' => WP_REST_Server::READABLE,
 				'callback' => [ $this, 'get_item' ],
 				'permission_callback' => [ $this, 'get_item_permissions_check' ],
-				'args' => [
-					'context' => $this->get_context_param( [ 'default' => 'view' ] ),
-				],
 			],
 			[
 				'methods' => WP_REST_Server::EDITABLE,
