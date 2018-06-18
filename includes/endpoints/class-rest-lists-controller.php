@@ -200,8 +200,8 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			[
 				'methods' => WP_REST_Server::READABLE,
 				'callback' => [ $this, 'get_items' ],
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
 				'args' => $this->get_collection_params(),
+				'permission_callback' => [ $this, 'get_items_permissions_check' ],
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
 		]);
@@ -224,6 +224,80 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
 		]);
+	}
+
+		/**
+	 * Get the query params for collections
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return array
+	 */
+	public function get_collection_params() {
+
+		return [
+			'page' => [
+				'description' => __( 'Current page of the collection.', 'wp-chimp' ),
+				'type' => 'integer',
+				'sanitize_callback' => 'absint',
+				'default' => self::get_default_page(),
+			],
+			'per_page' => [
+				'description' => __( 'Maximum number of items to be returned in result set.', 'wp-chimp' ),
+				'type' => 'integer',
+				'sanitize_callback' => 'absint',
+				'default' => self::get_lists_total_items(),
+			],
+			'context' => $this->get_context_param( [
+				'default' => 'view',
+				'enum' => [ 'view' ],
+			] ),
+		];
+	}
+
+	/**
+	 * Retrieves the list's schema, conforming to JSON Schema.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return array Item schema data.
+	 */
+	public function get_item_schema() {
+
+		return [
+			'$schema' => 'http://json-schema.org/draft-04/schema#',
+			'title' => __( 'MailChimp Lists', 'wp-chimp' ),
+			'type' => 'object',
+			'properties' => [
+				'list_id' => [
+					'description' => __( 'A string that uniquely identifies this list.', 'wp-chimp' ),
+					'type' => 'string',
+					'readonly' => true,
+				],
+				'name' => [
+					'description' => __( 'The name of the list.', 'wp-chimp' ),
+					'type' => 'string',
+					'readonly' => true,
+					'arg_options' => 'sanitize_text_field',
+				],
+				'subscribers' => [
+					'description' => __( 'The number of active members in the list.', 'wp-chimp' ),
+					'type' => 'integer',
+					'readonly' => true,
+					'arg_options' => [
+						'sanitize_callback' => 'absint',
+					],
+				],
+				'double_optin' => [
+					'description' => __( 'Whether or not to require the subscriber to confirm subscription via email.', 'wp-chimp' ),
+					'type' => 'boolean',
+					'readonly' => true,
+					'arg_options' => [
+						'sanitize_callback' => 'absint',
+					],
+				],
+			],
+		];
 	}
 
 	/**
@@ -268,38 +342,19 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	public function get_items( $request ) {
 
 		$lists = [];
-
-		$total_items = 0;
-		$total_pages = 0;
-
-		$context = $request->get_param( 'context' );
-		$page_num = $request->get_param( 'page' );
-
-		if ( 'block' === $context ) {
-
-			$total_items = $this->get_lists_total_items();
-			$local_lists = $this->get_local_lists([
-				'per_page' => $total_items,
-			]);
-
-			foreach ( $local_lists as $key => $value ) {
-
-				unset( $value['subscribers'] );
-				unset( $value['double_optin'] );
-
-				$lists[ $key ] = $value;
-			}
-		} else {
-
-			$lists = $this->get_lists( [
-				'offset' => self::get_lists_offset( $page_num ),
-			] );
-
-			$total_items = self::get_lists_total_items();
-			$total_pages = self::get_lists_total_pages();
-		}
-
 		$items = [];
+
+		$page_num = absint( $request->get_param( 'page' ) );
+		$per_page = absint( $request->get_param( 'per_page' ) );
+
+		$lists = $this->get_lists( [
+			'per_page' => $per_page,
+			'offset' => self::get_lists_offset( $page_num, $per_page ),
+		] );
+
+		$total_items = self::get_lists_total_items();
+		$total_pages = self::get_lists_total_pages();
+
 		foreach ( $lists as $key => $list ) {
 			$data = $this->prepare_item_for_response( $list, $request );
 			$items[] = $this->prepare_response_for_collection( $data );
@@ -308,15 +363,15 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 		$response = rest_ensure_response( $items );
 
 		if ( $page_num ) {
-			$response->header( 'X-WP-Chimp-Lists-Page', absint( $page_num ) );
+			$response->header( 'X-WP-Chimp-Lists-Page', $page_num );
 		}
 
 		if ( $total_items ) {
-			$response->header( 'X-WP-Chimp-Lists-Total', absint( $total_items ) );
+			$response->header( 'X-WP-Chimp-Lists-Total', $total_items );
 		}
 
 		if ( $total_pages ) {
-			$response->header( 'X-WP-Chimp-Lists-TotalPages', absint( $total_pages ) );
+			$response->header( 'X-WP-Chimp-Lists-TotalPages', $total_pages );
 		}
 
 		return $response;
@@ -422,81 +477,7 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the query params for collections
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return array
-	 */
-	public function get_collection_params() {
-
-		return [
-			'page' => [
-				'description' => __( 'Current page of the collection.', 'wp-chimp' ),
-				'type' => 'integer',
-				'sanitize_callback' => 'absint',
-				'default' => 1,
-			],
-			'per_page' => [
-				'description' => __( 'Maximum number of items to be returned in result set.', 'wp-chimp' ),
-				'type' => 'integer',
-				'sanitize_callback' => 'absint',
-				'default' => self::get_lists_per_page(), // 10.
-			],
-			'context' => $this->get_context_param( [
-				'default' => 'view',
-				'enum' => [ 'view' ],
-			] ),
-		];
-	}
-
-	/**
-	 * Retrieves the list's schema, conforming to JSON Schema.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return array Item schema data.
-	 */
-	public function get_item_schema() {
-
-		return [
-			'$schema' => 'http://json-schema.org/draft-04/schema#',
-			'title' => __( 'MailChimp Lists', 'wp-chimp' ),
-			'type' => 'object',
-			'properties' => [
-				'list_id' => [
-					'description' => __( 'A string that uniquely identifies this list.', 'wp-chimp' ),
-					'type' => 'string',
-					'readonly' => true,
-				],
-				'name' => [
-					'description' => __( 'The name of the list.', 'wp-chimp' ),
-					'type' => 'string',
-					'readonly' => true,
-					'arg_options' => 'sanitize_text_field',
-				],
-				'subscribers' => [
-					'description' => __( 'The number of active members in the list.', 'wp-chimp' ),
-					'type' => 'integer',
-					'readonly' => true,
-					'arg_options' => [
-						'sanitize_callback' => 'absint',
-					],
-				],
-				'double_optin' => [
-					'description' => __( 'Whether or not to require the subscriber to confirm subscription via email.', 'wp-chimp' ),
-					'type' => 'boolean',
-					'readonly' => true,
-					'arg_options' => [
-						'sanitize_callback' => 'absint',
-					],
-				],
-			],
-		];
-	}
-
-	/**
-	 * Function to get call the API to get list from MailChimp.
+	 * Retieve MailChimp Lists.
 	 *
 	 * @since 0.1.0
 	 *
@@ -506,196 +487,89 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *               the key, added is invalid.
 	 */
 	protected function get_lists( array $args ) {
-
-		$lists = [];
-
-		if ( false === self::is_lists_init() ) {
-			$lists = $this->get_remote_lists( $args );
-		} else {
-			$lists = $this->get_local_lists( $args );
-		}
-
-		return $lists;
-	}
-
-	/**
-	 * Function to get the list from MailChimp API.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param array $args The arguments passed in the Endpoint query strings.
-	 * @return mixed Returns an object of the lists, or an Exception if the API key added
-	 *               is invalid.
-	 */
-	protected function get_remote_lists( array $args = [] ) {
-
-		$remote_lists = [];
-		$api_args = [
-			'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin',
-			'count' => self::get_lists_total_items(),
-		];
-
-		if ( $this->mailchimp instanceof MailChimp ) {
-
-			$lists = $this->mailchimp->get( 'lists', $api_args );
-
-			if ( $this->mailchimp->success() ) {
-				$remote_lists = Utilities\sort_mailchimp_lists( $lists['lists'] );
-			}
-		}
-
-		/**
-		 * Make sure to only kick-in the "background processing" when it hasn't
-		 * been instantiated yet. While it is in progress, it should not
-		 * dispatch another new processing.
-		 */
-		if ( 0 < count( $remote_lists ) && false === self::is_lists_init() ) {
-			foreach ( $remote_lists as $list ) {
-				$this->lists_process->push_to_queue( $list );
-			}
-			$this->lists_process->save()->dispatch();
-		}
-
-		return self::remote_lists_response( $remote_lists, $args );
-	}
-
-	/**
-	 * Function to get the MailChimp list from the cache or the database.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param array $args The arguments passed in the Endpoint query strings.
-	 * @return array Returns an object of the lists, empty array, or an Exception
-	 *               if the API key added is invalid.
-	 */
-	protected function get_local_lists( $args ) {
 		return $this->lists_query->query( $args );
 	}
 
 	/**
-	 * Undocumented function
+	 * Retrieve the subscription status for the subscriber.
 	 *
-	 * @param [type] $list_id
-	 * @return array
-	 */
-	protected function get_local_list_by_the_id( $list_id ) {
-		return $this->lists_query->get_by_the_id( $list_id );
-	}
-
-	/**
-	 * Undocumented function
+	 * @since 0.1.0
+	 * @link https://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/
 	 *
-	 * @param [type] $list_id
-	 * @return string
+	 * @param string $list_id A MailChimp List ID.
+	 * @return string Returns `pending` if the Double Optin option is enabled on the list,
+	 *                otherwise returns `subscribed`.
 	 */
 	protected function get_subscription_status( $list_id ) {
 
-		$list = $this->get_local_list_by_the_id( $list_id );
-		return isset( $list['double_option'] ) && 1 === absint( $list['double_option'] ) ? 'pending' : 'subscribed';
+		$list = $this->lists_query->get_by_the_id( $list_id );
+		return isset( $list['double_optin'] ) && 1 === absint( $list['double_optin'] ) ? 'pending' : 'subscribed';
 	}
 
 	/**
-	 * Function to get the offset lists.
+	 * Retrieve the Lists offset.
+	 *
+	 * Offset the result set by a specific number of items. Primarily used for determinating
+	 * pagination on the Lists table in the Settings page.
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param int $page The page number requested.
+	 * @param int $page_num The page number requested.
+	 * @param int $per_page The page number requested.
 	 * @return int The offset number of the given page requested.
 	 */
-	protected static function get_lists_offset( $page_num ) {
+	protected static function get_lists_offset( $page_num, $per_page ) {
 
-		$offset = ( absint( $page_num ) - 1 ) * self::get_lists_per_page();
+		$offset = ( absint( $page_num ) - 1 ) * absint( $per_page );
 		return absint( $offset );
 	}
 
 	/**
-	 * Undocumented function
+	 * Retrieve the total pages.
+	 *
+	 * The total number could be used for determinating the pagination of the Lists table
+	 * in the Settings page.
 	 *
 	 * @since 0.1.0
 	 *
-	 * @return int
+	 * @param int $per_page Maximum number of items to be returned in result.
+	 * @return int The number of pages.
 	 */
-	protected static function get_lists_total_pages() {
+	protected static function get_lists_total_pages( $per_page ) {
 
 		$total_items = self::get_lists_total_items();
-		$total_pages = ceil( $total_items / self::get_lists_per_page() );
+		$total_pages = ceil( $total_items / absint( $per_page ) );
 
 		return absint( $total_pages );
 	}
 
 	/**
-	 * Function to get the list item to show per page.
+	 * Retrieve the default page number.
+	 *
+	 * The number could be overidden by adding the 'page' parameter on the endpoint URL.
 	 *
 	 * @since 0.1.0
 	 *
-	 * @return int The nubmer of lists per page.
+	 * @return int The default page number.
 	 */
-	protected static function get_lists_per_page( $per_page = 0 ) {
-
-		$per_page = absint( $per_page );
-		$per_page = 0 < $per_page ? $per_page : Includes\get_the_lists_per_page();
-
-		return absint( $per_page );
+	protected static function get_default_page() {
+		return 1;
 	}
 
 	/**
-	 * Function get the MailChimp API key set.
+	 * Retrieve the number of items.
+	 *
+	 * The number is obtained from the MailChimp API response during the initialization,
+	 * when the API key is first added.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return string The MailChimp API key or an empty string if it has not
-	 *                yet been set.
-	 */
-	protected static function get_mailchimp_api_key() {
-		return Includes\get_the_mailchimp_api_key();
-	}
-
-	/**
-	 * Function to get the number of lists as obtained from the
-	 * MailChimp API response.
-	 *
-	 * @since 0.1.0
+	 * @see Admin\Page->updated_option();
 	 *
 	 * @return int The total items of the lists.
 	 */
 	protected static function get_lists_total_items() {
-		return Includes\get_the_lists_total_items();
-	}
 
-	/**
-	 * Function to check if the data initiliazed
-	 *
-	 * The function should prevent the API to fetch the data directly from MailChimp.
-	 * As the data has been initialized and synced, the wp-cron is the one that
-	 * will fetch the data, and the API should fetch the data from the cached
-	 * query in the database.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return bool Return true if the data has been initialised,
-	 *              otherwise, returns false.
-	 */
-	protected static function is_lists_init() {
-		return Includes\is_lists_init();
-	}
-
-	/**
-	 * Function to filter the lists output for WP-API response.
-	 *
-	 * Ensure that the output follows the parameter passsed in the endpoint
-	 * query strings.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param array $lists The remote lists retrieved from MailChimp API.
-	 * @param array $args The arguments passed in the endpoint query strings.
-	 * @return array The filtered MailChimp lists.
-	 */
-	protected static function remote_lists_response( array $lists, array $args ) {
-
-		$offset = isset( $args['offset'] ) ? absint( $args['offset'] ) : 0;
-		$per_page = self::get_lists_per_page();
-
-		return array_slice( $lists, $offset, $per_page );
+		$total_items = Includes\get_the_lists_total_items();
+		return absint( $total_items );
 	}
 }
