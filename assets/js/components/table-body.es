@@ -8,7 +8,7 @@ import { mount, el, list, setChildren } from 'redom';
  *
  * @type {Object}
  */
-const locale = camelCaseKeys( wpChimpL10n );
+const locale = wpChimpL10n;
 
 /**
  * The Class to render the table row (`tr`) and data (`td`) elements.

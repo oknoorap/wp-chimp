@@ -1,7 +1,5 @@
 'use strict';
 
-import camelCaseKeys from 'camelcase-keys';
-
 /**
  * TODO: Phasing out jQuery.
  *
@@ -17,7 +15,7 @@ jQuery( ( $ ) => {
    *
    * @type {Object}
    */
-  const locale = camelCaseKeys( wpChimpL10n );
+  const locale = wpChimpL10n;
 
   /**
    * Display the notice on and off.
