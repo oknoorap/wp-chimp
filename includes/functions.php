@@ -59,10 +59,6 @@ function get_the_lists_total_items() {
 	return absint( $total_items );
 }
 
-function get_the_lists_per_page() {
-	return 10;
-}
-
 function is_lists_init() {
 
 	$init = get_option( 'wp_chimp_lists_init', 0 );
