@@ -624,8 +624,12 @@ final class REST_Lists_Controller extends WP_REST_Controller {
 	 *
 	 * @return int The nubmer of lists per page.
 	 */
-	protected static function get_lists_per_page() {
-		return Includes\get_the_lists_per_page();
+	protected static function get_lists_per_page( $per_page = 0 ) {
+
+		$per_page = absint( $per_page );
+		$per_page = 0 < $per_page ? $per_page : Includes\get_the_lists_per_page();
+
+		return absint( $per_page );
 	}
 
 	/**
