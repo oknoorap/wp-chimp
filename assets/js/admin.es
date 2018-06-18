@@ -9,7 +9,7 @@ import TablePagination from './components/table-pagination.es';
 document.addEventListener( 'DOMContentLoaded', () => {
 
   const tableBody = new TableBody();
-  const { mailchimpApiStatus } = wpChimpSettingState;
+  const { mailchimpApiStatus, listsInit } = wpChimpSettingState;
 
   if ( false === getApiRootStatus() || false === mailchimpApiStatus ) {
     tableBody.mountEmptyState();
@@ -18,6 +18,13 @@ document.addEventListener( 'DOMContentLoaded', () => {
     const tablePagination = new TablePagination();
     const tableRequest = new TableRequest( tableBody, tablePagination );
 
-    tableRequest.request();
+    if ( false === listsInit ) {
+      tableRequest.request({
+        'url': 'wp-chimp/v1/sync/lists'
+      });
+    } else {
+      tableRequest.request();
+    }
+
   }
 });

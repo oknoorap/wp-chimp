@@ -21,7 +21,6 @@ class TableRequest {
     this.tableBody = tableBody;
     this.tablePagination = tablePagination;
     this.configs = {
-      url: `${wpApiSettings.root}wp-chimp/v1/lists`,
       type: 'GET',
       headers: {
         'X-WP-Nonce': wpApiSettings.nonce
@@ -66,8 +65,10 @@ class TableRequest {
       targetPage = parseInt( event.target.dataset.page, 10 );
     }
 
-    if ( Number.isInteger( targetPage ) && 1 <= targetPage && this.currentPage !== targetPage ) { // The targetPage should not be a NaN.
-      this.request({ 'page': targetPage });
+    if ( Number.isInteger( targetPage ) && 1 <= targetPage && this.currentPage !== targetPage ) {
+      this.request({
+        'page': targetPage
+      });
     }
   }
 
@@ -79,6 +80,8 @@ class TableRequest {
    * @param {Object} args The extra arguments to pass in to the Ajax config.
    */
   request( args = {}) {
+
+    this.configs.url = `${wpApiSettings.root}${args.hasOwnProperty( 'url' ) ? args.url : 'wp-chimp/v1/lists'}`;
 
     if ( args.hasOwnProperty( 'page' ) ) {
       let page = parseInt( args.page, 10 );

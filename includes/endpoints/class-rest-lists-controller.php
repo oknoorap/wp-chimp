@@ -529,7 +529,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	protected static function get_lists_total_pages( $per_page ) {
 
 		$total_items = self::get_lists_total_items();
-		$total_pages = ceil( $total_items / absint( $per_page ) );
+		$total_pages = 0 >= $total_items ? 1 : ceil( $total_items / absint( $per_page ) );
 
 		return absint( $total_pages );
 	}
