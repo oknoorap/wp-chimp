@@ -69,7 +69,7 @@ final class Query {
 		global $wpdb;
 
 		$args = wp_parse_args( $args, [
-			'per_page' => Includes\get_the_lists_per_page(),
+			'per_page' => Includes\get_the_lists_total_items(),
 			'offset' => 0,
 		]);
 
