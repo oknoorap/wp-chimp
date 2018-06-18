@@ -291,10 +291,14 @@ class Plugin {
 	 * @return array
 	 */
 	public static function get_setting_state() {
-		return Utilities\convert_keys_to_camel_case( [
+
+		$args = [
 			'rest_api_url' => get_the_rest_api_url(),
 			'mailchimp_api_status' => is_mailchimp_api_valid(),
-		] );
+			'lists_total_items' => get_the_lists_total_items(),
+		];
+
+		return Utilities\convert_keys_to_camel_case( $args );
 	}
 
 	/**
