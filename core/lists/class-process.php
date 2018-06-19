@@ -11,7 +11,7 @@
  * @subpackage WP_Chimp/admin/partials
  */
 
-namespace WP_Chimp\Includes\Lists;
+namespace WP_Chimp\Core\Lists;
 
 if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;

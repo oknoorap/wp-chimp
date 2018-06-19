@@ -9,7 +9,7 @@ namespace WP_Chimp;
 
 // Load WP_UnitTestCase.
 use WP_UnitTestCase;
-use WP_Chimp\Includes\Utilities;
+use WP_Chimp\Core;
 
 /**
  * The class to test the "Utilities" functions.
@@ -82,7 +82,7 @@ class Test_Utilities extends WP_UnitTestCase {
 	 * @return void
 	 */
 	public function test_sort_mailchimp_lists() {
-		$data = Utilities\sort_mailchimp_lists( $this->raw_data['lists'] );
+		$data = Core\sort_mailchimp_lists( $this->raw_data['lists'] );
 		$this->assertEquals( [
 			[
 				'list_id'      => '520524cb3b',

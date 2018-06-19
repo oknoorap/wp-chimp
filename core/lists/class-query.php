@@ -10,14 +10,14 @@
  * @subpackage WP_Chimp/includes
  */
 
-namespace WP_Chimp\Includes\Lists;
+namespace WP_Chimp\Core\Lists;
 
 if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die( 'No script kiddies please!' );
 }
 
 use WP_Error;
-use WP_Chimp\Includes;
+use WP_Chimp\Core;
 
 /**
  * The class to query the *_chimp_lists table
@@ -70,7 +70,7 @@ final class Query {
 		global $wpdb;
 
 		$args = wp_parse_args( $args, [
-			'per_page' => Includes\get_the_lists_total_items(),
+			'per_page' => Core\get_the_lists_total_items(),
 			'offset' => 0,
 		]);
 

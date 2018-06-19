@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
-use WP_Chimp\Includes\Utilities;
+use WP_Chimp\Core;
 
 /**
  * Class to register "Subscription Form".
@@ -205,7 +205,7 @@ final class Subscription_Form {
 	public function admin_enqueue_locale_scripts() {
 
 		$locale = get_the_locale_strings();
-		$data = Utilities\convert_keys_to_camel_case( $locale );
+		$data = Core\convert_keys_to_camel_case( $locale );
 
 		wp_localize_script( 'wp-chimp-subscription-form-editor', 'wpChimpL10n', $data );
 	}
@@ -225,7 +225,7 @@ final class Subscription_Form {
 			'error_notice' => get_the_locale_strings( 'error_notice' ),
 			'double_optin_notice' => get_the_locale_strings( 'double_optin_notice' ),
 		];
-		$data = Utilities\convert_keys_to_camel_case( $locale );
+		$data = Core\convert_keys_to_camel_case( $locale );
 
 		wp_localize_script( 'wp-chimp-subscription-form', 'wpChimpL10n', $data );
 	}

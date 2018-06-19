@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die( 'No script kiddies please!' );
 }
 
-use WP_Chimp\Includes\Utilities;
+use WP_Chimp\Core;
 use DrewM\MailChimp\MailChimp;
 
 /**
@@ -141,7 +141,7 @@ class Admin {
 				'no_lists' => __( 'No MailChimp lists found', 'wp-chimp' ),
 			];
 
-			wp_localize_script( $this->plugin_name, 'wpChimpL10n', Utilities\convert_keys_to_camel_case( $locale ) );
+			wp_localize_script( $this->plugin_name, 'wpChimpL10n', Core\convert_keys_to_camel_case( $locale ) );
 		}
 	}
 }

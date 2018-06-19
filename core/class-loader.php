@@ -9,7 +9,7 @@
  * @subpackage WP_Chimp/includes
  */
 
-namespace WP_Chimp\Includes;
+namespace WP_Chimp\Core;
 
 /**
  * Register all actions and filters for the plugin.

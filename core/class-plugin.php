@@ -10,7 +10,7 @@
  * @package WP_Chimp/Includes
  */
 
-namespace WP_Chimp\Includes;
+namespace WP_Chimp\Core;
 
 /* If this file is called directly, abort. */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -40,7 +40,7 @@ class Plugin {
 	 * the plugin.
 	 *
 	 * @since 0.1.0
-	 * @var WP_Chimp\Includes\Loader $loader Maintains and registers all hooks for the plugin.
+	 * @var WP_Chimp\Core\Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -107,8 +107,7 @@ class Plugin {
 	 */
 	private function load_dependencies() {
 
-		require_once plugin_dir_path( $this->file_path ) . 'includes/utilities.php'; // Load the helper and utility functions.
-		require_once plugin_dir_path( $this->file_path ) . 'includes/functions.php'; // Load core funcions.
+		require_once plugin_dir_path( $this->file_path ) . 'core/functions.php';
 		require_once plugin_dir_path( $this->file_path ) . 'subscription-form/functions.php';
 
 		/**
@@ -308,7 +307,7 @@ class Plugin {
 			'lists_init' => is_lists_init(),
 		];
 
-		return Utilities\convert_keys_to_camel_case( $args );
+		return convert_keys_to_camel_case( $args );
 	}
 
 	/**
@@ -336,7 +335,7 @@ class Plugin {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since 0.1.0
-	 * @return WP_Chimp\Includes\Loader Orchestrates the hooks of the plugins.
+	 * @return WP_Chimp\Core\Loader Orchestrates the hooks of the plugins.
 	 */
 	public function get_loader() {
 		return $this->loader;

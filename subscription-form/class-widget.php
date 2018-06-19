@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_Widget;
 use WP_REST_Request;
-use WP_Chimp\Includes;
+use WP_Chimp\Core;
 
 /**
  * Class to define the "Subscribe Form" widget.
@@ -102,7 +102,7 @@ final class Widget extends WP_Widget {
 
 		$options = wp_parse_args( $instance, $this->default_attrs );
 
-		if ( ! Includes\is_mailchimp_api_valid() || 0 >= get_the_lists_count() ) :
+		if ( ! Core\is_mailchimp_api_valid() || 0 >= get_the_lists_count() ) :
 			the_inactive_notice();
 			return;
 		endif;

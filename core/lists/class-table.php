@@ -9,9 +9,9 @@
  * @subpackage WP_Chimp/database
  */
 
-namespace WP_Chimp\Includes\Lists;
+namespace WP_Chimp\Core\Lists;
 
-use WP_Chimp\Includes\Database;
+use WP_Chimp\Core\Database;
 
 /**
  * Setup the "chimp_list" database schema

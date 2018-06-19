@@ -8,10 +8,10 @@
 namespace WP_Chimp;
 
 use WP_UnitTestCase;
-use WP_Chimp\Includes\Lists;
+use WP_Chimp\Core\Lists;
 
 /**
- * The class to test the "WP_Chimp\Includes\Lists\Query" instance.
+ * The class to test the "WP_Chimp\Core\Lists\Query" instance.
  *
  * @since 0.1.0
  */
@@ -29,7 +29,7 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 * The Query instance
 	 *
 	 * @since 0.1.0
-	 * @var WP_Chimp\Includes\Lists\Query
+	 * @var WP_Chimp\Core\Lists\Query
 	 */
 	private $lists_query;
 
@@ -126,8 +126,8 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 *
 	 * @since 0.1.0
 	 * @see self::setUp()
-	 * @see WP_Chimp\Includes\Lists\Query()->insert();
-	 * @see WP_Chimp\Includes\Lists\Query()->query();
+	 * @see WP_Chimp\Core\Lists\Query()->insert();
+	 * @see WP_Chimp\Core\Lists\Query()->query();
 	 *
 	 * @return void
 	 */
@@ -180,7 +180,7 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 * Test method to get list of the MailChimp IDs
 	 *
 	 * @since 0.1.0
-	 * @see WP_Chimp\Includes\Lists\Query()->get_list_ids();
+	 * @see WP_Chimp\Core\Lists\Query()->get_list_ids();
 	 *
 	 * @return void
 	 */
@@ -196,7 +196,7 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 * Test method to get the MailChimp list by the list_id
 	 *
 	 * @since 0.1.0
-	 * @see WP_Chimp\Includes\Lists\Query()->get_by_the_id();
+	 * @see WP_Chimp\Core\Lists\Query()->get_by_the_id();
 	 *
 	 * @return void
 	 */
@@ -216,7 +216,7 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 * Test method to update the existing MailChimp list ID in the database
 	 *
 	 * @since 0.1.0
-	 * @see WP_Chimp\Includes\Lists\Query()->update();
+	 * @see WP_Chimp\Core\Lists\Query()->update();
 	 *
 	 * @return void
 	 */
@@ -244,7 +244,7 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 * Test the method to delete the existing MailChimp list ID in the database
 	 *
 	 * @since 0.1.0
-	 * @see WP_Chimp\Includes\Lists\Query()->delete();
+	 * @see WP_Chimp\Core\Lists\Query()->delete();
 	 *
 	 * @return void
 	 */
@@ -264,7 +264,7 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 * Test the method to empty the MailChimp list ID in the database
 	 *
 	 * @since 0.1.0
-	 * @see WP_Chimp\Includes\Lists\Query()->truncate();
+	 * @see WP_Chimp\Core\Lists\Query()->truncate();
 	 *
 	 * @return void
 	 */

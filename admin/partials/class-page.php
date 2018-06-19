@@ -18,8 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 }
 
 use Exception;
-use WP_Chimp\Includes;
-use WP_Chimp\Includes\Utilities;
+use WP_Chimp\Core;
 use DrewM\MailChimp\MailChimp;
 
 /**
@@ -109,7 +108,7 @@ class Page {
 
 			<header id="wp-chimp-settings-header">
 				<h1 class="wp-heading-inline"><?php echo esc_html( get_admin_page_title() ); ?></h1>
-				<?php if ( Includes\is_mailchimp_api_valid() ) : ?>
+				<?php if ( Core\is_mailchimp_api_valid() ) : ?>
 					<button class="page-title-action" id="wp-chimp-sync-lists-button"><?php esc_html_e( 'Synchronize Lists', 'wp-chimp' ); ?></button>
 				<?php endif; ?>
 			</header>

@@ -12,10 +12,9 @@
  * @subpackage WP_Chimp/includes
  */
 
-namespace WP_Chimp\Includes;
+namespace WP_Chimp\Core;
 
 use WP_Chimp\Subscription_Form;
-use WP_Chimp\Includes\Utilities;
 
 /**
  * Define the internationalization functionality.

@@ -10,7 +10,7 @@
  * @package WP_Chimp/Includes
  */
 
-namespace WP_Chimp\Includes;
+namespace WP_Chimp\Core;
 
 if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
 	die;

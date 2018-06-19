@@ -7,7 +7,7 @@
  * @package WP_Chimp/Includes
  */
 
-namespace WP_Chimp\Includes\Endpoints;
+namespace WP_Chimp\Core\Endpoints;
 
 /* If this file is called directly, abort. */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,9 +20,8 @@ use WP_REST_Server;
 use WP_REST_Response;
 use WP_REST_Controller;
 
-use WP_Chimp\Includes;
-use WP_Chimp\Includes\Lists;
-use WP_Chimp\Includes\Utilities;
+use WP_Chimp\Core;
+use WP_Chimp\Core\Lists;
 
 use DrewM\MailChimp\MailChimp;
 
@@ -32,7 +31,7 @@ use DrewM\MailChimp\MailChimp;
  * @since  0.1.0
  * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
-final class REST_Sync_Controller extends WP_REST_Controller {
+class REST_Lists_Controller extends WP_REST_Controller {
 
 	/**
 	 * The plugin API version.
@@ -100,6 +99,13 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	protected $lists_query;
 
 	/**
+	 * Undocumented variable
+	 *
+	 * @var array
+	 */
+	public $exclude_columns;
+
+	/**
 	 * The class constructor.
 	 *
 	 * @since 0.1.0
@@ -136,7 +142,7 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @return string
 	 */
 	public static function get_rest_base() {
-		return 'sync';
+		return 'lists';
 	}
 
 	/**
@@ -192,16 +198,35 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	public function register_routes() {
 
 		/**
-		 * Register the '/sync/lists' route to retrieve a collection of MailChimp list.
+		 * Register the '/lists' route to retrieve a collection of MailChimp list.
 		 *
 		 * @uses WP_REST_Server
 		 */
-		register_rest_route( $this->namespace, $this->rest_base . '/lists', [
+		register_rest_route( $this->namespace, $this->rest_base, [
 			[
 				'methods' => WP_REST_Server::READABLE,
 				'callback' => [ $this, 'get_items' ],
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
 				'args' => $this->get_collection_params(),
+				'permission_callback' => [ $this, 'get_items_permissions_check' ],
+			],
+			'schema' => [ $this, 'get_public_item_schema' ],
+		]);
+
+		/**
+		 * Register the '/list' route to retrieve a single MailChimp list with their ID.
+		 *
+		 * @uses WP_REST_Server
+		 */
+		register_rest_route( $this->namespace, $this->rest_base . '/(?P<id>[\w-]+)', [
+			[
+				'methods' => WP_REST_Server::READABLE,
+				'callback' => [ $this, 'get_item' ],
+				'permission_callback' => [ $this, 'get_item_permissions_check' ],
+			],
+			[
+				'methods' => WP_REST_Server::EDITABLE,
+				'callback' => [ $this, 'update_item' ],
+				'permission_callback' => [ $this, 'update_item_permissions_check' ],
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
 		]);
@@ -233,7 +258,7 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the list's schema, conforming to JSON Schema.
+	 * Retrieves the Lists schema, conforming to JSON Schema.
 	 *
 	 * @since 0.1.0
 	 *
@@ -288,10 +313,14 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 
-		$wp_rest_nonce = $request->get_header( 'X-WP-Nonce' );
+		$wp_nonce = $request->get_header( 'X-WP-Nonce' );
 		$wp_chimp_nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 
-		if ( wp_verify_nonce( $wp_rest_nonce, 'wp_rest' ) && wp_verify_nonce( $wp_chimp_nonce, 'wp-chimp-setting' ) ) {
+		if ( wp_verify_nonce( $wp_chimp_nonce, 'wp-chimp-setting' ) ) { // wpChimpSettingState.nonce.
+			return true;
+		}
+
+		if ( wp_verify_nonce( $wp_nonce, 'wp_rest' ) ) { // wpAPISetting.nonce.
 			return true;
 		}
 
@@ -309,10 +338,21 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Checks if a request has access to update the specified term.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return bool
+	 */
+	public function update_item_permissions_check( $request ) {
+		return true;
+	}
+
+	/**
 	 * Function to return the response from '/lists' endpoints.
 	 *
 	 * @since  0.1.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object.
@@ -357,6 +397,70 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Function to return the response from '/list' API endpoint.
+	 *
+	 * @since  0.1.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response Response object.
+	 */
+	public function get_item( $request ) {
+
+		$response = [];
+
+		$list_id = $request->get_param( 'id' );
+		$list = $this->lists_query->get_by_the_id( $list_id );
+
+		if ( ! empty( $list ) ) {
+			$item = $this->prepare_item_for_response( $list, $request );
+			$response = rest_ensure_response( $item );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Subscribe an email to a MailChimp list.
+	 *
+	 * @since  0.1.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response Response object.
+	 */
+	public function update_item( $request ) {
+
+		$response = [];
+
+		$list_id  = $request->get_param( 'id' );
+		$email = $request->get_param( 'email' );
+
+		if ( ! is_email( $email ) ) {
+
+			$response = rest_ensure_response([
+				'email_address' => $email,
+				'status' => 'invalid_email',
+			]);
+
+			return $response;
+		}
+
+		if ( ! empty( $list_id ) && $this->mailchimp instanceof MailChimp ) {
+
+			$status = $this->get_subscription_status();
+			$subscription = $this->mailchimp->post( "lists/{$list_id}/members", [
+				'email_address' => $email,
+				'status' => $status,
+			]);
+
+			$response = rest_ensure_response( $subscription );
+
+			return $response;
+		}
+
+		return rest_ensure_response( $response );
+	}
+
+	/**
 	 * Prepares a single MailChimp list output for response.
 	 *
 	 * @since 0.1.0
@@ -368,8 +472,15 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 
 		$data = [];
+
 		$schema = $this->get_item_schema();
+		$nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 		$props = $schema['properties'];
+
+		if ( ! wp_verify_nonce( $nonce, 'wp-chimp-setting' ) ) {
+			unset( $item['double_optin'] );
+			unset( $item['subscribers'] );
+		}
 
 		if ( ! empty( $props['list_id'] ) && isset( $item['list_id'] ) ) {
 			$data['list_id'] = wp_strip_all_tags( $item['list_id'], true );
@@ -391,7 +502,28 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Function to get call the API to get list from MailChimp.
+	 * Filter the Lists column output.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $item The list item.
+	 * @return array The list item with some data sorted out.
+	 */
+	protected function filter_item( array $item ) {
+
+		$excludes = $this->get_exclude_columns();
+
+		if ( ! is_array( $excludes ) || empty( $excludes ) ) {
+			return $item;
+		}
+
+
+
+		return $item;
+	}
+
+	/**
+	 * Retieve MailChimp Lists.
 	 *
 	 * @since 0.1.0
 	 *
@@ -401,56 +533,23 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 *               the key, added is invalid.
 	 */
 	protected function get_lists( array $args ) {
-		$this->lists_query->truncate(); // Remove all the lists in the database first.
-		return $this->get_remote_lists( $args );
+		return $this->lists_query->query( $args );
 	}
 
 	/**
-	 * Function to get the list from MailChimp API.
+	 * Retrieve the subscription status for the subscriber.
 	 *
 	 * @since 0.1.0
+	 * @link https://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/
 	 *
-	 * @param array $args The arguments passed in the Endpoint query strings.
-	 * @return mixed Returns an object of the lists, or an Exception if the API key added
-	 *               is invalid.
+	 * @param string $list_id A MailChimp List ID.
+	 * @return string Returns `pending` if the Double Optin option is enabled on the list,
+	 *                otherwise returns `subscribed`.
 	 */
-	protected function get_remote_lists( array $args = [] ) {
+	protected function get_subscription_status( $list_id ) {
 
-		$lists = [];
-
-		if ( $this->mailchimp instanceof MailChimp ) {
-
-			$lists = $this->mailchimp->get( 'lists', [
-				'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin',
-				'count' => self::get_lists_total_items(),
-			]);
-
-			if ( $this->mailchimp->success() && is_array( $lists ) && ! empty( $lists ) ) {
-
-				$lists = Utilities\sort_mailchimp_lists( $lists['lists'] );
-				$this->process_lists( $lists ); // Add lists to the "Background Process".
-			}
-		}
-
-		return self::remote_lists_response( (array) $lists, $args );
-	}
-
-	/**
-	 * Add Lists to the Background Process to add each of the Lists to the database.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param array $lists The Lists data retrieved from the MailChimp API response.
-	 * @return void
-	 */
-	protected function process_lists( array $lists ) {
-
-		if ( 0 < count( $lists ) ) {
-			foreach ( $lists as $list ) {
-				$this->lists_process->push_to_queue( $list );
-			}
-			$this->lists_process->save()->dispatch();
-		}
+		$list = $this->lists_query->get_by_the_id( $list_id );
+		return isset( $list['double_optin'] ) && 1 === absint( $list['double_optin'] ) ? 'pending' : 'subscribed';
 	}
 
 	/**
@@ -485,7 +584,7 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	protected static function get_lists_total_pages( $per_page ) {
 
 		$total_items = self::get_lists_total_items();
-		$total_pages = ceil( $total_items / absint( $per_page ) );
+		$total_pages = 0 >= $total_items ? 1 : ceil( $total_items / absint( $per_page ) );
 
 		return absint( $total_pages );
 	}
@@ -516,29 +615,7 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 */
 	protected static function get_lists_total_items() {
 
-		$total_items = Includes\get_the_lists_total_items();
+		$total_items = Core\get_the_lists_total_items();
 		return absint( $total_items );
-	}
-
-	/**
-	 * Function to filter the lists output for WP-API response.
-	 *
-	 * Ensure that the output follows the parameter passsed in the endpoint
-	 * query strings.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param array $lists The remote lists retrieved from MailChimp API.
-	 * @param array $args The arguments passed in the endpoint query strings.
-	 * @return array The filtered MailChimp lists.
-	 */
-	protected static function remote_lists_response( array $lists, array $args = [] ) {
-
-		$args = wp_parse_args( $args, [
-			'offset' => 0,
-			'per_page' => self::get_lists_total_items(),
-		] );
-
-		return array_slice( $lists, $args['offset'], $args['per_page'] );
 	}
 }

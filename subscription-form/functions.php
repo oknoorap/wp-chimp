@@ -14,8 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_REST_Request;
-use WP_Chimp\Includes;
-use WP_Chimp\Includes\Utilities;
+use WP_Chimp\Core;
 
 /**
  * Retrieve the MailChimp lists using WP REST API.
@@ -221,12 +220,12 @@ function the_inactive_notice() {
  */
 function render( array $attrs ) {
 
-	if ( ! Includes\is_mailchimp_api_valid() || empty( $attrs['list_id'] ) || 0 >= get_the_lists_count() ) {
+	if ( ! Core\is_mailchimp_api_valid() || empty( $attrs['list_id'] ) || 0 >= get_the_lists_count() ) {
 		return get_the_inactive_notice();
 	}
 
 	$attrs = wp_parse_args( $attrs, get_the_default_attrs() );
-	$action_url = Includes\get_the_rest_api_url() . "/lists/{$attrs['list_id']}";
+	$action_url = Core\get_the_rest_api_url() . "/lists/{$attrs['list_id']}";
 
 	ob_start();
 	?>
