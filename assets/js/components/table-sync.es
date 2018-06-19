@@ -17,6 +17,7 @@ class TableSync {
   constructor( tableRequest ) {
 
     this.tableRequest = tableRequest;
+
     this.syncButton = document.querySelector( '#wp-chimp-sync-lists-button' );
     this.syncButton.addEventListener( 'click', this.onClick.bind( this ) );
   }

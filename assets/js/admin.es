@@ -9,8 +9,8 @@ import TableSync from './components/table-sync.es';
 
 document.addEventListener( 'DOMContentLoaded', () => {
 
-  const tableBody = new TableBody();
   const { mailchimpApiStatus, listsInit } = wpChimpSettingState;
+  const tableBody = new TableBody();
 
   if ( false === getApiRootStatus() || false === mailchimpApiStatus ) {
     tableBody.mountEmptyState();
@@ -27,6 +27,5 @@ document.addEventListener( 'DOMContentLoaded', () => {
     } else {
       tableRequest.request();
     }
-
   }
 });
