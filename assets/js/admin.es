@@ -18,7 +18,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
     const tablePagination = new TablePagination();
     const tableRequest = new TableRequest( tableBody, tablePagination );
-    const tableSync = new TableSync( tableBody );
+    const tableSync = new TableSync( tableRequest );
 
     if ( false === listsInit ) {
       tableRequest.request({

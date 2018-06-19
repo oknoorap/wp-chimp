@@ -110,7 +110,7 @@ class Page {
 			<header id="wp-chimp-settings-header">
 				<h1 class="wp-heading-inline"><?php echo esc_html( get_admin_page_title() ); ?></h1>
 				<?php if ( Includes\is_mailchimp_api_valid() ) : ?>
-					<button class="page-title-action" id="wp-chimp-sync-lists"><?php esc_html_e( 'Synchronize Lists', 'wp-chimp' ); ?></button>
+					<button class="page-title-action" id="wp-chimp-sync-lists-button"><?php esc_html_e( 'Synchronize Lists', 'wp-chimp' ); ?></button>
 				<?php endif; ?>
 			</header>
 
