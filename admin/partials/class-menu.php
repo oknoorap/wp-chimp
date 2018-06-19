@@ -84,9 +84,9 @@ class Menu {
 
 		<p><?php esc_html_e( 'This screen will show a table of the Lists registered in your MailChimp account.', 'wp-chimp' ); ?></p>
 
-		<p><?php esc_html_e( 'You will need to add the MailChimp API key on the provided input field on this screen. Make sure that it\'s a valid API key and that the status is "Enabled". Once the API key is added and validated, it will retrieve all the MailChimp Lists to along with a number of related data such such as the ID, the name, the number of subscribers, and whether the List is double-optin.', 'wp-chimp' ); ?></p>
+		<p><?php esc_html_e( 'You will need to add the MailChimp API key on the provided input field on this screen. Make sure that it\'s a valid API key and that the status is "Enabled". Once the API key is added and validated, it will retrieve the MailChimp Lists along with a number of data such as the ID, the name, the number of subscribers, and whether the List is double-optin.', 'wp-chimp' ); ?></p>
 
-		<p><?php esc_html_e( 'In addition, it will also show the WordPress shortcode of each MailChimp list in which you can copy and paste it to display a MailChimp subcription form for the List selected within the post or the page content.', 'wp-chimp' ); ?></p>
+		<p><?php esc_html_e( 'WordPress shortcode is shown on each of the MailChimp list that you can simply copy and paste it to display the MailChimp subcription form for the selected List in the post or page content.', 'wp-chimp' ); ?></p>
 	<?php
 	}
 
