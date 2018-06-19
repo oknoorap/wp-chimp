@@ -27,6 +27,8 @@ use WP_Chimp\Includes\Utilities;
 function get_the_lists() {
 
 	$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
+	$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+
 	$response = rest_do_request( $request );
 
 	return $response->get_data();

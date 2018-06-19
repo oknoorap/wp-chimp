@@ -17,13 +17,17 @@ class TableRequest {
    */
   constructor( tableBody, tablePagination ) {
 
+    const { nonce: wpRestNonce } = wpApiSettings;
+    const { nonce: wpChimpSettingNonce } = wpChimpSettingState;
+
     this.currentPage = 1;
     this.tableBody = tableBody;
     this.tablePagination = tablePagination;
     this.configs = {
       type: 'GET',
       headers: {
-        'X-WP-Nonce': wpApiSettings.nonce
+        'X-WP-Nonce': wpRestNonce,
+        'X-WP-Chimp-Nonce': wpChimpSettingNonce
       },
       data: {
         'per_page': 10

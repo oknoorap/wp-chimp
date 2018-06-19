@@ -287,7 +287,15 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @return bool
 	 */
 	public function get_items_permissions_check( $request ) {
-		return true;
+
+		$wp_nonce = $request->get_header( 'X-WP-Nonce' );
+		$wp_chimp_nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
+
+		if ( wp_verify_nonce( $wp_nonce, 'wp_rest' ) && wp_verify_nonce( $wp_chimp_nonce, 'wp-chimp-setting' ) ) {
+			return true;
+		}
+
+		return new WP_Error( 'rest_not_allowed', __( 'Sorry, you\'re not allowed to view this.' ), [ 'status' => rest_authorization_required_code() ] );
 	}
 
 	/**

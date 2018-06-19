@@ -100,6 +100,13 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	protected $lists_query;
 
 	/**
+	 * Undocumented variable
+	 *
+	 * @var array
+	 */
+	public $exclude_columns;
+
+	/**
 	 * The class constructor.
 	 *
 	 * @since 0.1.0
@@ -220,7 +227,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 			[
 				'methods' => WP_REST_Server::EDITABLE,
 				'callback' => [ $this, 'update_item' ],
-				'permission_callback' => [ $this, 'get_item_permissions_check' ],
+				'permission_callback' => [ $this, 'update_item_permissions_check' ],
 			],
 			'schema' => [ $this, 'get_public_item_schema' ],
 		]);
@@ -306,7 +313,27 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * @return bool
 	 */
 	public function get_items_permissions_check( $request ) {
-		return true;
+
+		$wp_nonce = $request->get_header( 'X-WP-Nonce' );
+		$wp_chimp_nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
+
+		if ( wp_verify_nonce( $wp_chimp_nonce, 'wp-chimp-setting' ) ) { // wpChimpSettingState.nonce.
+			return true;
+		}
+
+		if ( wp_verify_nonce( $wp_nonce, 'wp_rest' ) ) { // wpAPISetting.nonce.
+
+			/**
+			 * Limit the column to show to the user. If the user is not able to view the 'Setting' page,
+			 * possibly they should not view the number of 'subscribers' and the 'double_optin'
+			 * status.
+			 */
+			$this->exclude_columns = [ 'double_optin', 'subscribers' ];
+
+			return true;
+		}
+
+		return new WP_Error( 'rest_not_allowed', __( 'Sorry, you\'re not allowed to view this.' ), [ 'status' => rest_authorization_required_code() ] );
 	}
 
 	/**
@@ -320,10 +347,21 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Checks if a request has access to update the specified term.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return bool
+	 */
+	public function update_item_permissions_check( $request ) {
+		return true;
+	}
+
+	/**
 	 * Function to return the response from '/lists' endpoints.
 	 *
 	 * @since  0.1.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object.
@@ -371,7 +409,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * Function to return the response from '/list' API endpoint.
 	 *
 	 * @since  0.1.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object.
@@ -395,7 +432,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * Subscribe an email to a MailChimp list.
 	 *
 	 * @since  0.1.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response Response object.
@@ -445,7 +481,10 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 
 		$data = [];
+
 		$schema = $this->get_item_schema();
+		$item = $this->filter_item( $item );
+
 		$props = $schema['properties'];
 
 		if ( ! empty( $props['list_id'] ) && isset( $item['list_id'] ) ) {
@@ -465,6 +504,35 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		}
 
 		return rest_ensure_response( $data ); // Wrap the data in a response object.
+	}
+
+	/**
+	 * Filter the Lists column output.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $item The list item.
+	 * @return array The list item with some data sorted out.
+	 */
+	protected function filter_item( array $item ) {
+
+		$excludes = $this->get_exclude_columns();
+
+		if ( ! is_array( $excludes ) || empty( $excludes ) ) {
+			return $item;
+		}
+
+		foreach ( $item as $key => $value ) {
+			if ( in_array( $key, $excludes, true ) ) {
+				unset( $item[ $key ] );
+			}
+		}
+
+		return $item;
+	}
+
+	protected function get_exclude_columns() {
+		return (array) $this->exclude_columns;
 	}
 
 	/**
