@@ -58,12 +58,6 @@ npm-debug.log
 ######################
 /vendor
 
-# WP-Locker #
-######################
-.env
-/wp-content
-/wordpress
-
 # Exception #
 ######################
 !gulpfile.js
