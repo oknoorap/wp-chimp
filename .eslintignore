@@ -1,7 +1,0 @@
-# Files
-*.min.js
-*.js
-
-# Directories
-node_modules/*
-vendor/*
