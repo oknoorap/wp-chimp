@@ -61,7 +61,7 @@ class TableRow {
       }, list.subscribers ),
       el( 'td', {
         className: 'wp-chimp-table__td-double-optin'
-      }, 0 === list.doubleOptin ? dashiconsNo : dashiconsYes ),
+      }, 0 === list.doubleOptin || ! list.doubleOptin ? dashiconsNo : dashiconsYes ),
       el( 'td', {
         className: 'wp-chimp-table__td-shortcode'
       }, el( 'code', `[wp-chimp list_id="${list.listId}"]` ) )

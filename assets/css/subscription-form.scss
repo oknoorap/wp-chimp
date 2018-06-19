@@ -108,6 +108,8 @@
 	// This style is targetting the front-end view of the subscription form.
 	input[type="email"] {
 
+		color: $gray-dark;
+
 		&:focus {
 			border: 1px solid $gray;
 		}
@@ -127,32 +129,29 @@
 
 .wp-chimp-notice {
 	display: none;
+	border-left: 4px solid #ffb900;
+	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
 	font-size: 0.64em;
 	padding: 0.8em 1em;
-	border-radius: 3px;
-	background-color: $gray;
+	background-color: #fff;
 	color: $gray-dark;
-	margin-top: 0.8em;
-	margin-bottom: 0.6em;
+	margin-top: 1.2em;
+	margin-bottom: 1em;
 
 	&--warning {
-		background-color: $color-warning;
-		color: #fff;
+		border-left-color: $color-warning;
 	}
 
 	&--success {
-		background-color: $color-success;
-		color: #fff;
+		border-left-color: $color-success;
 	}
 
 	&--error {
-		background-color: $color-error;
-		color: #fff;
+		border-left-color: $color-error;
 	}
 
 	&--info {
-		background-color: $color-info;
-		color: #fff;
+		border-left-color: $color-info;
 	}
 
 	&.is-displayed {

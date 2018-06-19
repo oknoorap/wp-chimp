@@ -20,10 +20,11 @@ class FormListSelect extends Component {
     const { listId } = camelCaseKeys( attributes );
 
     let options = lists.data.map( object => {
+      let { listId, name } = camelCaseKeys( object );
+
       return el( 'option', {
-        key: object.listId,
-        value: object.listId
-      }, object.name );
+        value: listId
+      }, name );
     });
 
     return el( 'div', {
@@ -32,7 +33,7 @@ class FormListSelect extends Component {
       el( Dashicon, { icon: 'feedback' }),
       el( 'select', {
         value: listId,
-        onChange: () => setAttributes( snakeCaseKeys({ listId: event.target.value }) )
+        onChange: ( event ) => setAttributes( snakeCaseKeys({ listId: event.target.value }) )
       }, options )
     ]
    );

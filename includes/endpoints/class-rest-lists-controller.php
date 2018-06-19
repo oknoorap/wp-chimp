@@ -322,14 +322,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		}
 
 		if ( wp_verify_nonce( $wp_nonce, 'wp_rest' ) ) { // wpAPISetting.nonce.
-
-			/**
-			 * Limit the column to show to the user. If the user is not able to view the 'Setting' page,
-			 * possibly they should not view the number of 'subscribers' and the 'double_optin'
-			 * status.
-			 */
-			$this->exclude_columns = [ 'double_optin', 'subscribers' ];
-
 			return true;
 		}
 
@@ -483,9 +475,13 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$data = [];
 
 		$schema = $this->get_item_schema();
-		$item = $this->filter_item( $item );
-
+		$nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 		$props = $schema['properties'];
+
+		if ( ! wp_verify_nonce( $nonce, 'wp-chimp-setting' ) ) {
+			unset( $item['double_optin'] );
+			unset( $item['subscribers'] );
+		}
 
 		if ( ! empty( $props['list_id'] ) && isset( $item['list_id'] ) ) {
 			$data['list_id'] = wp_strip_all_tags( $item['list_id'], true );
@@ -522,17 +518,9 @@ class REST_Lists_Controller extends WP_REST_Controller {
 			return $item;
 		}
 
-		foreach ( $item as $key => $value ) {
-			if ( in_array( $key, $excludes, true ) ) {
-				unset( $item[ $key ] );
-			}
-		}
+
 
 		return $item;
-	}
-
-	protected function get_exclude_columns() {
-		return (array) $this->exclude_columns;
 	}
 
 	/**

@@ -112,3 +112,7 @@ function get_the_rest_api_namespace() {
 function get_the_rest_api_url() {
 	return rest_url( get_the_rest_api_namespace() );
 }
+
+function is_rest_request() {
+    return ( defined( 'REST_REQUEST' ) && REST_REQUEST );
+}

@@ -26,12 +26,16 @@ use WP_Chimp\Includes\Utilities;
  */
 function get_the_lists() {
 
+	$response = [];
+
 	$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
 	$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+	$request->set_header( 'X-Requested-With', 'WP_REST_Request' );
 
 	$response = rest_do_request( $request );
+	$response = (array) $response->get_data();
 
-	return $response->get_data();
+	return $response;
 }
 
 /**
