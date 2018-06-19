@@ -53,14 +53,6 @@
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
-  "scripts": {
-    "test": "bash dev-kit/bin/ci-test.sh",
-    "test:flush": "bash dev-kit/bin/ci-test.sh --flush",
-    "test:phpunit": "bash dev-kit/bin/ci-test.sh --skips=phpcs,eslint",
-    "test:phpcs": "bash dev-kit/bin/ci-test.sh --skips=phpunit,eslint",
-    "test:eslint": "bash dev-kit/bin/ci-test.sh --skips=phpunit,phpcs",
-    "precommit": "bash dev-kit/bin/ci-test.sh --precommit"
-  },
   "dependencies": {
     "camelcase-keys": "^4.2.0",
     "redom": "^3.12.4",
@@ -92,5 +84,13 @@
   ],
   "stylelint": {
     "extends": "stylelint-config-wordpress"
-  }
+  },
+  "scripts": {
+    "test": "bash dev-kit/bin/ci-test.sh",
+    "test:flush": "bash dev-kit/bin/ci-test.sh --flush",
+    "test:phpunit": "bash dev-kit/bin/ci-test.sh --skips=phpcs,eslint",
+    "test:phpcs": "bash dev-kit/bin/ci-test.sh --skips=phpunit,eslint",
+    "test:eslint": "bash dev-kit/bin/ci-test.sh --skips=phpunit,phpcs",
+    "precommit": "bash dev-kit/bin/ci-test.sh --precommit"
+  },
 }
