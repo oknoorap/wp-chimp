@@ -7,7 +7,7 @@ import TableRequest from './components/table-request.es';
 import TablePagination from './components/table-pagination.es';
 import TableSync from './components/table-sync.es';
 
-document.addEventListener( 'DOMContentLoaded', () => {
+jQuery( () => {
 
   const { mailchimpApiStatus, listsInit } = wpChimpSettingState;
   const tableBody = new TableBody();
