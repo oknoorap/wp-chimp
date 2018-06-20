@@ -20,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WP_Chimp\Admin;
 use WP_Chimp\Subscription_Form;
 use DrewM\MailChimp\MailChimp;
+use underDEV_Requirements as Requirements;
 
 /**
  * The core plugin class.
@@ -90,6 +91,7 @@ class Plugin {
 		$this->file_path = $file_path;
 
 		$this->load_dependencies();
+		$this->check_requirements();
 
 		$this->define_settings_hooks();
 		$this->define_languages_hooks();
@@ -115,6 +117,46 @@ class Plugin {
 		 * with WordPress.
 		 */
 		$this->loader = new Loader();
+	}
+
+	/**
+	 * Check the plugin requirements.
+	 *
+	 * @since 0.1.0
+	 */
+	private function check_requirements() {
+
+		$this->requirements = new Requirements( __( 'WP Chimp', 'wp-chimp' ), [
+			'php' => '5.4',
+			'wp' => '4.9.6',
+			'wp_cron' => true,
+		]);
+
+		$this->requirements->add_check( 'wp_cron', [ $this, 'check_wp_cron' ] );
+
+		/**
+		 * Run all the checks and check if requirements has been satisfied
+		 * If not - display the admin notice and exit from the file
+		 */
+		if ( ! $this->requirements->satisfied() ) {
+			$this->loader->add_action( 'admin_notices', $this->requirements, 'notice' );
+		}
+	}
+
+	/**
+	 * Check whether the WP-Cron is running.
+	 *
+	 * @since 0.1.0
+	 */
+	public function check_wp_cron() {
+
+		if ( defined( 'ALTERNATE_WP_CRON' ) && ALTERNATE_WP_CRON ) {
+			return;
+		}
+
+		if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
+			$this->requirements->add_error( 'WP-Cron must be running. It is currently disabled using the \'DISABLE_WP_CRON\' constant.' );
+		}
 	}
 
 	/**
