@@ -11,6 +11,7 @@ const gulp         = require( 'gulp' );
 const sass         = require( 'gulp-sass' );
 const autoprefixer = require( 'gulp-autoprefixer' );
 const sourcemaps   = require( 'gulp-sourcemaps' );
+const eslint       = require( 'gulp-eslint' );
 const uglify       = require( 'gulp-uglifyes' );
 
 const sassFiles = [
@@ -29,7 +30,7 @@ const ecmaScriptFiles = [
  * ---------------------------------------------------------------
  * Script tasks
  *
- * Define configurations and tasks to handle transpiling,
+ * Define configurations and tasks to handle linting, transpiling,
  * bundling, and minifying of our JavaScript files.
  * ---------------------------------------------------------------
  */
@@ -56,6 +57,12 @@ gulp.task( 'scripts', () => {
       .pipe( sourcemaps.write( './' ) )
     .pipe( gulp.dest( './assets/js' ) );
   }) );
+});
+
+gulp.task('eslint', () => {
+  return gulp.src('./assets/js/**/*.es')
+    .pipe( eslint() )
+    .pipe( eslint.format() )
 });
 
 /**
@@ -99,7 +106,7 @@ gulp.task( 'styles', () => {
  * ---------------------------------------------------------------
  */
 
-gulp.task( 'default', [ 'scripts', 'styles' ], () => {
-  gulp.watch([ '**/*.es' ], [ 'scripts' ]);
+gulp.task( 'default', [ 'eslint', 'scripts', 'styles' ], () => {
+  gulp.watch([ '**/*.es' ], [ 'eslint', 'scripts' ]);
   gulp.watch([ '**/*.scss' ], [ 'styles' ]);
 });
