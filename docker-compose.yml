@@ -1,6 +1,8 @@
 version: '3'
 services:
 
+  # Localhost configuration.
+
   wordpress:
     image: ${WP_IMAGE}
     working_dir: ${WP_ROOT_DIR}
@@ -12,57 +14,20 @@ services:
       - database
     volumes:
       - ./:${WP_PROJECT_DIR}
+      - wp_content:${WP_ROOT_DIR}/wp-content
     environment:
       WORDPRESS_DB_HOST: ${DB_HOST}
       WORDPRESS_DB_NAME: ${DB_NAME}
       WORDPRESS_DB_USER: ${DB_USER}
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    extra_hosts:
+      - "wp-chimp.local:192.168.65.2"
 
-  wordpress_php5.6:
-    image: tfirdaus/wp-docklines:php5.6-fpm-alpine
-    working_dir: ${WP_PROJECT_DIR}
-    depends_on:
-      - database
-    volumes:
-      - ./:${WP_PROJECT_DIR}
-      - wp_core:/tmp/wordpress/
-      - wp_tests_dir:/tmp/wordpress-tests-lib
-
-  wordpress_php7.0:
-    image: tfirdaus/wp-docklines:php7.0-fpm-alpine
-    working_dir: ${WP_PROJECT_DIR}
-    depends_on:
-      - database
-    volumes:
-      - ./:${WP_PROJECT_DIR}
-      - wp_core:/tmp/wordpress/
-      - wp_tests_dir:/tmp/wordpress-tests-lib
-
-  wordpress_php7.1:
-    image: tfirdaus/wp-docklines:php7.1-fpm-alpine
-    working_dir: ${WP_PROJECT_DIR}
-    depends_on:
-      - database
-    volumes:
-      - ./:${WP_PROJECT_DIR}
-      - wp_core:/tmp/wordpress/
-      - wp_tests_dir:/tmp/wordpress-tests-lib
-
-  wordpress_php7.2:
-    image: tfirdaus/wp-docklines:php7.2-fpm-alpine
-    working_dir: ${WP_PROJECT_DIR}
-    depends_on:
-      - database
-    volumes:
-      - ./:${WP_PROJECT_DIR}
-      - wp_core:/tmp/wordpress/
-      - wp_tests_dir:/tmp/wordpress-tests-lib
-
-  node:
-    image: ${NODE_IMAGE}
-    working_dir: ${WP_PROJECT_DIR}
-    volumes:
-      - ./:${WP_PROJECT_DIR}
+  # node:
+  #   image: ${NODE_IMAGE}
+  #   working_dir: ${WP_ROOT_DIR}
+  #   volumes:
+  #     - ./:${WP_PROJECT_DIR}
 
   database:
     image: ${DB_IMAGE}
@@ -76,8 +41,61 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
 
-# Cache the database.
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - database
+    restart: on-failure
+    ports:
+      - "${PMA_PUBLISHED_PORT}:80"
+    environment:
+      - PMA_HOST=${DB_HOST}
+
+  # Pipelines Images & Configuration.
+
+  wordpress_php5.6:
+    image: tfirdaus/wp-docklines:php5.6-fpm-alpine
+    working_dir: ${WP_ROOT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+
+  wordpress_php7.0:
+    image: tfirdaus/wp-docklines:php7.0-fpm-alpine
+    working_dir: ${WP_ROOT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+
+  wordpress_php7.1:
+    image: tfirdaus/wp-docklines:php7.1-fpm-alpine
+    working_dir: ${WP_ROOT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+
+  wordpress_php7.2:
+    image: tfirdaus/wp-docklines:php7.2-fpm-alpine
+    working_dir: ${WP_ROOT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+
+# Caches
 volumes:
   mysql:
-  wp_core:
+  wp_content:
+  wp_tests_core:
   wp_tests_dir:
