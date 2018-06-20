@@ -4,6 +4,7 @@
     "license": "GPL-2.0+",
     "require": {
         "drewm/mailchimp-api": "^2.0",
-        "a5hleyrich/wp-background-processing": "^1.0"
+        "a5hleyrich/wp-background-processing": "^1.0",
+        "underdev/requirements": "^1.2"
     }
 }

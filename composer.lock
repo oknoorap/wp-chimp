@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa2c0ba566852476aa96503d45a18a5d",
+    "content-hash": "0f50dfe34c7145df2a1002f5fc34315d",
     "packages": [
         {
             "name": "a5hleyrich/wp-background-processing",
@@ -84,6 +84,36 @@
             "description": "Super-simple, minimum abstraction MailChimp API v3 wrapper",
             "homepage": "https://github.com/drewm/mailchimp-api",
             "time": "2018-02-16T15:31:05+00:00"
+        },
+        {
+            "name": "underdev/requirements",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kubitomakita/Requirements.git",
+                "reference": "98fe018df4815a64c86b3db55dd72d0fe3ab736e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kubitomakita/Requirements/zipball/98fe018df4815a64c86b3db55dd72d0fe3ab736e",
+                "reference": "98fe018df4815a64c86b3db55dd72d0fe3ab736e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "underDEV_Requirements.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Kuba Mikita",
+                    "email": "jakub@underdev.it"
+                }
+            ],
+            "description": "WordPress drop-in to check requirements",
+            "time": "2017-08-13T15:38:21+00:00"
         }
     ],
     "packages-dev": [],
