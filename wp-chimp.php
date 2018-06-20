@@ -57,7 +57,10 @@ function wp_chimp() {
 	static $plugin;
 
 	if ( is_null( $plugin ) ) {
+
 		$plugin = new WP_Chimp\Core\Plugin( 'wp-chimp', '0.1.0', __FILE__ );
+		$plugin->set_loader( new WP_Chimp\Core\Loader() );
+
 		$plugin->run();
 	}
 

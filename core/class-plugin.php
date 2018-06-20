@@ -89,16 +89,18 @@ class Plugin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->file_path = $file_path;
+	}
 
-		$this->load_dependencies();
-		$this->check_requirements();
-
-		$this->define_settings_hooks();
-		$this->define_languages_hooks();
-		$this->define_admin_hooks();
-		$this->define_database_hooks();
-		$this->define_endpoints_hooks();
-		$this->define_subscription_form_hooks();
+	/**
+	 * Create an instance of the loader which will be used to register the hooks
+	 * with WordPress.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param Loader $loader The Loader instance.
+	 */
+	public function set_loader( Loader $loader ) {
+		$this->loader = $loader;
 	}
 
 	/**
@@ -111,12 +113,6 @@ class Plugin {
 
 		require_once plugin_dir_path( $this->file_path ) . 'core/functions.php';
 		require_once plugin_dir_path( $this->file_path ) . 'subscription-form/functions.php';
-
-		/**
-		 * Create an instance of the loader which will be used to register the hooks
-		 * with WordPress.
-		 */
-		$this->loader = new Loader();
 	}
 
 	/**
@@ -126,21 +122,13 @@ class Plugin {
 	 */
 	private function check_requirements() {
 
-		$this->requirements = new Requirements( __( 'WP Chimp', 'wp-chimp' ), [
+		$requires = [
 			'php' => '5.4',
 			'wp' => '4.9.6',
 			'wp_cron' => true,
-		]);
-
-		$this->requirements->add_check( 'wp_cron', [ $this, 'check_wp_cron' ] );
-
-		/**
-		 * Run all the checks and check if requirements has been satisfied
-		 * If not - display the admin notice and exit from the file
-		 */
-		if ( ! $this->requirements->satisfied() ) {
-			$this->loader->add_action( 'admin_notices', $this->requirements, 'notice' );
-		}
+		];
+		$this->requirements = new Requirements( __( 'WP Chimp', 'wp-chimp' ), $requires );
+		$this->requirements->add_check( 'wp_cron', [ $this, 'check_wp_cron_spawn' ] );
 	}
 
 	/**
@@ -148,15 +136,26 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	public function check_wp_cron() {
+	public function check_wp_cron_spawn() {
+		global $wp_version;
 
 		if ( defined( 'ALTERNATE_WP_CRON' ) && ALTERNATE_WP_CRON ) {
 			return;
 		}
 
 		if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
-			$this->requirements->add_error( 'WP-Cron must be running. It is currently disabled using the \'DISABLE_WP_CRON\' constant.' );
+			$notice = __( 'WP-Cron to be running. It is currently disabled using \'DISABLE_WP_CRON\' constant.', 'wp-chimp' );
+			$this->requirements->add_error( $notice );
 		}
+	}
+
+	/**
+	 * Define the hooks related to the plugin requirements.
+	 *
+	 * @since 0.1.0
+	 */
+	private function define_requirement_hooks() {
+		$this->loader->add_action( 'admin_notices', $this->requirements, 'notice' );
 	}
 
 	/**
@@ -359,6 +358,21 @@ class Plugin {
 	 * @return void
 	 */
 	public function run() {
+
+		$this->check_requirements();
+
+		if ( ! $this->requirements->satisfied() ) {
+			$this->define_requirement_hooks();
+		} else {
+			$this->load_dependencies();
+			$this->define_settings_hooks();
+			$this->define_languages_hooks();
+			$this->define_admin_hooks();
+			$this->define_database_hooks();
+			$this->define_endpoints_hooks();
+			$this->define_subscription_form_hooks();
+		}
+
 		$this->loader->run();
 	}
 
