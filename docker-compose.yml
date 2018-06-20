@@ -14,20 +14,20 @@ services:
       - database
     volumes:
       - ./:${WP_PROJECT_DIR}
-      - wp_content:${WP_ROOT_DIR}/wp-content
+      - www:${WP_ROOT_DIR}
     environment:
       WORDPRESS_DB_HOST: ${DB_HOST}
       WORDPRESS_DB_NAME: ${DB_NAME}
       WORDPRESS_DB_USER: ${DB_USER}
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
     extra_hosts:
-      - "wp-chimp.local:192.168.65.2"
+      - "${WP_SITE_DOMAIN}:192.168.65.2"
 
-  # node:
-  #   image: ${NODE_IMAGE}
-  #   working_dir: ${WP_ROOT_DIR}
-  #   volumes:
-  #     - ./:${WP_PROJECT_DIR}
+  node:
+    image: ${NODE_IMAGE}
+    working_dir: ${WP_PROJECT_DIR}
+    volumes:
+      - ./:${WP_PROJECT_DIR}
 
   database:
     image: ${DB_IMAGE}
@@ -95,6 +95,7 @@ services:
 
 # Caches
 volumes:
+  www:
   mysql:
   wp_content:
   wp_tests_core:
