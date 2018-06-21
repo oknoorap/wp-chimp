@@ -29,9 +29,10 @@ services:
     image: ${NODE_IMAGE}
     working_dir: ${NODE_ROOT_DIR}
     environment:
-      - NODE_ENV=development
+      NODE_ENV: development
     volumes:
       - ./:${NODE_PROJECT_DIR}
+    command: "npm start"
 
   database:
     image: ${DB_IMAGE}
