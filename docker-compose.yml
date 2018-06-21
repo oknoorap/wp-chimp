@@ -12,6 +12,8 @@ services:
     restart: on-failure
     depends_on:
       - database
+      - phpmyadmin
+      - node
     volumes:
       - ./:${WP_PROJECT_DIR}
       - www:${WP_ROOT_DIR}
@@ -25,9 +27,12 @@ services:
 
   node:
     image: ${NODE_IMAGE}
-    working_dir: ${WP_PROJECT_DIR}
+    working_dir: ${NODE_ROOT_DIR}
+    environment:
+      - NODE_ENV=development
     volumes:
-      - ./:${WP_PROJECT_DIR}
+      - ./:${NODE_PROJECT_DIR}
+    command: "npm start"
 
   database:
     image: ${DB_IMAGE}
@@ -97,6 +102,5 @@ services:
 volumes:
   www:
   mysql:
-  wp_content:
   wp_tests_core:
   wp_tests_dir:
