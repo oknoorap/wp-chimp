@@ -87,15 +87,17 @@
     "extends": "stylelint-config-wordpress"
   },
   "scripts": {
-    "precommit": "bash dev-kit/bin/ci-precommit",
-    "local:run": "bash dev-kit/bin/run",
-    "local:up": "bash dev-kit/bin/up -d",
-    "local:down": "bash dev-kit/bin/down",
-    "local:start": "bash dev-kit/bin/start",
-    "local:destroy": "bash dev-kit/bin/destroy",
-    "local:ssh": "bash dev-kit/bin/ssh",
-    "test:phpunit": "bash dev-kit/bin/ci-phpunit",
-    "test:phpcs": "bash dev-kit/bin/ci-phpcs",
-    "test:eslint": "bash dev-kit/bin/ci-eslint"
+    "precommit": "dev-kit/bin/ci-precommit",
+    "local:run": "dev-kit/bin/run",
+    "local:up": "dev-kit/bin/up -d wordpress",
+    "local:down": "dev-kit/bin/down",
+    "local:start": "dev-kit/bin/start",
+    "local:restart": "dev-kit/bin/start",
+    "local:destroy": "dev-kit/bin/destroy",
+    "local:ssh": "dev-kit/bin/ssh",
+    "local:ssh-node": "dev-kit/bin/ssh node",
+    "test:phpunit": "dev-kit/bin/phpunit",
+    "test:phpcs": "dev-kit/bin/phpcs",
+    "test:eslint": "dev-kit/bin/eslint"
   }
 }
