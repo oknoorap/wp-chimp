@@ -32,7 +32,6 @@ services:
       - NODE_ENV=development
     volumes:
       - ./:${NODE_PROJECT_DIR}
-    command: "npm start"
 
   database:
     image: ${DB_IMAGE}
