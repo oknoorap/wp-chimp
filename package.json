@@ -87,6 +87,7 @@
     "extends": "stylelint-config-wordpress"
   },
   "scripts": {
+    "start": "npm install -g http-server && http-server -p 3000",
     "precommit": "dev-kit/bin/ci-precommit",
     "local:run": "dev-kit/bin/run",
     "local:up": "dev-kit/bin/up -d wordpress",
