@@ -9,7 +9,7 @@
 
 namespace WP_Chimp\Core\Endpoints;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -316,7 +316,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$wp_nonce = $request->get_header( 'X-WP-Nonce' );
 		$wp_chimp_nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 
-		if ( wp_verify_nonce( $wp_chimp_nonce, 'wp_chimp_setting' ) ) {
+		if ( wp_verify_nonce( $wp_chimp_nonce, 'wp-chimp-setting' ) ) {
 			return true;
 		}
 
@@ -477,7 +477,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 		$props = $schema['properties'];
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_chimp_setting' ) ) {
+		if ( ! wp_verify_nonce( $nonce, 'wp-chimp-setting' ) ) {
 			unset( $item['double_optin'] );
 			unset( $item['subscribers'] );
 		}

@@ -11,6 +11,11 @@
 
 namespace WP_Chimp\Core\Lists;
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
+}
+
 use WP_Chimp\Core\Database;
 
 /**

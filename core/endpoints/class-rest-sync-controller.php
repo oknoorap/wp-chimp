@@ -9,7 +9,7 @@
 
 namespace WP_Chimp\Core\Endpoints;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }

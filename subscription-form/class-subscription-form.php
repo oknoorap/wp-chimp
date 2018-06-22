@@ -1,15 +1,14 @@
 <?php
 /**
- * File containing the Class to register the "Subscription Form"
+ * Subscription Form: Main class
  *
+ * @package WP_Chimp/Subscription_Form
  * @since 0.1.0
- * @package WP_Chimp
- * @subpackage WP_Chimp/Subscription_Form
  */
 
 namespace WP_Chimp\Subscription_Form;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -17,10 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WP_Chimp\Core;
 
 /**
- * Class to register "Subscription Form".
+ * Main class to register the "Subscription Form".
  *
- * The Class will register the components surrounding the "Subscription Form"
- * including scripts, styles, widget, shortcode, locale strings, etc.
+ * Register components surrounding the "Subscription Form" such as scripts, styles,
+ * widget, shortcode, locale strings, etc.
  *
  * @since 0.1.0
  * @author Thoriq Firdaus <thoriqoe@gmail.com>

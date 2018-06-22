@@ -8,7 +8,7 @@
 
 namespace WP_Chimp\Core;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -31,7 +31,6 @@ function get_the_mailchimp_api_key() {
  * this option is set to `invalid`.
  *
  * @since 0.1.0
- * @see Admin\Page()->updated_option();
  *
  * @return bool Returns `true` if the MailChimp API key is a valid key
  *              else `false`.
@@ -49,7 +48,6 @@ function get_the_mailchimp_api_key_status() {
  * the API key is added or when the data is resynced.
  *
  * @since 0.1.0
- * @see Admin\Page()->updated_option();
  *
  * @return int The Lists total items.
  */
@@ -64,7 +62,6 @@ function get_the_lists_total_items() {
  *
  * This is set when the "Background Process" is done installing each list.
  *
- * @see Process()->complete()
  * @since 0.1.0
  *
  * @return boolean

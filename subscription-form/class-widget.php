@@ -1,15 +1,14 @@
 <?php
 /**
- * File containing the Class to define the "Subscribe Form" Widget
+ * Subscription Form: Widget class
  *
+ * @package WP_Chimp/Subscription_Form
  * @since 0.1.0
- * @package WP_Chimp
- * @subpackage WP_Chimp/Subscription_Form
  */
 
 namespace WP_Chimp\Subscription_Form;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -19,13 +18,12 @@ use WP_REST_Request;
 use WP_Chimp\Core;
 
 /**
- * Class to define the "Subscribe Form" widget.
+ * Class to define the Subscribe Form widget.
  *
- * Define functionality of the widget both in the front-end,
- * and in the back-end.
+ * Register a new widget and define functionality to render the widget, both
+ * of the front-end and the back-end.
  *
  * @since 0.1.0
- * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
 final class Widget extends WP_Widget {
 

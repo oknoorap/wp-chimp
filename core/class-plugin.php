@@ -5,14 +5,13 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link https://wp-chimp.com
- * @since 0.1.0
  * @package WP_Chimp/Includes
+ * @since 0.1.0
  */
 
 namespace WP_Chimp\Core;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -32,7 +31,6 @@ use underDEV_Requirements as Requirements;
  * version of the plugin.
  *
  * @since 0.1.0
- * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
 class Plugin {
 
@@ -107,7 +105,6 @@ class Plugin {
 	 * Load the required dependencies for this plugin.
 	 *
 	 * @since 0.1.0
-	 * @access private
 	 */
 	private function load_dependencies() {
 
@@ -165,7 +162,6 @@ class Plugin {
 	 * with WordPress.
 	 *
 	 * @since  0.1.0
-	 * @access private
 	 */
 	private function define_languages_hooks() {
 		$languages = new Languages( $this->plugin_name, $this->version, $this->file_path );
@@ -177,7 +173,6 @@ class Plugin {
 	 * of the plugin.
 	 *
 	 * @since  0.1.0
-	 * @access private
 	 */
 	private function define_admin_hooks() {
 
@@ -216,8 +211,7 @@ class Plugin {
 	 * Register all of the hooks related to the database functionality
 	 * of the plugin.
 	 *
-	 * @since  0.1.0
-	 * @access private
+	 * @since 0.1.0
 	 */
 	private function define_database_hooks() {
 
@@ -232,8 +226,7 @@ class Plugin {
 	/**
 	 * Register custom REST API routes of the plugin using WP-API.
 	 *
-	 * @since  0.1.0
-	 * @access private
+	 * @since 0.1.0
 	 */
 	private function define_endpoints_hooks() {
 
@@ -301,8 +294,6 @@ class Plugin {
 	 * Register the settings state to be used in the JavaScript side of the plugin.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	private function define_settings_hooks() {
 		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_setting_state', 30 );
@@ -341,7 +332,7 @@ class Plugin {
 	public static function get_setting_state() {
 
 		$args = [
-			'nonce' => wp_create_nonce( 'wp_chimp_setting' ),
+			'nonce' => wp_create_nonce( 'wp-chimp-setting' ),
 			'wp_rest_nonce' => wp_create_nonce( 'wp_rest' ),
 			'rest_api_url' => get_the_rest_api_url(),
 			'mailchimp_api_status' => is_mailchimp_api_valid(),
@@ -356,7 +347,6 @@ class Plugin {
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
 	 * @since 0.1.0
-	 * @return void
 	 */
 	public function run() {
 

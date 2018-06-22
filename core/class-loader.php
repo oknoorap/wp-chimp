@@ -2,14 +2,16 @@
 /**
  * Register all actions and filters for the plugin
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/includes
+ * @package WP_Chimp/Core
+ * @since 0.1.0
  */
 
 namespace WP_Chimp\Core;
+
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
+}
 
 /**
  * Register all actions and filters for the plugin.
@@ -18,9 +20,7 @@ namespace WP_Chimp\Core;
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/includes
- * @author     Thoriq Firdaus <thoriqoe@gmail.com>
+ * @since 0.1.0
  */
 class Loader {
 

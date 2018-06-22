@@ -12,8 +12,9 @@
 
 namespace WP_Chimp\Core;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
-	die;
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
 }
 
 /**
