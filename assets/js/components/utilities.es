@@ -1,12 +1,13 @@
 export function getApiRootStatus() {
 
   var status = true;
+  const { restApiUrl } = wpChimpSettingState;
 
-  if ( 'undefined' === typeof wpApiSettings || 'undefined' === typeof wpApiSettings.root ) {
+  if ( 'undefined' === typeof wpChimpSettingState || 'undefined' === typeof restApiUrl ) {
     status = false;
   }
 
-  if ( -1 === wpApiSettings.root.indexOf( '/wp-json/' ) ) {
+  if ( -1 === restApiUrl.indexOf( '/wp-json/' ) ) {
     status = false;
   }
 

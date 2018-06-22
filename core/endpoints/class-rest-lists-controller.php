@@ -316,11 +316,11 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$wp_nonce = $request->get_header( 'X-WP-Nonce' );
 		$wp_chimp_nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 
-		if ( wp_verify_nonce( $wp_chimp_nonce, 'wp-chimp-setting' ) ) { // wpChimpSettingState.nonce.
+		if ( wp_verify_nonce( $wp_chimp_nonce, 'wp_chimp_setting' ) ) {
 			return true;
 		}
 
-		if ( wp_verify_nonce( $wp_nonce, 'wp_rest' ) ) { // wpAPISetting.nonce.
+		if ( wp_verify_nonce( $wp_nonce, 'wp_rest' ) ) {
 			return true;
 		}
 
@@ -477,7 +477,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 		$props = $schema['properties'];
 
-		if ( ! wp_verify_nonce( $nonce, 'wp-chimp-setting' ) ) {
+		if ( ! wp_verify_nonce( $nonce, 'wp_chimp_setting' ) ) {
 			unset( $item['double_optin'] );
 			unset( $item['subscribers'] );
 		}
@@ -516,8 +516,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		if ( ! is_array( $excludes ) || empty( $excludes ) ) {
 			return $item;
 		}
-
-
 
 		return $item;
 	}

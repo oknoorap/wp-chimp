@@ -341,7 +341,8 @@ class Plugin {
 	public static function get_setting_state() {
 
 		$args = [
-			'nonce' => wp_create_nonce( 'wp-chimp-setting' ),
+			'nonce' => wp_create_nonce( 'wp_chimp_setting' ),
+			'wp_rest_nonce' => wp_create_nonce( 'wp_rest' ),
 			'rest_api_url' => get_the_rest_api_url(),
 			'mailchimp_api_status' => is_mailchimp_api_valid(),
 			'lists_total_items' => get_the_lists_total_items(),

@@ -16,9 +16,7 @@ class TableRequest {
    * @param {TablePagination} tablePagination
    */
   constructor( tableBody, tablePagination ) {
-
-    const { nonce: wpRestNonce } = wpApiSettings;
-    const { nonce: wpChimpSettingNonce } = wpChimpSettingState;
+    const { nonce: wpChimpNonce, wpRestNonce } = wpChimpSettingState;
 
     this.currentPage = 1;
     this.tableBody = tableBody;
@@ -27,7 +25,7 @@ class TableRequest {
       type: 'GET',
       headers: {
         'X-WP-Nonce': wpRestNonce,
-        'X-WP-Chimp-Nonce': wpChimpSettingNonce
+        'X-WP-Chimp-Nonce': wpChimpNonce
       },
       data: {
         'per_page': 10
@@ -84,8 +82,9 @@ class TableRequest {
    * @param {Object} args The extra arguments to pass in to the Ajax config.
    */
   request( args = {}) {
+    const { restApiUrl } = wpChimpSettingState;
 
-    this.configs.url = `${wpApiSettings.root}${args.hasOwnProperty( 'url' ) ? args.url : 'wp-chimp/v1/lists'}`;
+    this.configs.url = `${restApiUrl}${args.hasOwnProperty( 'url' ) ? args.endpoint : '/lists'}`;
 
     if ( args.hasOwnProperty( 'page' ) ) {
       let page = parseInt( args.page, 10 );

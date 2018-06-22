@@ -6,7 +6,7 @@ import FormInactive from './form-inactive.es';
 
 const { listsTotalItems } = wpChimpSettingState;
 
-const { BlockControls } = wp.blocks;
+const { BlockControls } = wp.editor;
 const { Component, createElement: el } = wp.element;
 const { Spinner, withAPIData } = wp.components;
 

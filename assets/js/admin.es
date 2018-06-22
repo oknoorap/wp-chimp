@@ -22,7 +22,7 @@ jQuery( () => {
 
     if ( false === listsInit ) {
       tableRequest.request({
-        'url': 'wp-chimp/v1/sync/lists'
+        'endpoint': '/sync/lists'
       });
     } else {
       tableRequest.request();
