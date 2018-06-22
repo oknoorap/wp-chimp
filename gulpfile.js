@@ -13,6 +13,7 @@ const autoprefixer = require( 'gulp-autoprefixer' );
 const sourcemaps   = require( 'gulp-sourcemaps' );
 const eslint       = require( 'gulp-eslint' );
 const uglify       = require( 'gulp-uglifyes' );
+const readme       = require( 'gulp-readme-to-markdown' );
 
 const sassFiles = [
   'admin.scss',
@@ -95,6 +96,24 @@ gulp.task( 'styles', () => {
         .pipe( sourcemaps.write( '.' ) )
       .pipe( gulp.dest( './assets/css' ) );
   } ) );
+});
+
+/**
+ * ---------------------------------------------------------------
+ * Misc tasks
+ *
+ * Define default task that can be called by just running `gulp`
+ * from cli
+ * ---------------------------------------------------------------
+ */
+
+gulp.task('readme', function() {
+  gulp.src([ 'README.txt' ])
+  .pipe(readme({
+    details: false,
+    screenshot_ext: ['jpg', 'png']
+  }))
+  .pipe(gulp.dest('.'));
 });
 
 /**
