@@ -22,7 +22,10 @@ use WP_Chimp\Core;
  * widget, shortcode, locale strings, etc.
  *
  * @since 0.1.0
- * @author Thoriq Firdaus <thoriqoe@gmail.com>
+ *
+ * @property string $plugin_name
+ * @property string $version
+ * @property string $file_path
  */
 final class Subscription_Form {
 
@@ -54,7 +57,7 @@ final class Subscription_Form {
 	protected $file_path;
 
 	/**
-	 * The plugin directory
+	 * The plugin directory path.
 	 *
 	 * @since 0.1.0
 	 * @var string
@@ -62,7 +65,9 @@ final class Subscription_Form {
 	protected $dir_path;
 
 	/**
-	 * Undocumented function
+	 * Constructor.
+	 *
+	 * Initialize the Class properties.
 	 *
 	 * @since 0.1.0
 	 *
@@ -79,8 +84,7 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Function to register the stylesheet and JavaScript file for the
-	 * Subscribe Form.
+	 * Register the stylesheet and JavaScript loaded on the Subscrition Form.
 	 *
 	 * @since 0.1.0
 	 *
@@ -126,11 +130,9 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Function to register the Subscribe Form block to Gutenberg interface.
+	 * Register a custom Gutenberg block of the Subscription Form.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void|null Returns `null` if the Gutenberg block is not present.
 	 */
 	public function register_block() {
 
@@ -173,33 +175,27 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Function to register the "Subscription Form" widget.
+	 * Register the Subscription Form widget.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_widget() {
 		register_widget( __NAMESPACE__ . '\\Widget' );
 	}
 
 	/**
-	 * Function to register the "Subscription Form" shortcode.
+	 * Register the Subscription Form shortcode.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_shortcode() {
 		add_shortcode( 'wp-chimp', [ __NAMESPACE__ . '\\Shortcode', 'render' ] );
 	}
 
 	/**
-	 * Function to register translateable string displayed in the Subscription Form.
+	 * Register translate-able strings loaded in the admin area.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function admin_enqueue_locale_scripts() {
 
@@ -210,11 +206,9 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Undocumented function
+	 * Register translate-able strings loaded in the front-end.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function enqueue_locale_scripts() {
 
@@ -230,11 +224,9 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Undocumented function
+	 * Load scripts and styles.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'wp-chimp-subscription-form' );

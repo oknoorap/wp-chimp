@@ -18,17 +18,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class to define the "Subscription Form" Widget.
  *
  * @since 0.1.0
- * @author Thoriq Firdaus <thoriqoe@gmail.com>
  */
 final class Shortcode {
 
 	/**
-	 * Render the "Subscription Form" HTML output of shortcode.
+	 * Render the Subscription Form HTML output defined from the shortcode.
 	 *
 	 * @since 0.1.0
 	 *
 	 * @param array $attrs The shortcode attributes.
-	 * @return string The "Subscription Form" HTML markup.
+	 * @return string The "Subscription Form" HTML.
 	 */
 	public static function render( $attrs ) {
 		return render( $attrs );

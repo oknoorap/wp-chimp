@@ -24,18 +24,23 @@ use WP_Chimp\Core;
  * of the front-end and the back-end.
  *
  * @since 0.1.0
+ *
+ * @property array $locale
+ * @property array $lists
+ * @property array $default_attrs
  */
 final class Widget extends WP_Widget {
 
 	/**
-	 * Undocumented variable
+	 * List of translate-able strings displayed on the Subscription Form
 	 *
+	 * @since 0.1.0
 	 * @var array
 	 */
 	private $locale;
 
 	/**
-	 * Lists
+	 * MailChimp Lists
 	 *
 	 * @since 0.1.0
 	 * @var array
@@ -43,7 +48,7 @@ final class Widget extends WP_Widget {
 	private $lists;
 
 	/**
-	 * List of "Subscription Form" default attributes.
+	 * Subscription Form default attributes.
 	 *
 	 * @since 0.1.0
 	 * @var array
@@ -62,7 +67,7 @@ final class Widget extends WP_Widget {
 		$this->default_attrs = get_the_default_attrs();
 
 		parent::__construct( 'wp-chimp-subscription-form', $this->locale['title'], [
-			'classname'   => 'wp-chimp-subscription-form-widget',
+			'classname' => 'wp-chimp-subscription-form-widget',
 			'description' => $this->locale['description'],
 		] );
 	}
