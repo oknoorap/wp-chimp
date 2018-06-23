@@ -2,11 +2,8 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/admin
+ * @package WP_Chimp/Includes
+ * @since 0.1.0
  */
 
 namespace WP_Chimp\Admin;
@@ -50,11 +47,15 @@ class Admin {
 	private $version;
 
 	/**
-	 * Undocumented variable
+	 * The filename of plugin.
 	 *
-	 * @var [type]
+	 * This is used for WordPress functions requiring the path to the main plugin file,
+	 * such as `plugin_dir_path()` and `plugin_basename()`.
+	 *
+	 * @since 0.1.0
+	 * @var string
 	 */
-	private $file_path;
+	protected $file_path;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -129,8 +130,6 @@ class Admin {
 	 * Function to register translateable strings in the Admin settings page.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function enqueue_locale_scripts() {
 

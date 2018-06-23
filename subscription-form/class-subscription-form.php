@@ -48,8 +48,8 @@ final class Subscription_Form {
 	/**
 	 * The filename of plugin.
 	 *
-	 * This might be used for WordPress functions requiring the path to
-	 * the main plugin file, such as `plugin_dir_path()` and `plugin_basename()`.
+	 * This is used for WordPress functions requiring the path to the main plugin file,
+	 * such as `plugin_dir_path()` and `plugin_basename()`.
 	 *
 	 * @since 0.1.0
 	 * @var string
