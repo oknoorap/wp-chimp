@@ -1,9 +1,20 @@
 <?php
+/**
+ * WP_Chimp Autoloader.
+ *
+ * @since 0.1.0
+ * @package WP_Chimp
+ */
 
 namespace WP_Chimp;
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
+}
+
 /**
- * Undocumented function
+ * Autoloader for Classes within the WP_Chimp namespace.
  *
  * @param string $class_name The loaded class name e.g. WP_Chimp\Class_Name.
  */
