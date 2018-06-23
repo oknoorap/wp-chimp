@@ -5,11 +5,8 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/includes
+ * @since 0.1.0
+ * @package WP_Chimp/Core
  */
 
 namespace WP_Chimp\Core;
@@ -25,19 +22,46 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @since      0.1.0
- * @package    WP_Chimp
- * @subpackage WP_Chimp/includes
- * @author     Thoriq Firdaus <thoriqoe@gmail.com>
+ * @since 0.1.0
+ *
+ * @property string $plugin_name
+ * @property string $file_path
+ * @property string $version
  */
 class Languages {
 
+	// Text domain. Unique identifier for retrieving translated strings.
+	const DOMAIN = 'wp-chimp';
+
 	/**
-	 * Text domain. Unique identifier for retrieving translated strings.
+	 * The unique identifier of this plugin.
 	 *
 	 * @since 0.1.0
+	 *
+	 * @var string $plugin_name The string used to uniquely identify this plugin.
 	 */
-	const DOMAIN = 'wp-chimp';
+	protected $plugin_name;
+
+	/**
+	 * The filename of plugin.
+	 *
+	 * This might be used for WordPress functions requiring the path to
+	 * the main plugin file, such as `plugin_dir_path()` and `plugin_basename()`.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string
+	 */
+	protected $file_path;
+
+	/**
+	 * The current version of the plugin.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var string $version The current version of the plugin.
+	 */
+	protected $version;
 
 	/**
 	 * Initialize the class and set its properties.

@@ -2,12 +2,12 @@
 /**
  * A Base WordPress Database Table class
  *
- * @author  JJJ
- * @link    https://jjj.blog
+ * @author JJJ
+ * @link https://jjj.blog
  * @version 1.4.0
  * @license https://www.gnu.org/licenses/gpl-2.0.html
  *
- * @package WP_Chimp/Includes
+ * @package WP_Chimp/Core
  */
 
 namespace WP_Chimp\Core;
@@ -140,14 +140,14 @@ abstract class Database {
 	 *
 	 * @since 1.1.0
 	 */
-	protected abstract function set_schema();
+	abstract protected function set_schema();
 
 	/**
 	 * Upgrade this database table
 	 *
 	 * @since 1.1.0
 	 */
-	protected abstract function upgrade();
+	abstract protected function upgrade();
 
 	/**
 	 * Update table version & references.
@@ -241,14 +241,14 @@ abstract class Database {
 	 */
 	private function set_wpdb_tables() {
 
-		if ( $this->is_global() ) { // Global.
-			$prefix                       = $this->db->get_blog_prefix( 0 );
-			$this->db->{$this->name}      = "{$prefix}{$this->name}";
+		if ( $this->is_global() ) { // Is installed globally (multisite)?.
+			$prefix = $this->db->get_blog_prefix( 0 );
+			$this->db->{$this->name} = "{$prefix}{$this->name}";
 			$this->db->ms_global_tables[] = $this->name;
 		} else { // Site.
-			$prefix                  = $this->db->get_blog_prefix( null );
+			$prefix = $this->db->get_blog_prefix( null );
 			$this->db->{$this->name} = "{$prefix}{$this->name}";
-			$this->db->tables[]      = $this->name;
+			$this->db->tables[] = $this->name;
 		}
 
 		$this->table_name = $this->db->{$this->name}; // Set the table name locally.
@@ -288,6 +288,7 @@ abstract class Database {
 	 * @since 1.1.0
 	 */
 	private function get_db_version() {
+
 		$this->db_version = $this->is_global()
 			? get_network_option( null, $this->db_version_key, false )
 			: get_option( $this->db_version_key, false );
@@ -303,6 +304,7 @@ abstract class Database {
 	 * @return bool
 	 */
 	private function is_testing() {
+
 		/**
 		 * Tests constant is being used.
 		 * Or, Scaffolded (https://make.wordpress.org/cli/handbook/plugin-unit-tests/).
@@ -377,7 +379,6 @@ abstract class Database {
 	 * @since 1.3.0
 	 *
 	 * @param string $name The name of the database table.
-	 *
 	 * @return string Sanitized database table name
 	 */
 	private function sanitize_table_name( $name = '' ) {

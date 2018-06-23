@@ -4,11 +4,8 @@
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/admin/partials
+ * @since 0.1.0
+ * @package WP_Chimp/Core
  */
 
 namespace WP_Chimp\Core\Lists;

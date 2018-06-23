@@ -31,6 +31,11 @@ use underDEV_Requirements as Requirements;
  * version of the plugin.
  *
  * @since 0.1.0
+ *
+ * @property WP_Chimp\Core\Loader $loader
+ * @property string $plugin_name
+ * @property string $file_path
+ * @property string $version
  */
 class Plugin {
 
@@ -106,7 +111,7 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	private function load_dependencies() {
+	protected function load_dependencies() {
 
 		require_once plugin_dir_path( $this->file_path ) . 'core/functions.php';
 		require_once plugin_dir_path( $this->file_path ) . 'subscription-form/functions.php';
@@ -117,7 +122,7 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	private function check_requirements() {
+	protected function check_requirements() {
 
 		$requires = [
 			'php' => '5.4',
@@ -151,7 +156,7 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	private function define_requirement_hooks() {
+	protected function define_requirement_hooks() {
 		$this->loader->add_action( 'admin_notices', $this->requirements, 'notice' );
 	}
 
@@ -161,9 +166,10 @@ class Plugin {
 	 * Uses the WP_Chimp/Languages class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 */
-	private function define_languages_hooks() {
+	protected function define_languages_hooks() {
+
 		$languages = new Languages( $this->plugin_name, $this->version, $this->file_path );
 		$this->loader->add_action( 'plugins_loaded', $languages, 'load_plugin_textdomain' );
 	}
@@ -172,9 +178,9 @@ class Plugin {
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 */
-	private function define_admin_hooks() {
+	protected function define_admin_hooks() {
 
 		$admin = new Admin\Admin( $this->plugin_name, $this->version, $this->file_path );
 		$admin_page = new Admin\Partials\Page( $this->plugin_name, $this->version );
@@ -213,7 +219,7 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	private function define_database_hooks() {
+	protected function define_database_hooks() {
 
 		$lists_db = new Lists\Table();
 
@@ -228,7 +234,7 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	private function define_endpoints_hooks() {
+	protected function define_endpoints_hooks() {
 
 		$lists_query = new Lists\Query();
 		$lists_process = new Lists\Process();
@@ -274,9 +280,9 @@ class Plugin {
 	/**
 	 * Register all of the hooks to register the Subscribe Form.
 	 *
-	 * @since  0.1.0
+	 * @since 0.1.0
 	 */
-	private function define_subscription_form_hooks() {
+	protected function define_subscription_form_hooks() {
 
 		$subscription_form = new Subscription_Form\Subscription_Form( $this->plugin_name, $this->version, $this->file_path );
 
@@ -295,7 +301,7 @@ class Plugin {
 	 *
 	 * @since 0.1.0
 	 */
-	private function define_settings_hooks() {
+	protected function define_settings_hooks() {
 		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_setting_state', 30 );
 	}
 
@@ -322,14 +328,16 @@ class Plugin {
 	}
 
 	/**
-	 * Function to get the list of plugin options to add as the settings state.
+	 * Retrieve options and nonces.
+	 *
+	 * This data will be primarily consumed in the JavaScript.
 	 *
 	 * @since 0.1.0
-	 * @see $this->register_settings_state()
+	 * @see enqueue_setting_state
 	 *
 	 * @return array
 	 */
-	public static function get_setting_state() {
+	protected static function get_setting_state() {
 
 		$args = [
 			'nonce' => wp_create_nonce( 'wp-chimp-setting' ),
@@ -372,6 +380,7 @@ class Plugin {
 	 * WordPress and to define internationalization functionality.
 	 *
 	 * @since 0.1.0
+	 *
 	 * @return string The name of the plugin.
 	 */
 	public function get_plugin_name() {
@@ -382,7 +391,8 @@ class Plugin {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since 0.1.0
-	 * @return WP_Chimp\Core\Loader Orchestrates the hooks of the plugins.
+	 *
+	 * @return WP_Chimp\Core\Loader The Loader instance.
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -392,6 +402,7 @@ class Plugin {
 	 * Retrieve the version number of the plugin.
 	 *
 	 * @since 0.1.0
+	 *
 	 * @return string The version number of the plugin.
 	 */
 	public function get_version() {
@@ -402,6 +413,7 @@ class Plugin {
 	 * Retrieve the plugin file path.
 	 *
 	 * @since 0.1.0
+	 *
 	 * @return string The plugin file path.
 	 */
 	public function get_file_path() {

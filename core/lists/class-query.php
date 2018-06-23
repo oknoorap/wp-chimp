@@ -3,11 +3,8 @@
  * The file that defines the class and the methods to query
  * *_chimp_lists table.
  *
- * @link https://wp-chimp.com
  * @since 0.1.0
- *
- * @package WP_Chimp
- * @subpackage WP_Chimp/includes
+ * @package WP_Chimp/Core
  */
 
 namespace WP_Chimp\Core\Lists;
@@ -24,32 +21,32 @@ use WP_Chimp\Core;
  * The class to query the *_chimp_lists table
  *
  * @since 0.1.0
+ *
+ * @property array $default_attrs
  */
 final class Query {
 
 	/**
 	 * The columns and its value.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    array
+	 * @since 0.1.0
+	 * @var array
 	 */
 	protected $default_data;
 
 	/**
 	 * The class constructor.
 	 *
-	 * @since  0.1.0
-	 * @access public
+	 * @since 0.1.0
 	 */
 	public function __construct() {
 
 		$this->default_data = [
-			'list_id'      => '',
-			'name'         => '',
-			'subscribers'  => 0,
+			'list_id' => '',
+			'name' => '',
+			'subscribers' => 0,
 			'double_optin' => 0,
-			'synced_at'    => '0000-00-00 00:00:00',
+			'synced_at' => '0000-00-00 00:00:00',
 		];
 	}
 
