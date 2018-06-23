@@ -87,8 +87,6 @@ final class Subscription_Form {
 	 * Register the stylesheet and JavaScript loaded on the Subscrition Form.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_scripts() {
 

@@ -13,9 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
-use WP_Chimp\Core;
-use DrewM\MailChimp\MailChimp;
-
 /**
  * The admin-specific functionality of the plugin.
  *

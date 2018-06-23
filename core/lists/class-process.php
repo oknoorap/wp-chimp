@@ -32,10 +32,9 @@ final class Process extends WP_Background_Process {
 	protected $action = 'chimp_lists_process';
 
 	/**
-	 * Function to assign the MailChimp list
+	 * Function to assign the MailChimp list.
 	 *
 	 * @param Query $lists_query The Query class instance.
-	 * @return void
 	 */
 	public function set_lists_query( Query $lists_query ) {
 		$this->lists_query = $lists_query;
@@ -75,8 +74,6 @@ final class Process extends WP_Background_Process {
 	 * performed, or, call parent::complete().
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	protected function complete() {
 		parent::complete();

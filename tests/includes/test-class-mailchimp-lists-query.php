@@ -102,8 +102,6 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 * Test the update method.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function test_check_db_install() {
 		$this->assertEquals( "{$this->wpdb->prefix}chimp_lists", $this->wpdb->chimp_lists );
@@ -114,8 +112,6 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 *
 	 * @since 0.1.0
 	 * @see Lists\Query()->count_rows();
-	 *
-	 * @return void
 	 */
 	public function test_count_rows() {
 		$this->assertEquals( 4, $this->lists_query->count_rows() );
@@ -128,8 +124,6 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 * @see self::setUp()
 	 * @see WP_Chimp\Core\Lists\Query()->insert();
 	 * @see WP_Chimp\Core\Lists\Query()->query();
-	 *
-	 * @return void
 	 */
 	public function test_insert() {
 
@@ -181,8 +175,6 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 *
 	 * @since 0.1.0
 	 * @see WP_Chimp\Core\Lists\Query()->get_list_ids();
-	 *
-	 * @return void
 	 */
 	public function test_get_the_ids() {
 
@@ -197,8 +189,6 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 *
 	 * @since 0.1.0
 	 * @see WP_Chimp\Core\Lists\Query()->get_by_the_id();
-	 *
-	 * @return void
 	 */
 	public function test_get_by_the_id() {
 
@@ -217,8 +207,6 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 *
 	 * @since 0.1.0
 	 * @see WP_Chimp\Core\Lists\Query()->update();
-	 *
-	 * @return void
 	 */
 	public function test_update() {
 
@@ -245,8 +233,6 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 *
 	 * @since 0.1.0
 	 * @see WP_Chimp\Core\Lists\Query()->delete();
-	 *
-	 * @return void
 	 */
 	public function test_delete() {
 
@@ -265,8 +251,6 @@ class Test_Lists_Query extends WP_UnitTestCase {
 	 *
 	 * @since 0.1.0
 	 * @see WP_Chimp\Core\Lists\Query()->truncate();
-	 *
-	 * @return void
 	 */
 	public function test_truncate() {
 

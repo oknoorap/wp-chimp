@@ -6,7 +6,6 @@ namespace WP_Chimp;
  * Undocumented function
  *
  * @param string $class_name The loaded class name e.g. WP_Chimp\Class_Name.
- * @return void
  */
 function autoloader( $class_name ) {
 

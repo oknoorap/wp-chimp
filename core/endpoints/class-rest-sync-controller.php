@@ -143,7 +143,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param MailChimp $mailchimp The MailChimp instance.
-	 * @return void
 	 */
 	public function set_mailchimp( MailChimp $mailchimp ) {
 		$this->mailchimp = $mailchimp;
@@ -155,7 +154,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param Lists\Query $query The List\Query instance to retrieve the lists from the database.
-	 * @return void
 	 */
 	public function set_lists_query( Lists\Query $query ) {
 		$this->lists_query = $query;
@@ -174,7 +172,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param Lists\Process $process The Lists\Process instance to add the list on the background.
-	 * @return void
 	 */
 	public function set_lists_process( Lists\Process $process ) {
 		$this->lists_process = $process;
@@ -184,8 +181,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * Registers a custom REST API route.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_routes() {
 
@@ -439,7 +434,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param array $lists The Lists data retrieved from the MailChimp API response.
-	 * @return void
 	 */
 	protected function process_lists( array $lists ) {
 

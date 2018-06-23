@@ -78,8 +78,6 @@ class Test_Utilities extends WP_UnitTestCase {
 	 * Test the function to sort raw data from MailChimp API response
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function test_sort_mailchimp_lists() {
 		$data = Core\sort_mailchimp_lists( $this->raw_data['lists'] );

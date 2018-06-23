@@ -55,8 +55,6 @@ class Menu {
 	 * Function to add a tab to the Contextual Help menu in the setting page.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_help_tabs() {
 
@@ -77,10 +75,8 @@ class Menu {
 	 * Render the content of the "Overview" section in the Help tab in the plugin Admin Page.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
-	static public function html_help_tab_overview() {
+	public static function html_help_tab_overview() {
 		?>
 
 		<p><?php esc_html_e( 'This screen will show a table of the Lists registered in your MailChimp account.', 'wp-chimp' ); ?></p>

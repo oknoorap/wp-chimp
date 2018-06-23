@@ -151,26 +151,24 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param MailChimp $mailchimp The MailChimp instance.
-	 * @return void
 	 */
 	public function set_mailchimp( MailChimp $mailchimp ) {
 		$this->mailchimp = $mailchimp;
 	}
 
 	/**
-	 * Function to register the Query instance
+	 * Register the Lists\Query instance
 	 *
 	 * @since 0.1.0
 	 *
 	 * @param Lists\Query $query The List\Query instance to retrieve the lists from the database.
-	 * @return void
 	 */
 	public function set_lists_query( Lists\Query $query ) {
 		$this->lists_query = $query;
 	}
 
 	/**
-	 * Function to register the Lists\Process instance
+	 * Register the Lists\Process instance
 	 *
 	 * The Lists\Process instance is extending the WP_Background_Processing class abstraction
 	 * enabling asynchronous background processing to add the lists from the MailChimp API
@@ -182,7 +180,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param Lists\Process $process The Lists\Process instance to add the list on the background.
-	 * @return void
 	 */
 	public function set_lists_process( Lists\Process $process ) {
 		$this->lists_process = $process;
@@ -192,8 +189,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * Registers a custom REST API route.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_routes() {
 

@@ -122,7 +122,6 @@ function get_the_locale_strings( $key = '' ) {
  * @since 0.1.0
  *
  * @param string $key (Required) The array key to select the string from `get_locale_strings`.
- * @return void
  */
 function the_locale_strings( $key ) {
 
@@ -189,8 +188,6 @@ function get_the_inactive_notice() {
  * The notification will only appear to the admin.
  *
  * @since 0.1.0
- *
- * @return void
  */
 function the_inactive_notice() {
 	$notice = get_the_inactive_notice();

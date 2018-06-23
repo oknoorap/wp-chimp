@@ -315,8 +315,6 @@ class Plugin {
 	 * @since 0.1.0
 	 * @see ./admin/js/admin.es
 	 * @see ./admin/js/utilities.es
-	 *
-	 * @return void
 	 */
 	public function enqueue_setting_state() {
 

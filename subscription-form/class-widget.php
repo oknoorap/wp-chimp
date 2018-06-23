@@ -173,8 +173,6 @@ final class Widget extends WP_Widget {
 	 * Function to load the styles and scripts for the widget.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	private static function enqueue_scripts() {
 

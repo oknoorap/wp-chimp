@@ -63,10 +63,11 @@ class Page {
 	}
 
 	/**
-	 * Undocumented function
+	 * Register the Query instance
 	 *
-	 * @param [type] $query
-	 * @return void
+	 * @since 0.1.0
+	 *
+	 * @param Lists\Query $query The List\Query instance to retrieve the lists from the database.
 	 */
 	public function set_lists_query( $query ) {
 		$this->lists_query = $query;
@@ -76,8 +77,6 @@ class Page {
 	 * Register the page settings
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_page() {
 
@@ -97,8 +96,6 @@ class Page {
 	 * Render the setting form on the page
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public static function render_form() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -130,7 +127,7 @@ class Page {
 				</table>
 			</div>
 			<h2 class="nav-tab-wrapper">
-				<span class="nav-tab nav-tab-active"><?php echo esc_html( 'MailChimp' ); ?></span>
+				<span class="nav-tab nav-tab-active"><?php esc_html_e( 'Settings', 'wp-chimp' ); ?></span>
 			</h2>
 			<form action="options.php" method="post">
 			<?php
@@ -147,17 +144,13 @@ class Page {
 	 * Function that fills the section with the desired content.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function html_section_settings() {}
 
 	/**
-	 * Render the "MailChimp API Key" input field
+	 * Render the "MailChimp API Key" input field.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function html_field_mailchimp_api_key() {
 
@@ -188,7 +181,7 @@ class Page {
 	}
 
 	/**
-	 * Function to handle option update
+	 * Handle the option update.
 	 *
 	 * @since 0.1.0
 	 * @access public
@@ -196,7 +189,6 @@ class Page {
 	 * @param string $option    Option name.
 	 * @param mixed  $old_value The old option value.
 	 * @param mixed  $value     The new option value.
-	 * @return void
 	 */
 	public function updated_option( $option, $old_value, $value ) {
 
@@ -206,7 +198,8 @@ class Page {
 		 */
 		if ( 'wp_chimp_api_key' === $option && $value !== $old_value ) {
 
-			$this->lists_query->truncate(); // Remove all entries from the `_chimp_lists` table.
+			// Remove all entries from the `_chimp_lists` table.
+			$this->lists_query->truncate();
 			$total_items = self::get_lists_total_items( $value );
 
 			update_option( 'wp_chimp_lists_init', 0 );
@@ -216,7 +209,10 @@ class Page {
 	}
 
 	/**
-	 * Function to get the total item of the lists registered in the MailChimp account.
+	 * Retrieve the total the lists total item registered in the MailChimp account.
+	 *
+	 * This function also acts as a "ping" to check whether the MailChimp API key
+	 * is valid and that we are able to communitcate with MailChimp.
 	 *
 	 * @since 0.1.0
 	 *
