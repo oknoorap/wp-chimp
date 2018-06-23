@@ -130,13 +130,15 @@ function the_locale_strings( $key ) {
 	}
 
 	$locale_strings = get_the_locale_strings( $key );
-	echo wp_kses( $locale_strings, [
-		'a' => [
-			'href' => true,
-			'target' => true,
-			'class' => true,
-		],
-	] );
+	echo wp_kses(
+		$locale_strings, [
+			'a' => [
+				'href' => true,
+				'target' => true,
+				'class' => true,
+			],
+		]
+	);
 }
 
 /**
@@ -191,19 +193,21 @@ function get_the_inactive_notice() {
  */
 function the_inactive_notice() {
 	$notice = get_the_inactive_notice();
-	echo wp_kses( $notice, [
-		'div' => [
-			'class' => true,
-		],
-		'p' => [
-			'class' => true,
-		],
-		'a' => [
-			'href' => true,
-			'target' => true,
-			'class' => true,
-		],
-	] );
+	echo wp_kses(
+		$notice, [
+			'div' => [
+				'class' => true,
+			],
+			'p' => [
+				'class' => true,
+			],
+			'a' => [
+				'href' => true,
+				'target' => true,
+				'class' => true,
+			],
+		]
+	);
 }
 
 /**
@@ -233,14 +237,16 @@ function render( array $attrs ) {
 		<h3 class="wp-chimp-subscription-form__heading"><?php echo esc_html( $attrs['heading_text'] ); ?></h3>
 		<p class="wp-chimp-subscription-form__sub-heading">
 	<?php
-		echo wp_kses( $attrs['sub_heading_text'], [
-			'strong' => [],
-			'em' => [],
-			'a' => [
-				'href' => true,
-				'target' => true,
-			],
-		] );
+		echo wp_kses(
+			$attrs['sub_heading_text'], [
+				'strong' => [],
+				'em' => [],
+				'a' => [
+					'href' => true,
+					'target' => true,
+				],
+			]
+		);
 	?>
 		</p>
 		<div class="wp-chimp-notice"></div>
@@ -252,14 +258,16 @@ function render( array $attrs ) {
 		</form>
 		<p class="wp-chimp-subscription-form__footer">
 	<?php
-		echo wp_kses( $attrs['footer_text'], [
-			'strong' => [],
-			'em' => [],
-			'a' => [
-				'href' => true,
-				'target' => true,
-			],
-		] );
+		echo wp_kses(
+			$attrs['footer_text'], [
+				'strong' => [],
+				'em' => [],
+				'a' => [
+					'href' => true,
+					'target' => true,
+				],
+			]
+		);
 	?>
 		</p>
 	</div>

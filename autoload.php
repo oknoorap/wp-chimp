@@ -55,7 +55,7 @@ function autoloader( $class_name ) {
 
 	// If the file exists in the specified path, then include it.
 	if ( file_exists( $filepath ) ) {
-		include_once( $filepath );
+		include_once $filepath;
 	} else {
 
 		// Translators: the file path of the class to load.

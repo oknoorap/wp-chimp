@@ -62,11 +62,13 @@ class Menu {
 
 		if ( 'settings_page_' . $this->plugin_name === $screen->id ) {
 
-			$screen->add_help_tab([
-				'id'       => "{$this->plugin_name}-overview",
-				'title'    => __( 'Overview', 'wp-chimp' ),
-				'callback' => [ __CLASS__, 'html_help_tab_overview' ],
-			]);
+			$screen->add_help_tab(
+				[
+					'id'       => "{$this->plugin_name}-overview",
+					'title'    => __( 'Overview', 'wp-chimp' ),
+					'callback' => [ __CLASS__, 'html_help_tab_overview' ],
+				]
+			);
 			$screen->set_help_sidebar( self::html_help_tab_sidebar() );
 		}
 	}
@@ -94,7 +96,7 @@ class Menu {
 	 *
 	 * @return string
 	 */
-	static public function html_help_tab_sidebar() {
+	public static function html_help_tab_sidebar() {
 
 		$content  = '<p><strong>' . esc_html__( 'For more information:', 'wp-chimp' ) . '</strong></p>';
 		$content .= '<p><a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank">' . esc_html__( 'About MailChimp API keys', 'wp-chimp' ) . '</a></p>';

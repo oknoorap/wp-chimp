@@ -157,13 +157,15 @@ class Test_Lists_Query extends WP_UnitTestCase {
 		$this->assertTrue( array_key_exists( '827304a9a2', $saved_data_sorted ) );
 		$this->assertEquals( 'MailChimp List 6', $saved_data_sorted['827304a9a2'] );
 
-		$inserted_exists = $this->lists_query->insert([ // Test inserting list id that already exists.
-			'list_id'      => '520524cb3b',
-			'name'         => 'MailChimp List 1',
-			'subscribers'  => 100,
-			'double_optin' => 0,
-			'synced_at'    => date( 'Y-m-d H:i:s' ),
-		]);
+		$inserted_exists = $this->lists_query->insert(
+			[ // Test inserting list id that already exists.
+				'list_id'      => '520524cb3b',
+				'name'         => 'MailChimp List 1',
+				'subscribers'  => 100,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			]
+		);
 
 		$this->assertInstanceOf( 'WP_Error', $inserted_exists );
 		$this->assertTrue( property_exists( $inserted_exists, 'errors' ) );
@@ -194,12 +196,14 @@ class Test_Lists_Query extends WP_UnitTestCase {
 
 		$list = $this->lists_query->get_by_the_id( '520524cb3b' );
 
-		$this->assertEquals( [
-			'list_id'      => '520524cb3b',
-			'name'         => 'MailChimp List 1',
-			'subscribers'  => 100,
-			'double_optin' => 0,
-		], $list );
+		$this->assertEquals(
+			[
+				'list_id'      => '520524cb3b',
+				'name'         => 'MailChimp List 1',
+				'subscribers'  => 100,
+				'double_optin' => 0,
+			], $list
+		);
 	}
 
 	/**

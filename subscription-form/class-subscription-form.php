@@ -138,38 +138,40 @@ final class Subscription_Form {
 			return;
 		}
 
-		register_block_type( 'wp-chimp/subscription-form', [
-			'editor_script' => 'wp-chimp-subscription-form-editor',
-			'editor_style' => 'wp-chimp-subscription-form-editor',
-			'style' => 'wp-chimp-subscription-form',
-			'render_callback' => __NAMESPACE__ . '\\render',
-			'attributes' => [
-				'list_id' => [
-					'type' => 'string',
-					'default' => get_the_default_list(),
+		register_block_type(
+			'wp-chimp/subscription-form', [
+				'editor_script' => 'wp-chimp-subscription-form-editor',
+				'editor_style' => 'wp-chimp-subscription-form-editor',
+				'style' => 'wp-chimp-subscription-form',
+				'render_callback' => __NAMESPACE__ . '\\render',
+				'attributes' => [
+					'list_id' => [
+						'type' => 'string',
+						'default' => get_the_default_list(),
+					],
+					'heading_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'heading_text' ),
+					],
+					'sub_heading_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'sub_heading_text' ),
+					],
+					'email_placeholder_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'email_placeholder_text' ),
+					],
+					'button_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'button_text' ),
+					],
+					'footer_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'footer_text' ),
+					],
 				],
-				'heading_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'heading_text' ),
-				],
-				'sub_heading_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'sub_heading_text' ),
-				],
-				'email_placeholder_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'email_placeholder_text' ),
-				],
-				'button_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'button_text' ),
-				],
-				'footer_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'footer_text' ),
-				],
-			],
-		] );
+			]
+		);
 	}
 
 	/**

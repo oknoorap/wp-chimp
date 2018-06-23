@@ -80,16 +80,20 @@ class Page {
 	 */
 	public function register_page() {
 
-		register_setting( $this->plugin_name, 'wp_chimp_api_key', [
-			'type'              => 'string',
-			'description'       => 'The MailChimp API key associated with WP-Chimp plugin',
-			'sanitize_callback' => 'sanitize_text_field',
-		] );
+		register_setting(
+			$this->plugin_name, 'wp_chimp_api_key', [
+				'type'              => 'string',
+				'description'       => 'The MailChimp API key associated with WP-Chimp plugin',
+				'sanitize_callback' => 'sanitize_text_field',
+			]
+		);
 
 		add_settings_section( 'section-mailchimp', '', [ $this, 'html_section_settings' ], $this->plugin_name );
-		add_settings_field( 'mailchimp-api-key', __( 'API Key', 'wp-chimp' ), [ $this, 'html_field_mailchimp_api_key' ], $this->plugin_name, 'section-mailchimp', [
-			'label_for' => 'field-mailchimp-api-key',
-		] );
+		add_settings_field(
+			'mailchimp-api-key', __( 'API Key', 'wp-chimp' ), [ $this, 'html_field_mailchimp_api_key' ], $this->plugin_name, 'section-mailchimp', [
+				'label_for' => 'field-mailchimp-api-key',
+			]
+		);
 	}
 
 	/**
@@ -230,9 +234,11 @@ class Page {
 			}
 
 			if ( $mailchimp instanceof MailChimp ) {
-				$response = $mailchimp->get( 'lists', [
-					'fields' => 'total_items',
-				]);
+				$response = $mailchimp->get(
+					'lists', [
+						'fields' => 'total_items',
+					]
+				);
 			}
 
 			if ( isset( $response['status'] ) ) {

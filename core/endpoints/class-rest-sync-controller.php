@@ -189,15 +189,17 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 		 *
 		 * @uses WP_REST_Server
 		 */
-		register_rest_route( $this->namespace, $this->rest_base . '/lists', [
-			[
-				'methods' => WP_REST_Server::READABLE,
-				'callback' => [ $this, 'get_items' ],
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-				'args' => $this->get_collection_params(),
-			],
-			'schema' => [ $this, 'get_public_item_schema' ],
-		]);
+		register_rest_route(
+			$this->namespace, $this->rest_base . '/lists', [
+				[
+					'methods' => WP_REST_Server::READABLE,
+					'callback' => [ $this, 'get_items' ],
+					'permission_callback' => [ $this, 'get_items_permissions_check' ],
+					'args' => $this->get_collection_params(),
+				],
+				'schema' => [ $this, 'get_public_item_schema' ],
+			]
+		);
 	}
 
 	/**
@@ -318,11 +320,13 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 		$page_num = absint( $request->get_param( 'page' ) );
 		$per_page = absint( $request->get_param( 'per_page' ) );
 
-		$lists = $this->get_lists( [
-			'page' => $page_num,
-			'per_page' => $per_page,
-			'offset' => self::get_lists_offset( $page_num, $per_page ),
-		] );
+		$lists = $this->get_lists(
+			[
+				'page' => $page_num,
+				'per_page' => $per_page,
+				'offset' => self::get_lists_offset( $page_num, $per_page ),
+			]
+		);
 
 		$total_items = self::get_lists_total_items();
 		$total_pages = self::get_lists_total_pages( $per_page );
@@ -413,10 +417,12 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 
 		if ( $this->mailchimp instanceof MailChimp ) {
 
-			$lists = $this->mailchimp->get( 'lists', [
-				'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin',
-				'count' => self::get_lists_total_items(),
-			]);
+			$lists = $this->mailchimp->get(
+				'lists', [
+					'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin',
+					'count' => self::get_lists_total_items(),
+				]
+			);
 
 			if ( $this->mailchimp->success() && is_array( $lists ) && ! empty( $lists ) ) {
 
@@ -526,10 +532,12 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 */
 	protected static function remote_lists_response( array $lists, array $args = [] ) {
 
-		$args = wp_parse_args( $args, [
-			'offset' => 0,
-			'per_page' => self::get_lists_total_items(),
-		] );
+		$args = wp_parse_args(
+			$args, [
+				'offset' => 0,
+				'per_page' => self::get_lists_total_items(),
+			]
+		);
 
 		return array_slice( $lists, $args['offset'], $args['per_page'] );
 	}

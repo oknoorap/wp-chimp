@@ -66,10 +66,12 @@ final class Widget extends WP_Widget {
 		$this->locale = get_the_locale_strings();
 		$this->default_attrs = get_the_default_attrs();
 
-		parent::__construct( 'wp-chimp-subscription-form', $this->locale['title'], [
-			'classname' => 'wp-chimp-subscription-form-widget',
-			'description' => $this->locale['description'],
-		] );
+		parent::__construct(
+			'wp-chimp-subscription-form', $this->locale['title'], [
+				'classname' => 'wp-chimp-subscription-form-widget',
+				'description' => $this->locale['description'],
+			]
+		);
 	}
 
 	/**

@@ -81,19 +81,21 @@ class Test_Utilities extends WP_UnitTestCase {
 	 */
 	public function test_sort_mailchimp_lists() {
 		$data = Core\sort_mailchimp_lists( $this->raw_data['lists'] );
-		$this->assertEquals( [
+		$this->assertEquals(
 			[
-				'list_id'      => '520524cb3b',
-				'name'         => 'Hello World List',
-				'subscribers'  => 446,
-				'double_optin' => 0,
-			],
-			[
-				'list_id'      => '610424aa1c',
-				'name'         => 'Foo Bar List',
-				'subscribers'  => 120,
-				'double_optin' => 1,
-			],
-		], $data );
+				[
+					'list_id'      => '520524cb3b',
+					'name'         => 'Hello World List',
+					'subscribers'  => 446,
+					'double_optin' => 0,
+				],
+				[
+					'list_id'      => '610424aa1c',
+					'name'         => 'Foo Bar List',
+					'subscribers'  => 120,
+					'double_optin' => 1,
+				],
+			], $data
+		);
 	}
 }

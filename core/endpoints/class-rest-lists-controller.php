@@ -197,34 +197,38 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		 *
 		 * @uses WP_REST_Server
 		 */
-		register_rest_route( $this->namespace, $this->rest_base, [
-			[
-				'methods' => WP_REST_Server::READABLE,
-				'callback' => [ $this, 'get_items' ],
-				'args' => $this->get_collection_params(),
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-			],
-			'schema' => [ $this, 'get_public_item_schema' ],
-		]);
+		register_rest_route(
+			$this->namespace, $this->rest_base, [
+				[
+					'methods' => WP_REST_Server::READABLE,
+					'callback' => [ $this, 'get_items' ],
+					'args' => $this->get_collection_params(),
+					'permission_callback' => [ $this, 'get_items_permissions_check' ],
+				],
+				'schema' => [ $this, 'get_public_item_schema' ],
+			]
+		);
 
 		/**
 		 * Register the '/list' route to retrieve a single MailChimp list with their ID.
 		 *
 		 * @uses WP_REST_Server
 		 */
-		register_rest_route( $this->namespace, $this->rest_base . '/(?P<id>[\w-]+)', [
-			[
-				'methods' => WP_REST_Server::READABLE,
-				'callback' => [ $this, 'get_item' ],
-				'permission_callback' => [ $this, 'get_item_permissions_check' ],
-			],
-			[
-				'methods' => WP_REST_Server::EDITABLE,
-				'callback' => [ $this, 'update_item' ],
-				'permission_callback' => [ $this, 'update_item_permissions_check' ],
-			],
-			'schema' => [ $this, 'get_public_item_schema' ],
-		]);
+		register_rest_route(
+			$this->namespace, $this->rest_base . '/(?P<id>[\w-]+)', [
+				[
+					'methods' => WP_REST_Server::READABLE,
+					'callback' => [ $this, 'get_item' ],
+					'permission_callback' => [ $this, 'get_item_permissions_check' ],
+				],
+				[
+					'methods' => WP_REST_Server::EDITABLE,
+					'callback' => [ $this, 'update_item' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+				],
+				'schema' => [ $this, 'get_public_item_schema' ],
+			]
+		);
 	}
 
 	/**
@@ -360,11 +364,13 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$page_num = absint( $request->get_param( 'page' ) );
 		$per_page = absint( $request->get_param( 'per_page' ) );
 
-		$lists = $this->get_lists( [
-			'page' => $page_num,
-			'per_page' => $per_page,
-			'offset' => self::get_lists_offset( $page_num, $per_page ),
-		] );
+		$lists = $this->get_lists(
+			[
+				'page' => $page_num,
+				'per_page' => $per_page,
+				'offset' => self::get_lists_offset( $page_num, $per_page ),
+			]
+		);
 
 		$total_items = self::get_lists_total_items();
 		$total_pages = self::get_lists_total_pages( $per_page );
@@ -431,10 +437,12 @@ class REST_Lists_Controller extends WP_REST_Controller {
 
 		if ( ! is_email( $email ) ) {
 
-			$response = rest_ensure_response([
-				'email_address' => $email,
-				'status' => 'invalid_email',
-			]);
+			$response = rest_ensure_response(
+				[
+					'email_address' => $email,
+					'status' => 'invalid_email',
+				]
+			);
 
 			return $response;
 		}
@@ -442,10 +450,12 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		if ( ! empty( $list_id ) && $this->mailchimp instanceof MailChimp ) {
 
 			$status = $this->get_subscription_status();
-			$subscription = $this->mailchimp->post( "lists/{$list_id}/members", [
-				'email_address' => $email,
-				'status' => $status,
-			]);
+			$subscription = $this->mailchimp->post(
+				"lists/{$list_id}/members", [
+					'email_address' => $email,
+					'status' => $status,
+				]
+			);
 
 			$response = rest_ensure_response( $subscription );
 
