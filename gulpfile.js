@@ -1,31 +1,28 @@
 /* eslint-env node */
-
-const path         = require( 'path' );
-const buffer       = require( 'vinyl-buffer' );
-const sourceStream = require( 'vinyl-source-stream' );
-const mergeStream  = require( 'merge-stream' );
-const browserify   = require( 'browserify' );
-const babelify     = require( 'babelify' );
-
-const gulp         = require( 'gulp' );
-const sass         = require( 'gulp-sass' );
-const autoprefixer = require( 'gulp-autoprefixer' );
-const sourcemaps   = require( 'gulp-sourcemaps' );
-const eslint       = require( 'gulp-eslint' );
-const uglify       = require( 'gulp-uglifyes' );
-const readme       = require( 'gulp-readme-to-markdown' );
+const path = require('path')
+const buffer = require('vinyl-buffer')
+const sourceStream = require('vinyl-source-stream')
+const mergeStream = require('merge-stream')
+const browserify = require('browserify')
+const babelify = require('babelify')
+const gulp = require('gulp')
+const sass = require('gulp-sass')
+const autoprefixer = require('gulp-autoprefixer')
+const sourcemaps = require('gulp-sourcemaps')
+const eslint = require('gulp-eslint')
+const readme = require('gulp-readme-to-markdown')
 
 const sassFiles = [
   'admin.scss',
   'subscription-form-editor.scss',
   'subscription-form.scss'
-];
+]
 
 const ecmaScriptFiles = [
   'admin.es',
   'subscription-form-editor.es',
   'subscription-form.es'
-];
+]
 
 /**
  * ---------------------------------------------------------------
@@ -36,35 +33,32 @@ const ecmaScriptFiles = [
  * ---------------------------------------------------------------
  */
 
-gulp.task( 'scripts', () => {
-
-  return mergeStream( ecmaScriptFiles.map( ( file ) => {
-
-    let fileName = path.basename( file, '.es' );
-
+gulp.task('scripts', () => {
+  return mergeStream(ecmaScriptFiles.map(file => {
+    let fileName = path.basename(file, '.es')
     return browserify({
-        'entries': `./assets/js/${file}`,
-        'debug': true,
-        'transform': [ babelify ]
+      'entries': `./assets/js/${file}`,
+      'debug': true,
+      'transform': [ babelify ]
     })
-    .bundle()
-      .on( 'error', function( err ) {
-        console.error( err );
-        this.emit( 'end' );
+      .bundle()
+      .on('error', err => {
+        console.error(err)
+        this.emit('end')
       })
-    .pipe( sourceStream( `${fileName}.js` ) )
-    .pipe( buffer() )
-      .pipe( sourcemaps.init({'loadMaps': true}) )
-      .pipe( sourcemaps.write( './' ) )
-    .pipe( gulp.dest( './assets/js' ) );
-  }) );
-});
+      .pipe(sourceStream(`${fileName}.js`))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({'loadMaps': true}))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest('./assets/js'))
+  }))
+})
 
 gulp.task('eslint', () => {
   return gulp.src('./assets/js/**/*.es')
-    .pipe( eslint() )
-    .pipe( eslint.format() )
-});
+    .pipe(eslint())
+    .pipe(eslint.format())
+})
 
 /**
  * ---------------------------------------------------------------
@@ -81,22 +75,21 @@ gulp.task('eslint', () => {
  * We will loop through each files and put the compiled CSS to the
  * destination directory as listed in `styleSources`
  */
-gulp.task( 'styles', () => {
-
+gulp.task('styles', () => {
   const autoprefixerConfig = {
     browsers: [ 'last 3 versions' ],
     cascade: false
-  };
+  }
 
-  return mergeStream( sassFiles.map( ( file ) => {
-    return gulp.src( `./assets/css/${file}` )
-      .pipe( sass().on( 'error', sass.logError ) )
-        .pipe( sourcemaps.init() )
-        .pipe( autoprefixer( autoprefixerConfig ) )
-        .pipe( sourcemaps.write( '.' ) )
-      .pipe( gulp.dest( './assets/css' ) );
-  } ) );
-});
+  return mergeStream(sassFiles.map(
+    file => gulp.src(`./assets/css/${file}`)
+      .pipe(sass().on('error', sass.logError))
+      .pipe(sourcemaps.init())
+      .pipe(autoprefixer(autoprefixerConfig))
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest('./assets/css'))
+  ))
+})
 
 /**
  * ---------------------------------------------------------------
@@ -107,14 +100,14 @@ gulp.task( 'styles', () => {
  * ---------------------------------------------------------------
  */
 
-gulp.task('readme', function() {
+gulp.task('readme', () => {
   gulp.src([ 'README.txt' ])
-  .pipe(readme({
-    details: false,
-    screenshot_ext: ['jpg', 'png']
-  }))
-  .pipe(gulp.dest('.'));
-});
+    .pipe(readme({
+      details: false,
+      screenshot_ext: ['jpg', 'png']
+    }))
+    .pipe(gulp.dest('.'))
+})
 
 /**
  * ---------------------------------------------------------------
@@ -125,7 +118,7 @@ gulp.task('readme', function() {
  * ---------------------------------------------------------------
  */
 
-gulp.task( 'default', [ 'eslint', 'scripts', 'styles' ], () => {
-  gulp.watch([ '**/*.es' ], [ 'eslint', 'scripts' ]);
-  gulp.watch([ '**/*.scss' ], [ 'styles' ]);
-});
+gulp.task('default', [ 'eslint', 'scripts', 'styles' ], () => {
+  gulp.watch([ '**/*.es' ], [ 'eslint', 'scripts' ])
+  gulp.watch([ '**/*.scss' ], [ 'styles' ])
+})

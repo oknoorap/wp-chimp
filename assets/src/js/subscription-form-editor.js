@@ -1,24 +1,20 @@
-'use strict';
+import { getApiRootStatus } from './components/utilities'
+import FormEditor from './components/form-editor'
+import FormInactive from './components/form-inactive'
 
-import { getApiRootStatus } from './components/utilities.es';
+const wp = window.wp || {}
 
-import FormEditor from './components/form-editor.es';
-import FormInactive from './components/form-inactive.es';
-
-const wp = window.wp || {};
-
-const locale = wpChimpL10n;
-const { mailchimpApiStatus } = wpChimpSettingState;
-
-const { registerBlockType } = wp.blocks;
-const { createElement: el } = wp.element;
+const locale = wpChimpL10n
+const { mailchimpApiStatus } = wpChimpSettingState
+const { registerBlockType } = wp.blocks
+const { createElement: el } = wp.element
 
 /**
  * Every block starts by registering a new block type definition.
  *
  * @see https://wordpress.org/gutenberg/handbook/block-api/
  */
-registerBlockType( 'wp-chimp/subscription-form', {
+registerBlockType('wp-chimp/subscription-form', {
 
   /**
    * This is the display title for your block, which can be translated
@@ -69,17 +65,17 @@ registerBlockType( 'wp-chimp/subscription-form', {
    * @param {Object} [props] Properties passed from the editor.
    * @return {Element}       Element to render.
    */
-  edit( props ) {
-    if ( false === getApiRootStatus() || false === mailchimpApiStatus ) {
-      return el( FormInactive, {
+  edit (props) {
+    if (!getApiRootStatus() || !mailchimpApiStatus) {
+      return el(FormInactive, {
         className: 'wp-chimp-inactive'
-      });
+      })
     }
 
-    return el( FormEditor, {
+    return el(FormEditor, {
       ...props,
       className: 'wp-chimp-subscription-form'
-    });
+    })
   },
 
   /**
@@ -91,7 +87,7 @@ registerBlockType( 'wp-chimp/subscription-form', {
    *
    * @return {null} Element to render.
    */
-  save() {
-    return null;
+  save () {
+    return null
   }
-});
+})

@@ -1,78 +1,70 @@
-'use strict';
+import camelCaseKeys from 'camelcase-keys'
+import snakeCaseKeys from 'snakecase-keys'
 
-import camelCaseKeys from 'camelcase-keys';
-import snakeCaseKeys from 'snakecase-keys';
-
-const wp = window.wp || {};
-const { Component, createElement: el } = wp.element;
-const { RichText } = wp.editor;
+const { Component, createElement: el } = wp.element
+const { RichText } = wp.editor
 
 class FormView extends Component {
+  render () {
+    const { attributes, setAttributes, className } = this.props
+    const { headingText, subHeadingText, emailPlaceholderText, buttonText, footerText } = camelCaseKeys(attributes)
 
-  constructor() {
-    super( ...arguments );
-	}
-
-  render() {
-    const { attributes, setAttributes, className } = this.props;
-    const { headingText, subHeadingText, emailPlaceholderText, buttonText, footerText } = camelCaseKeys( attributes );
-
-    return el( 'div', {
-        className: `wp-chimp-block ${className}`
-      }, [
-      el( RichText, {
+    return el('div', {
+      className: `wp-chimp-block ${className}`
+    }, [
+      el(RichText, {
         key: 'heading',
         format: 'string',
         tagName: 'h3',
         className: `${className}__heading is-editable`,
         value: headingText,
         formattingControls: [],
-        onChange: ( value ) => setAttributes( snakeCaseKeys({ headingText: value }) )
+        onChange: value => setAttributes(snakeCaseKeys({ headingText: value }))
       }),
-      el( RichText, {
+      el(RichText, {
         key: 'sub-heading',
         format: 'string',
         tagName: 'p',
         className: `${className}__sub-heading is-editable`,
         value: subHeadingText,
         formattingControls: [ 'bold', 'italic', 'link' ],
-        onChange: ( value ) => setAttributes( snakeCaseKeys({ subHeadingText: value }) )
+        onChange: value => setAttributes(snakeCaseKeys({ subHeadingText: value }))
       }),
-      el( 'div', {
+      el('div', {
         className: 'wp-chimp-form'
-      }, el( 'fieldset', {
+      }, el('fieldset', {
         className: 'wp-chimp-form__fieldset'
       }, [
-        el( RichText, {
+        el(RichText, {
           key: 'email-field',
           format: 'string',
           tagName: 'div',
           className: 'wp-chimp-form__email-field is-editable',
           value: emailPlaceholderText,
           formattingControls: [],
-          onChange: ( value ) => setAttributes( snakeCaseKeys({ emailPlaceholderText: value }) )
+          onChange: value => setAttributes(snakeCaseKeys({ emailPlaceholderText: value }))
         }),
-        el( RichText, {
+        el(RichText, {
           key: 'button',
           format: 'string',
           tagName: 'div',
           className: 'wp-chimp-form__button is-editable',
           value: buttonText,
           formattingControls: [],
-          onChange: ( value ) => setAttributes( snakeCaseKeys({ buttonText: value }) )
+          onChange: value => setAttributes(snakeCaseKeys({ buttonText: value }))
         })
-      ]) ),
-      el( RichText, {
+      ])),
+      el(RichText, {
         key: 'footer',
         format: 'string',
         tagName: 'p',
         className: `${className}__footer is-editable`,
         value: footerText,
         formattingControls: [ 'bold', 'italic', 'link' ],
-        onChange: ( value ) => setAttributes( snakeCaseKeys({ footerText: value }) )
+        onChange: value => setAttributes(snakeCaseKeys({ footerText: value }))
       })
-    ]);
+    ])
   }
 }
 
-export default FormView;
+export default FormView

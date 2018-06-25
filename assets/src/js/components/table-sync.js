@@ -1,12 +1,9 @@
-'use strict';
-
 /**
  * The Class to sync the lists.
  *
  * @since 0.1.0
  */
 class TableSync {
-
   /**
    * Set up the sync button and the TableRequest instance.
    *
@@ -14,12 +11,10 @@ class TableSync {
    *
    * @param {TableRequest} tableRequest
    */
-  constructor( tableRequest ) {
-
-    this.tableRequest = tableRequest;
-
-    this.syncButton = document.querySelector( '#wp-chimp-sync-lists-button' );
-    this.syncButton.addEventListener( 'click', this.onClick.bind( this ) );
+  constructor (tableRequest) {
+    this.tableRequest = tableRequest
+    this.syncButton = document.querySelector('#wp-chimp-sync-lists-button')
+    this.syncButton.addEventListener('click', this.onClick.bind(this))
   }
 
   /**
@@ -27,11 +22,11 @@ class TableSync {
    *
    * @since 0.1.0
    */
-  onClick() {
+  onClick () {
     this.tableRequest.request({
       'url': 'wp-chimp/v1/sync/lists'
-    });
+    })
   }
 }
 
-export default TableSync;
+export default TableSync
