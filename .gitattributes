@@ -22,3 +22,4 @@ tests/ export-ignore
 vendor/ export-ignore
 node_modules/ export-ignore
 dev-kit/ export-ignore
+assets/src export-ignore
