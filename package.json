@@ -99,6 +99,7 @@
     "local:ssh-node": "dev-kit/bin/ssh node",
     "test:phpunit": "dev-kit/bin/phpunit",
     "test:phpcs": "dev-kit/bin/phpcs",
-    "test:eslint": "dev-kit/bin/eslint"
+    "test:eslint": "dev-kit/bin/eslint",
+    "test:stylelint": "./node_modules/.bin/stylelint 'assets/css/*.*'"
   }
 }
