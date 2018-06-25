@@ -29,10 +29,11 @@
     "browserify": "^16.2.2",
     "cssnano": "^3.10.0",
     "del": "^3.0.0",
-    "eslint": "^4.19.0",
+    "eslint": "^5.0.0",
+    "eslint-config-recommended": "^3.0.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-config-wordpress": "^2.0.0",
-    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
@@ -67,19 +68,8 @@
       "transform-object-rest-spread"
     ]
   },
-  "eslintConfig": {
-    "extends": "wordpress",
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "experimentalObjectRestSpread": true
-      }
-    }
-  },
   "eslintIgnore": [
-    "*.min.js",
-    "*.js",
+    "assets/js/*.js",
     "node_modules/*",
     "vendor/*"
   ],
