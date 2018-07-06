@@ -1,0 +1,60 @@
+@import "variables";
+
+.wp-admin .wp-chimp-subscription-form {
+
+	margin: 0;
+
+	&__select-list {
+		margin: 0;
+		height: 36px;
+		padding: 3px;
+		display: flex;
+		align-items: center;
+
+		select {
+			width: 100%;
+			max-width: 260px;
+			border-radius: 0;
+		}
+
+		.dashicon {
+			margin: 0 8px;
+		}
+	}
+
+	&.is-loading {
+		display: table;
+		padding: 3em;
+		height: 120px;
+		text-align: center;
+		width: 100%;
+
+		.spinner {
+			float: none;
+		}
+	}
+
+	&__heading {
+		margin-bottom: 0;
+	}
+
+	// The Form element.
+	.wp-chimp-form {
+
+		&__email-field {
+			color: $gray;
+		}
+	}
+}
+
+.wp-admin .wp-chimp-subscription-form,
+.wp-admin .wp-chimp-subscription-form .wp-chimp-form {
+
+	.is-editable {
+
+		&:focus {
+			outline: 1px solid $gray;
+			outline-offset: 2px;
+		}
+	}
+}

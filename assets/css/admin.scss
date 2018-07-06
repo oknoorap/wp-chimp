@@ -1,0 +1,142 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+#wp-chimp-lists {
+	margin: 20px 0;
+}
+
+#wp-chimp-table-lists {
+	margin: 10px 0;
+}
+
+#wp-chimp-table-lists-empty {
+	height: 35px;
+}
+
+#wp-chimp-table-lists-body {
+
+	.dashicons {
+		background-color: #eaeaea;
+		border-radius: 30px;
+		padding: 1px;
+		width: 16px;
+		height: 16px;
+		font-size: 16px;
+	}
+}
+
+#wp-chimp-table-pagination {
+	display: flex;
+	justify-content: flex-end;
+	float: none;
+	margin: 0;
+	align-items: center;
+
+	span {
+		margin: 0 4px;
+	}
+
+	.prev-page,
+	.next-page {
+		display: inline-block;
+		min-width: 17px;
+		border: 1px solid #ccc;
+		padding: 3px 5px 7px;
+		font-size: 16px;
+		line-height: 1;
+		font-weight: 400;
+		text-align: center;
+		color: #0073aa;
+		cursor: pointer;
+
+		&:hover {
+			border-color: #5b9dd9;
+			color: #fff;
+			background: #00a0d2;
+			box-shadow: none;
+			outline: 0;
+		}
+
+		&.inactive,
+		&.inactive:hover {
+			cursor: default;
+			height: 16px;
+			border-color: #ddd;
+			background: #f7f7f7;
+			color: #a0a5aa;
+		}
+	}
+}
+
+.wp-chimp-table {
+
+	thead {
+		width: 100%;
+	}
+
+	&__th-id {
+		width: 100px;
+	}
+
+	&__th-subscribers,
+	&__th-double-optin {
+		width: 90px;
+	}
+
+	&__th-shortcode {
+		width: 260px;
+	}
+}
+
+.wp-chimp-table-data-placeholder {
+
+	&__bar {
+		height: 12px;
+		display: block;
+		width: 100%;
+		margin: 2px 0;
+		background-color: #eaeaea;
+		animation: fade-in-out 0.5s ease-out infinite;
+	}
+
+	@for $i from 0 through 4 {
+
+		$delay: ($i / 10);
+
+		.index-#{$i} {
+			animation-delay: #{$delay}s;
+		}
+	}
+}
+
+.wp-chimp-api-status-detail {
+	font-weight: 400;
+}
+
+@keyframes fade-in-out {
+
+	0% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0.5;
+	}
+}
+
+.widget-content {
+
+	.wp-chimp-list-select {
+		padding: 10px;
+		background: #f7f7f7;
+		border-radius: 3px;
+		display: flex;
+		align-items: center;
+
+		label {
+			margin-right: 10px;
+		}
+	}
+}

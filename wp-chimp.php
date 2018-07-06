@@ -7,66 +7,38 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://wp-chimp.com
- * @since             0.1.0
- * @package           WP_Chimp
+ * @link https://wp-chimp.com
+ * @package WP_Chimp
+ * @since 0.1.0
  *
  * @wordpress-plugin
- * Plugin Name:       WP Chimp
- * Plugin URI:        https://wordpress.org/plugins/wp-chimp
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           0.1.0
- * Author:            Thoriq Firdaus
- * Author URI:        https://wp-chimp.com
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       wp-chimp
- * Domain Path:       /languages
+ * Plugin Name: WP Chimp
+ * Plugin URI: https://wordpress.org/plugins/wp-chimp
+ * Description: Lean MailChimp subscription form plugin for WordPress
+ * Version: 0.1.0
+ * Author: Thoriq Firdaus
+ * Author URI: https://wp-chimp.com
+ * License: GPL-2.0+
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain: wp-chimp
+ * Domain Path: /languages
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
-
-use DrewM\MailChimp\MailChimp as MailChimp;
-
-/**
- * Currently pligin version.
- * Start at version 0.1.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'PLUGIN_NAME_VERSION', '0.1.0' );
-
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-wp-chimp-activator.php
- */
-function activate_wp_chimp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-chimp-activator.php';
-	WP_Chimp_Activator::activate();
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
 }
 
 /**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-wp-chimp-deactivator.php
+ * Load the autoloaders that will automatically include the appropriate file
+ * when a Class is instantiated. The `vendor/autoload.php` specifically
+ * will load files from the packages installed through Composer
+ *
+ * @link http://php.net/manual/en/function.spl-autoload-register.php
+ * @link https://getcomposer.org/doc/01-basic-usage.md#autoloading
  */
-function deactivate_wp_chimp() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-chimp-deactivator.php';
-	WP_Chimp_Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_wp_chimp' );
-register_deactivation_hook( __FILE__, 'deactivate_wp_chimp' );
-
-// Load the modules from Composer.
-require_once plugin_dir_path( __FILE__ ) . 'includes/vendor/autoload.php';
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-wp-chimp.php';
+require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 
 /**
  * Begins execution of the plugin.
@@ -75,10 +47,25 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wp-chimp.php';
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    0.1.0
+ * This function is also useful to check if the plugin is activated
+ * through the function_exists() function.
+ *
+ * @since  0.1.0
+ *
+ * @return WP_Chimp\Core\Plugin The Plugin instance.
  */
-function run_wp_chimp() {
-	$plugin = new WP_Chimp();
-	$plugin->run();
+function wp_chimp() {
+
+	static $plugin;
+
+	if ( is_null( $plugin ) ) {
+
+		$plugin = new WP_Chimp\Core\Plugin( 'wp-chimp', '0.1.0', __FILE__ );
+		$plugin->set_loader( new WP_Chimp\Core\Loader() );
+
+		$plugin->run();
+	}
+
+	return $plugin;
 }
-run_wp_chimp();
+wp_chimp();

@@ -2,8 +2,23 @@
 <ruleset name="WordPress Coding Standards for Plugins">
 	<description>Generally-applicable sniffs for WordPress plugins</description>
 
-	<rule ref="WordPress-Core" />
+	<rule ref="WordPress-Core">
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment" />
+		<exclude name="Generic.Formatting.MultipleStatementAlignment" />
+	</rule>
+	<rule ref="WordPress-Extra" />
 	<rule ref="WordPress-Docs" />
+
+	<rule ref="WordPress.XSS.EscapeOutput">
+		<properties>
+			<property name="customAutoEscapedFunctions" value="get_the_inactive_notice,render" type="array" />
+		</properties>
+	</rule>
+
+	<!-- <link:>https://github.com/squizlabs/PHP_CodeSniffer/issues/870</link:> -->
+	<rule ref="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing">
+  		<severity>0</severity>
+	</rule>
 
 	<!-- Check all PHP files in directory tree by default. -->
 	<arg name="extensions" value="php"/>
@@ -15,4 +30,6 @@
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/dev-kit/*</exclude-pattern>
+	<exclude-pattern>tests/bootstrap.php</exclude-pattern>
+	<exclude-pattern>index.php</exclude-pattern>
 </ruleset>

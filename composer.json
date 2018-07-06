@@ -1,8 +1,13 @@
 {
     "name": "tfirdaus/wp-chimp",
-    "description": "Lightweight MailChimp plugin for WordPress.",
+    "description": "Lightweight MailChimp form for WordPress",
     "license": "GPL-2.0+",
     "require": {
-        "drewm/mailchimp-api": "^2.0"
+        "drewm/mailchimp-api": "^2.0",
+        "a5hleyrich/wp-background-processing": "^1.0",
+        "underdev/requirements": "^1.2"
+    },
+    "require-dev": {
+      "brain/monkey": "~2.0.0"
     }
 }

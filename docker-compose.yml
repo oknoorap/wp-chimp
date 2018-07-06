@@ -1,0 +1,109 @@
+version: '3'
+services:
+
+  # Localhost configuration.
+  wordpress:
+    image: ${WP_IMAGE}
+    working_dir: ${WP_ROOT_DIR}
+    ports:
+      - "${WP_PUBLISHED_PORT}:80"
+      - "${WP_PUBLISHED_PORT_HTTPS}:443"
+    restart: on-failure
+    depends_on:
+      - database
+      - phpmyadmin
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - www:${WP_ROOT_DIR}
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    extra_hosts:
+      - "${WP_SITE_DOMAIN}:192.168.65.2"
+
+  database:
+    image: ${DB_IMAGE}
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - "${DB_PUBLISHED_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - database
+    restart: on-failure
+    ports:
+      - "${PMA_PUBLISHED_PORT}:80"
+    environment:
+      - PMA_HOST=${DB_HOST}
+
+  # Tooling and Package Manager
+  node:
+    image: ${NODE_IMAGE}
+    working_dir: ${NODE_PROJECT_DIR}
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./:${NODE_PROJECT_DIR}
+
+  composer:
+    image: ${COMPOSER_IMAGE}
+    working_dir: ${COMPOSER_PROJECT_DIR}
+    volumes:
+      - ./:${COMPOSER_PROJECT_DIR}
+
+  # Unit and CI Tests
+  wordpress_php5.6:
+    image: tfirdaus/wp-docklines:php5.6-fpm-alpine
+    working_dir: ${WP_PROJECT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+
+  wordpress_php7.0:
+    image: tfirdaus/wp-docklines:php7.0-fpm-alpine
+    working_dir: ${WP_PROJECT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+
+  wordpress_php7.1:
+    image: tfirdaus/wp-docklines:php7.1-fpm-alpine
+    working_dir: ${WP_PROJECT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+
+  wordpress_php7.2:
+    image: tfirdaus/wp-docklines:php7.2-fpm-alpine
+    working_dir: ${WP_PROJECT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+
+# Caches
+volumes:
+  www:
+  mysql:
+  wp_tests_core:
+  wp_tests_dir:

@@ -45,8 +45,10 @@ npm-debug.log
 ######################
 *.min.css
 *.min.js
+*.css
+*.map
 
-# Dist direcotories #
+# Dist directories #
 #####################
 /dist
 /dist-*
@@ -55,8 +57,10 @@ npm-debug.log
 ######################
 /vendor
 
-# WP-Locker #
+# Graphics #
 ######################
-.env
-/wp-content
-/wordpress
+*.psd
+
+# Exception #
+######################
+!gulpfile.js
