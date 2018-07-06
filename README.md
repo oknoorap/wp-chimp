@@ -4,6 +4,8 @@
 
 > Lean MailChimp subscription form plugin for WordPress
 
+[![WordPress plugin](https://img.shields.io/wordpress/plugin/v/wp-chimp.svg)](https://wordpress.org/plugins/wp-chimp/) [![WordPress](https://img.shields.io/wordpress/v/wp-chimp.svg)](https://wordpress.org/plugins/wp-chimp/)
+
 ## Description
 
 WP Chimp provides the ability to add a MailChimp subscription form to your post and page content and in the Widget area. The plugin also registers a custom [Gutenberg Block](https://wordpress.org/gutenberg/handbook/language/) allowing you to add and edit the subscription form in a much more intuitive way, which will not be possible when using the Shortcode.
