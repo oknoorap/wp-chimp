@@ -2045,7 +2045,7 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-encoding@^0.1.11:
+encoding@^0.1.11, encoding@^0.1.12:
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/encoding/-/encoding-0.1.12.tgz#538b66f3ee62cd1ab51ec323829d1f9480c74beb"
   dependencies:
@@ -2776,6 +2776,13 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
+gettext-parser@^1.1.2:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/gettext-parser/-/gettext-parser-1.4.0.tgz#f8baf34a292f03d5e42f02df099d301f167a7ace"
+  dependencies:
+    encoding "^0.1.12"
+    safe-buffer "^5.1.1"
+
 glob-base@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/glob-base/-/glob-base-0.3.0.tgz#dbb164f6221b1c0b1ccf82aea328b497df0ea3c4"
@@ -3009,6 +3016,14 @@ gulp-eslint@^4.0.2:
     eslint "^4.0.0"
     fancy-log "^1.3.2"
     plugin-error "^1.0.0"
+
+gulp-gettext@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/gulp-gettext/-/gulp-gettext-0.3.0.tgz#b1bf404f0de9ebdf2fdb3e164dcd4e17e638937d"
+  dependencies:
+    gettext-parser "^1.1.2"
+    gulp-util "^3.0.7"
+    through2 "^2.0.1"
 
 gulp-plumber@^1.2.0:
   version "1.2.0"
@@ -6088,6 +6103,10 @@ slice-ansi@1.0.0:
   dependencies:
     is-fullwidth-code-point "^2.0.0"
 
+slugify@^1.1.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.3.0.tgz#787919259d28c825fbcae6da2e01c77a109793f6"
+
 snakecase-keys@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/snakecase-keys/-/snakecase-keys-1.1.1.tgz#db08e34d0a81fda4ac413a935f6ca7b1bee594c2"
@@ -6705,7 +6724,7 @@ trim-trailing-lines@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/trim-trailing-lines/-/trim-trailing-lines-1.1.1.tgz#e0ec0810fd3c3f1730516b45f49083caaf2774d9"
 
-trim@0.0.1:
+trim@0.0.1, trim@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/trim/-/trim-0.0.1.tgz#5858547f6b290757ee95cccc666fb50084c460dd"
 
@@ -7049,6 +7068,13 @@ wide-align@^1.1.0:
 wordwrap@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
+
+wp-get-file-header@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/wp-get-file-header/-/wp-get-file-header-1.0.1.tgz#23578ed9faeb0b3db9c8ca52349d92765774e786"
+  dependencies:
+    slugify "^1.1.0"
+    trim "^0.0.1"
 
 wp-pot@^1.6.1:
   version "1.6.1"

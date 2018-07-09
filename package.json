@@ -44,6 +44,7 @@
     "gulp-batch": "^1.0.5",
     "gulp-clean-css": "^3.9.4",
     "gulp-eslint": "^4.0.2",
+    "gulp-gettext": "^0.3.0",
     "gulp-plumber": "^1.2.0",
     "gulp-postcss": "^7.0.1",
     "gulp-readme-to-markdown": "^0.2.1",
@@ -60,7 +61,8 @@
     "stylelint": "^9.3.0",
     "stylelint-config-wordpress": "^13.0.0",
     "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
+    "vinyl-source-stream": "^2.0.0",
+    "wp-get-file-header": "^1.0.1"
   },
   "dependencies": {
     "camelcase-keys": "^4.2.0",
@@ -84,7 +86,7 @@
     "extends": "stylelint-config-wordpress"
   },
   "scripts": {
-    "test:stylelint": "./node_modules/.bin/stylelint 'assets/src/scss/*.*'"
+    "test:stylelint": "./node_modules/.bin/stylelint 'assets/src/scss/*.*'",
     "local:pull": "docker-compose pull",
     "local:up": "bash bin/up.sh -d wordpress",
     "local:down": "bash bin/down.sh",
