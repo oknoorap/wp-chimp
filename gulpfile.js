@@ -15,8 +15,12 @@ const rename = require('gulp-rename')
 const watch = require('gulp-watch')
 const batch = require('gulp-batch')
 const sourcemaps = require('gulp-sourcemaps')
+const wpPot = require('gulp-wp-pot')
+const gettext = require('gulp-gettext')
 const eslint = require('gulp-eslint')
 const readme = require('gulp-readme-to-markdown')
+const getFileHeader = require('wp-get-file-header')
+const pkg = require('./package')
 
 const assetPath = path.join(__dirname, 'assets')
 const srcPath = {
@@ -25,7 +29,8 @@ const srcPath = {
 }
 const dstPath = {
   CSS: path.join(assetPath, 'css'),
-  JS: path.join(assetPath, 'js')
+  JS: path.join(assetPath, 'js'),
+  LANG: path.join(__dirname, 'languages')
 }
 
 const sassFiles = [
@@ -111,14 +116,29 @@ gulp.task('build:styles', () => {
 })
 
 /**
- * ---------------------------------------------------------------
- * Misc tasks
- *
- * Define default task that can be called by just running `gulp`
- * from cli
- * ---------------------------------------------------------------
+ * Compile translation to .pot and .mo
  */
+gulp.task('build:lang', async () => {
+  const { textDomain: domain, pluginName: package } = await getFileHeader(path.join(__dirname, 'wp-chimp.php'))
+  const buildPOT = gulp.src(path.join(__dirname, '**', '*.php'))
+    .pipe(plumber())
+    .pipe(wpPot({
+      domain,
+      package
+    }))
+    .pipe(gulp.dest(path.join(dstPath.LANG, `${domain}.pot`)))
 
+  const buildMO = gulp.src(path.join(dstPath.LANG, '*.pot'))
+    .pipe(plumber())
+    .pipe(gettext())
+    .pipe(gulp.dest(dstPath.LANG))
+
+  return merge(buildPOT, buildMO)
+})
+
+/**
+ * Convert README.md to WordPress README.txt
+ */
 gulp.task('readme', () => {
   gulp.src([ 'README.txt' ])
     .pipe(readme({
@@ -135,14 +155,19 @@ gulp.task('watch:files', () => {
   watch(path.join(srcPath.SCSS, '*.scss'), batch((events, done) => {
     gulp.start('build:styles', done)
   }))
+
+  watch(path.join(_dirname, '**', '*.php'), batch(events, done) => {
+    gulp.start('build:lang', done)
+  })
 })
 
 /**
  * Task to build all scripts, styles, translation file, and readme.
  */
 gulp.task('build', [
-  'build:scripts',
-  'build:styles'
+  // 'build:scripts',
+  'build:styles',
+  'build:lang'
 ])
 
 /**
