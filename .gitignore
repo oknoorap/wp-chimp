@@ -72,3 +72,9 @@ typings/
 
 # Serverless directories
 .serverless
+
+# assets files
+assets/css/*
+!assets/css/.gitkeep
+assets/js/*
+!assets/js/.gitkeep
