@@ -29,9 +29,9 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
-# Graphics #
-######################
+# graphics
 *.psd
+
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
@@ -64,15 +64,6 @@ typings/
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
-# next.js build output
-.next
-
-# nuxt.js build output
-.nuxt
-
-# vuepress build output
-.vuepress/dist
-
 # Serverless directories
 .serverless
 
@@ -81,3 +72,9 @@ assets/css/*
 !assets/css/.gitkeep
 assets/js/*
 !assets/js/.gitkeep
+
+# translation files
+*.pot
+
+# readme
+README.txt
