@@ -1,12 +1,22 @@
 <?php
+/**
+ * WP_Chimp Autoloader.
+ *
+ * @package WP_Chimp
+ * @since 0.1.0
+ */
 
 namespace WP_Chimp;
 
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
+}
+
 /**
- * Undocumented function
+ * Autoloader for Classes within the WP_Chimp namespace.
  *
  * @param string $class_name The loaded class name e.g. WP_Chimp\Class_Name.
- * @return void
  */
 function autoloader( $class_name ) {
 
@@ -56,7 +66,7 @@ function autoloader( $class_name ) {
 
 	// If the file exists in the specified path, then include it.
 	if ( file_exists( $filepath ) ) {
-		include_once( $filepath );
+		include_once $filepath;
 	} else {
 
 		// Translators: the file path of the class to load.

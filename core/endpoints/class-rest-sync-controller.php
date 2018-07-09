@@ -2,14 +2,13 @@
 /**
  * The file that defines a REST controller for '/lists' endpoints.
  *
- * @link https://wp-chimp.com
+ * @package WP_Chimp/Core
  * @since 0.1.0
- * @package WP_Chimp/Includes
  */
 
 namespace WP_Chimp\Core\Endpoints;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -17,7 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
-use WP_REST_Response;
 use WP_REST_Controller;
 
 use WP_Chimp\Core;
@@ -28,61 +26,52 @@ use DrewM\MailChimp\MailChimp;
 /**
  * The class that register the custom '/list' endpoint to WP-API.
  *
- * @since  0.1.0
- * @author Thoriq Firdaus <thoriqoe@gmail.com>
+ * @since 0.1.0
  */
 final class REST_Sync_Controller extends WP_REST_Controller {
 
 	/**
-	 * The plugin API version.
+	 * API Endpoint version.
 	 *
 	 * @since 0.1.0
-	 * @var string
 	 */
-	const VERSION = 'v1';
+	const REST_VERSION = 'v1';
+
+	/**
+	 * API Endpoint namespace.
+	 *
+	 * @since 0.1.0
+	 */
+	const REST_NAMESPACE = 'wp-chimp/v1';
+
+	/**
+	 * API endpoint base URL.
+	 *
+	 * @since 0.1.0
+	 */
+	const REST_BASE = 'sync';
 
 	/**
 	 * The Plugin class instance.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
+	 * @since 0.1.0
+	 * @var string
 	 */
 	protected $plugin_name;
 
 	/**
 	 * The plugin version.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
+	 * @since 0.1.0
+	 * @var string
 	 */
 	protected $version;
 
 	/**
-	 * The API unique namespace.
-	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $namespace;
-
-	/**
-	 * The REST Base.
-	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $rest_base;
-
-	/**
 	 * The MailChimp API key added in the option.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    DrewM\MailChimp\MailChimp
+	 * @since 0.1.0
+	 * @var DrewM\MailChimp\MailChimp
 	 */
 	protected $mailchimp;
 
@@ -110,9 +99,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
-		$this->namespace = self::get_namespace();
-		$this->rest_base = self::get_rest_base();
 	}
 
 	/**
@@ -144,7 +130,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param MailChimp $mailchimp The MailChimp instance.
-	 * @return void
 	 */
 	public function set_mailchimp( MailChimp $mailchimp ) {
 		$this->mailchimp = $mailchimp;
@@ -156,7 +141,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param Lists\Query $query The List\Query instance to retrieve the lists from the database.
-	 * @return void
 	 */
 	public function set_lists_query( Lists\Query $query ) {
 		$this->lists_query = $query;
@@ -175,7 +159,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param Lists\Process $process The Lists\Process instance to add the list on the background.
-	 * @return void
 	 */
 	public function set_lists_process( Lists\Process $process ) {
 		$this->lists_process = $process;
@@ -185,8 +168,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * Registers a custom REST API route.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_routes() {
 
@@ -195,15 +176,17 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 		 *
 		 * @uses WP_REST_Server
 		 */
-		register_rest_route( $this->namespace, $this->rest_base . '/lists', [
-			[
-				'methods' => WP_REST_Server::READABLE,
-				'callback' => [ $this, 'get_items' ],
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-				'args' => $this->get_collection_params(),
-			],
-			'schema' => [ $this, 'get_public_item_schema' ],
-		]);
+		register_rest_route(
+			self::REST_NAMESPACE, self::REST_BASE . '/lists', [
+				[
+					'methods' => WP_REST_Server::READABLE,
+					'callback' => [ $this, 'get_items' ],
+					'permission_callback' => [ $this, 'get_items_permissions_check' ],
+					'args' => $this->get_collection_params(),
+				],
+				'schema' => [ $this, 'get_public_item_schema' ],
+			]
+		);
 	}
 
 	/**
@@ -324,11 +307,13 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 		$page_num = absint( $request->get_param( 'page' ) );
 		$per_page = absint( $request->get_param( 'per_page' ) );
 
-		$lists = $this->get_lists( [
-			'page' => $page_num,
-			'per_page' => $per_page,
-			'offset' => self::get_lists_offset( $page_num, $per_page ),
-		] );
+		$lists = $this->get_lists(
+			[
+				'page' => $page_num,
+				'per_page' => $per_page,
+				'offset' => self::get_lists_offset( $page_num, $per_page ),
+			]
+		);
 
 		$total_items = self::get_lists_total_items();
 		$total_pages = self::get_lists_total_pages( $per_page );
@@ -419,10 +404,12 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 
 		if ( $this->mailchimp instanceof MailChimp ) {
 
-			$lists = $this->mailchimp->get( 'lists', [
-				'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin',
-				'count' => self::get_lists_total_items(),
-			]);
+			$lists = $this->mailchimp->get(
+				'lists', [
+					'fields' => 'lists.name,lists.id,lists.stats,lists.double_optin',
+					'count' => self::get_lists_total_items(),
+				]
+			);
 
 			if ( $this->mailchimp->success() && is_array( $lists ) && ! empty( $lists ) ) {
 
@@ -440,7 +427,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param array $lists The Lists data retrieved from the MailChimp API response.
-	 * @return void
 	 */
 	protected function process_lists( array $lists ) {
 
@@ -533,10 +519,12 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 */
 	protected static function remote_lists_response( array $lists, array $args = [] ) {
 
-		$args = wp_parse_args( $args, [
-			'offset' => 0,
-			'per_page' => self::get_lists_total_items(),
-		] );
+		$args = wp_parse_args(
+			$args, [
+				'offset' => 0,
+				'per_page' => self::get_lists_total_items(),
+			]
+		);
 
 		return array_slice( $lists, $args['offset'], $args['per_page'] );
 	}

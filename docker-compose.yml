@@ -2,7 +2,6 @@ version: '3'
 services:
 
   # Localhost configuration.
-
   wordpress:
     image: ${WP_IMAGE}
     working_dir: ${WP_ROOT_DIR}
@@ -13,7 +12,6 @@ services:
     depends_on:
       - database
       - phpmyadmin
-      - node
     volumes:
       - ./:${WP_PROJECT_DIR}
       - www:${WP_ROOT_DIR}
@@ -24,15 +22,6 @@ services:
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
     extra_hosts:
       - "${WP_SITE_DOMAIN}:192.168.65.2"
-
-  node:
-    image: ${NODE_IMAGE}
-    working_dir: ${NODE_ROOT_DIR}
-    environment:
-      NODE_ENV: development
-    volumes:
-      - ./:${NODE_PROJECT_DIR}
-    command: "npm start"
 
   database:
     image: ${DB_IMAGE}
@@ -56,11 +45,25 @@ services:
     environment:
       - PMA_HOST=${DB_HOST}
 
-  # Pipelines Images & Configuration.
+  # Tooling and Package Manager
+  node:
+    image: ${NODE_IMAGE}
+    working_dir: ${NODE_PROJECT_DIR}
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./:${NODE_PROJECT_DIR}
 
+  composer:
+    image: ${COMPOSER_IMAGE}
+    working_dir: ${COMPOSER_PROJECT_DIR}
+    volumes:
+      - ./:${COMPOSER_PROJECT_DIR}
+
+  # Unit and CI Tests
   wordpress_php5.6:
     image: tfirdaus/wp-docklines:php5.6-fpm-alpine
-    working_dir: ${WP_ROOT_DIR}
+    working_dir: ${WP_PROJECT_DIR}
     depends_on:
       - database
     volumes:
@@ -70,7 +73,7 @@ services:
 
   wordpress_php7.0:
     image: tfirdaus/wp-docklines:php7.0-fpm-alpine
-    working_dir: ${WP_ROOT_DIR}
+    working_dir: ${WP_PROJECT_DIR}
     depends_on:
       - database
     volumes:
@@ -80,7 +83,7 @@ services:
 
   wordpress_php7.1:
     image: tfirdaus/wp-docklines:php7.1-fpm-alpine
-    working_dir: ${WP_ROOT_DIR}
+    working_dir: ${WP_PROJECT_DIR}
     depends_on:
       - database
     volumes:
@@ -90,7 +93,7 @@ services:
 
   wordpress_php7.2:
     image: tfirdaus/wp-docklines:php7.2-fpm-alpine
-    working_dir: ${WP_ROOT_DIR}
+    working_dir: ${WP_PROJECT_DIR}
     depends_on:
       - database
     volumes:

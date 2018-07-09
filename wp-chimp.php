@@ -8,13 +8,13 @@
  * that starts the plugin.
  *
  * @link https://wp-chimp.com
- * @since 0.1.0
  * @package WP_Chimp
+ * @since 0.1.0
  *
  * @wordpress-plugin
  * Plugin Name: WP Chimp
  * Plugin URI: https://wordpress.org/plugins/wp-chimp
- * Description: This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description: Lean MailChimp subscription form plugin for WordPress
  * Version: 0.1.0
  * Author: Thoriq Firdaus
  * Author URI: https://wp-chimp.com
@@ -24,7 +24,8 @@
  * Domain Path: /languages
  */
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
@@ -36,8 +37,8 @@ if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
  * @link http://php.net/manual/en/function.spl-autoload-register.php
  * @link https://getcomposer.org/doc/01-basic-usage.md#autoloading
  */
-require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 
 /**
  * Begins execution of the plugin.
@@ -50,6 +51,7 @@ require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
  * through the function_exists() function.
  *
  * @since  0.1.0
+ *
  * @return WP_Chimp\Core\Plugin The Plugin instance.
  */
 function wp_chimp() {

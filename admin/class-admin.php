@@ -2,21 +2,18 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/admin
+ * @package WP_Chimp/Admin
+ * @since 0.1.0
  */
 
 namespace WP_Chimp\Admin;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
 use WP_Chimp\Core;
-use DrewM\MailChimp\MailChimp;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -24,9 +21,7 @@ use DrewM\MailChimp\MailChimp;
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/admin
- * @author     Thoriq Firdaus <thoriqoe@gmail.com>
+ * @since 0.1.0
  */
 class Admin {
 
@@ -49,11 +44,15 @@ class Admin {
 	private $version;
 
 	/**
-	 * Undocumented variable
+	 * The filename of plugin.
 	 *
-	 * @var [type]
+	 * This is used for WordPress functions requiring the path to the main plugin file,
+	 * such as `plugin_dir_path()` and `plugin_basename()`.
+	 *
+	 * @since 0.1.0
+	 * @var string
 	 */
-	private $file_path;
+	protected $file_path;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -118,7 +117,7 @@ class Admin {
 			 * between the defined hooks and the functions defined in this
 			 * class.
 			 */
-			wp_register_script( $this->plugin_name, plugins_url( 'assets/js/admin.js', $this->file_path ), [ 'jquery', 'wp-api' ], $this->version );
+			wp_register_script( $this->plugin_name, plugins_url( 'assets/js/admin.min.js', $this->file_path ), [ 'jquery', 'wp-api' ], $this->version );
 
 			wp_enqueue_script( $this->plugin_name );
 		}
@@ -128,8 +127,6 @@ class Admin {
 	 * Function to register translateable strings in the Admin settings page.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function enqueue_locale_scripts() {
 

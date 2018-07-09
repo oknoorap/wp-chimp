@@ -2,14 +2,13 @@
 /**
  * The file that defines a REST controller for '/lists' endpoints.
  *
- * @link https://wp-chimp.com
+ * @package WP_Chimp/Core
  * @since 0.1.0
- * @package WP_Chimp/Includes
  */
 
 namespace WP_Chimp\Core\Endpoints;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -29,60 +28,56 @@ use DrewM\MailChimp\MailChimp;
  * The class that register the custom '/list' endpoint to WP-API.
  *
  * @since  0.1.0
- * @author Thoriq Firdaus <thoriqoe@gmail.com>
+ *
+ * @property string $plugin_name
+ * @property string $version
+ * @property string $mailchimp
+ * @property string $lists_query
  */
 class REST_Lists_Controller extends WP_REST_Controller {
 
 	/**
-	 * The plugin API version.
+	 * API Endpoint version.
 	 *
 	 * @since 0.1.0
-	 * @var string
 	 */
-	const VERSION = 'v1';
+	const REST_VERSION = 'v1';
+
+	/**
+	 * API Endpoint namespace.
+	 *
+	 * @since 0.1.0
+	 */
+	const REST_NAMESPACE = 'wp-chimp/v1';
+
+	/**
+	 * API endpoint base URL.
+	 *
+	 * @since 0.1.0
+	 */
+	const REST_BASE = 'lists';
 
 	/**
 	 * The Plugin class instance.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
+	 * @since 0.1.0
+	 * @var string
 	 */
 	protected $plugin_name;
 
 	/**
 	 * The plugin version.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
+	 * @since 0.1.0
+	 * @var string
 	 */
 	protected $version;
 
 	/**
-	 * The API unique namespace.
-	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $namespace;
-
-	/**
-	 * The REST Base.
-	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $rest_base;
-
-	/**
 	 * The MailChimp API key added in the option.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    DrewM\MailChimp\MailChimp
+	 * @since 0.1.0
+	 * @var DrewM\MailChimp\MailChimp
 	 */
 	protected $mailchimp;
 
@@ -99,13 +94,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	protected $lists_query;
 
 	/**
-	 * Undocumented variable
-	 *
-	 * @var array
-	 */
-	public $exclude_columns;
-
-	/**
 	 * The class constructor.
 	 *
 	 * @since 0.1.0
@@ -117,32 +105,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
-		$this->namespace = self::get_namespace();
-		$this->rest_base = self::get_rest_base();
-	}
-
-	/**
-	 * Function ot get the plugin api namespace.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The name space and the version.
-	 */
-	public static function get_namespace() {
-		return 'wp-chimp/' . self::VERSION;
-	}
-
-	/**
-	 * Get REST Base.
-	 *
-	 * @since 0.1.0
-	 * @access public
-	 *
-	 * @return string
-	 */
-	public static function get_rest_base() {
-		return 'lists';
 	}
 
 	/**
@@ -151,26 +113,24 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param MailChimp $mailchimp The MailChimp instance.
-	 * @return void
 	 */
 	public function set_mailchimp( MailChimp $mailchimp ) {
 		$this->mailchimp = $mailchimp;
 	}
 
 	/**
-	 * Function to register the Query instance
+	 * Register the Lists\Query instance
 	 *
 	 * @since 0.1.0
 	 *
 	 * @param Lists\Query $query The List\Query instance to retrieve the lists from the database.
-	 * @return void
 	 */
 	public function set_lists_query( Lists\Query $query ) {
 		$this->lists_query = $query;
 	}
 
 	/**
-	 * Function to register the Lists\Process instance
+	 * Register the Lists\Process instance
 	 *
 	 * The Lists\Process instance is extending the WP_Background_Processing class abstraction
 	 * enabling asynchronous background processing to add the lists from the MailChimp API
@@ -182,7 +142,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * @since 0.1.0
 	 *
 	 * @param Lists\Process $process The Lists\Process instance to add the list on the background.
-	 * @return void
 	 */
 	public function set_lists_process( Lists\Process $process ) {
 		$this->lists_process = $process;
@@ -192,8 +151,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * Registers a custom REST API route.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_routes() {
 
@@ -202,34 +159,38 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		 *
 		 * @uses WP_REST_Server
 		 */
-		register_rest_route( $this->namespace, $this->rest_base, [
-			[
-				'methods' => WP_REST_Server::READABLE,
-				'callback' => [ $this, 'get_items' ],
-				'args' => $this->get_collection_params(),
-				'permission_callback' => [ $this, 'get_items_permissions_check' ],
-			],
-			'schema' => [ $this, 'get_public_item_schema' ],
-		]);
+		register_rest_route(
+			self::REST_NAMESPACE, self::REST_BASE, [
+				[
+					'methods' => WP_REST_Server::READABLE,
+					'callback' => [ $this, 'get_items' ],
+					'args' => $this->get_collection_params(),
+					'permission_callback' => [ $this, 'get_items_permissions_check' ],
+				],
+				'schema' => [ $this, 'get_public_item_schema' ],
+			]
+		);
 
 		/**
 		 * Register the '/list' route to retrieve a single MailChimp list with their ID.
 		 *
 		 * @uses WP_REST_Server
 		 */
-		register_rest_route( $this->namespace, $this->rest_base . '/(?P<id>[\w-]+)', [
-			[
-				'methods' => WP_REST_Server::READABLE,
-				'callback' => [ $this, 'get_item' ],
-				'permission_callback' => [ $this, 'get_item_permissions_check' ],
-			],
-			[
-				'methods' => WP_REST_Server::EDITABLE,
-				'callback' => [ $this, 'update_item' ],
-				'permission_callback' => [ $this, 'update_item_permissions_check' ],
-			],
-			'schema' => [ $this, 'get_public_item_schema' ],
-		]);
+		register_rest_route(
+			self::REST_NAMESPACE, self::REST_BASE . '/(?P<id>[\w-]+)', [
+				[
+					'methods' => WP_REST_Server::READABLE,
+					'callback' => [ $this, 'get_item' ],
+					'permission_callback' => [ $this, 'get_item_permissions_check' ],
+				],
+				[
+					'methods' => WP_REST_Server::EDITABLE,
+					'callback' => [ $this, 'update_item' ],
+					'permission_callback' => [ $this, 'update_item_permissions_check' ],
+				],
+				'schema' => [ $this, 'get_public_item_schema' ],
+			]
+		);
 	}
 
 	/**
@@ -316,7 +277,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$wp_nonce = $request->get_header( 'X-WP-Nonce' );
 		$wp_chimp_nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 
-		if ( wp_verify_nonce( $wp_chimp_nonce, 'wp_chimp_setting' ) ) {
+		if ( wp_verify_nonce( $wp_chimp_nonce, 'wp-chimp-setting' ) ) {
 			return true;
 		}
 
@@ -365,11 +326,13 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$page_num = absint( $request->get_param( 'page' ) );
 		$per_page = absint( $request->get_param( 'per_page' ) );
 
-		$lists = $this->get_lists( [
-			'page' => $page_num,
-			'per_page' => $per_page,
-			'offset' => self::get_lists_offset( $page_num, $per_page ),
-		] );
+		$lists = $this->get_lists(
+			[
+				'page' => $page_num,
+				'per_page' => $per_page,
+				'offset' => self::get_lists_offset( $page_num, $per_page ),
+			]
+		);
 
 		$total_items = self::get_lists_total_items();
 		$total_pages = self::get_lists_total_pages( $per_page );
@@ -436,10 +399,12 @@ class REST_Lists_Controller extends WP_REST_Controller {
 
 		if ( ! is_email( $email ) ) {
 
-			$response = rest_ensure_response([
-				'email_address' => $email,
-				'status' => 'invalid_email',
-			]);
+			$response = rest_ensure_response(
+				[
+					'email_address' => $email,
+					'status' => 'invalid_email',
+				]
+			);
 
 			return $response;
 		}
@@ -447,10 +412,12 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		if ( ! empty( $list_id ) && $this->mailchimp instanceof MailChimp ) {
 
 			$status = $this->get_subscription_status();
-			$subscription = $this->mailchimp->post( "lists/{$list_id}/members", [
-				'email_address' => $email,
-				'status' => $status,
-			]);
+			$subscription = $this->mailchimp->post(
+				"lists/{$list_id}/members", [
+					'email_address' => $email,
+					'status' => $status,
+				]
+			);
 
 			$response = rest_ensure_response( $subscription );
 
@@ -477,7 +444,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		$nonce = $request->get_header( 'X-WP-Chimp-Nonce' );
 		$props = $schema['properties'];
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_chimp_setting' ) ) {
+		if ( ! wp_verify_nonce( $nonce, 'wp-chimp-setting' ) ) {
 			unset( $item['double_optin'] );
 			unset( $item['subscribers'] );
 		}
@@ -499,25 +466,6 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		}
 
 		return rest_ensure_response( $data ); // Wrap the data in a response object.
-	}
-
-	/**
-	 * Filter the Lists column output.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param array $item The list item.
-	 * @return array The list item with some data sorted out.
-	 */
-	protected function filter_item( array $item ) {
-
-		$excludes = $this->get_exclude_columns();
-
-		if ( ! is_array( $excludes ) || empty( $excludes ) ) {
-			return $item;
-		}
-
-		return $item;
 	}
 
 	/**

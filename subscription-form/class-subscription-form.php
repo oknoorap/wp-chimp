@@ -1,15 +1,14 @@
 <?php
 /**
- * File containing the Class to register the "Subscription Form"
+ * Subscription Form: Main class
  *
+ * @package WP_Chimp/Subscription_Form
  * @since 0.1.0
- * @package WP_Chimp
- * @subpackage WP_Chimp/Subscription_Form
  */
 
 namespace WP_Chimp\Subscription_Form;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -17,13 +16,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WP_Chimp\Core;
 
 /**
- * Class to register "Subscription Form".
+ * Main class to register the "Subscription Form".
  *
- * The Class will register the components surrounding the "Subscription Form"
- * including scripts, styles, widget, shortcode, locale strings, etc.
+ * Register components surrounding the "Subscription Form" such as scripts, styles,
+ * widget, shortcode, locale strings, etc.
  *
  * @since 0.1.0
- * @author Thoriq Firdaus <thoriqoe@gmail.com>
+ *
+ * @property string $plugin_name
+ * @property string $version
+ * @property string $file_path
  */
 final class Subscription_Form {
 
@@ -46,8 +48,8 @@ final class Subscription_Form {
 	/**
 	 * The filename of plugin.
 	 *
-	 * This might be used for WordPress functions requiring the path to
-	 * the main plugin file, such as `plugin_dir_path()` and `plugin_basename()`.
+	 * This is used for WordPress functions requiring the path to the main plugin file,
+	 * such as `plugin_dir_path()` and `plugin_basename()`.
 	 *
 	 * @since 0.1.0
 	 * @var string
@@ -55,7 +57,7 @@ final class Subscription_Form {
 	protected $file_path;
 
 	/**
-	 * The plugin directory
+	 * The plugin directory path.
 	 *
 	 * @since 0.1.0
 	 * @var string
@@ -63,7 +65,9 @@ final class Subscription_Form {
 	protected $dir_path;
 
 	/**
-	 * Undocumented function
+	 * Constructor.
+	 *
+	 * Initialize the Class properties.
 	 *
 	 * @since 0.1.0
 	 *
@@ -80,16 +84,13 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Function to register the stylesheet and JavaScript file for the
-	 * Subscribe Form.
+	 * Register the stylesheet and JavaScript loaded on the Subscrition Form.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_scripts() {
 
-		$block_js = 'assets/js/subscription-form-editor.js';
+		$block_js = 'assets/js/subscription-form-editor.min.js';
 		wp_register_script(
 			'wp-chimp-subscription-form-editor',
 			plugins_url( $block_js, $this->file_path ),
@@ -101,7 +102,7 @@ final class Subscription_Form {
 			filemtime( "{$this->dir_path}/{$block_js}" )
 		);
 
-		$script_js = 'assets/js/subscription-form.js';
+		$script_js = 'assets/js/subscription-form.min.js';
 		wp_register_script(
 			'wp-chimp-subscription-form',
 			plugins_url( $script_js, $this->file_path ),
@@ -127,11 +128,9 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Function to register the Subscribe Form block to Gutenberg interface.
+	 * Register a custom Gutenberg block of the Subscription Form.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void|null Returns `null` if the Gutenberg block is not present.
 	 */
 	public function register_block() {
 
@@ -139,68 +138,64 @@ final class Subscription_Form {
 			return;
 		}
 
-		register_block_type( 'wp-chimp/subscription-form', [
-			'editor_script' => 'wp-chimp-subscription-form-editor',
-			'editor_style' => 'wp-chimp-subscription-form-editor',
-			'style' => 'wp-chimp-subscription-form',
-			'render_callback' => __NAMESPACE__ . '\\render',
-			'attributes' => [
-				'list_id' => [
-					'type' => 'string',
-					'default' => get_the_default_list(),
+		register_block_type(
+			'wp-chimp/subscription-form', [
+				'editor_script' => 'wp-chimp-subscription-form-editor',
+				'editor_style' => 'wp-chimp-subscription-form-editor',
+				'style' => 'wp-chimp-subscription-form',
+				'render_callback' => __NAMESPACE__ . '\\render',
+				'attributes' => [
+					'list_id' => [
+						'type' => 'string',
+						'default' => get_the_default_list(),
+					],
+					'heading_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'heading_text' ),
+					],
+					'sub_heading_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'sub_heading_text' ),
+					],
+					'email_placeholder_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'email_placeholder_text' ),
+					],
+					'button_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'button_text' ),
+					],
+					'footer_text' => [
+						'type' => 'string',
+						'default' => get_the_locale_strings( 'footer_text' ),
+					],
 				],
-				'heading_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'heading_text' ),
-				],
-				'sub_heading_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'sub_heading_text' ),
-				],
-				'email_placeholder_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'email_placeholder_text' ),
-				],
-				'button_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'button_text' ),
-				],
-				'footer_text' => [
-					'type' => 'string',
-					'default' => get_the_locale_strings( 'footer_text' ),
-				],
-			],
-		] );
+			]
+		);
 	}
 
 	/**
-	 * Function to register the "Subscription Form" widget.
+	 * Register the Subscription Form widget.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_widget() {
 		register_widget( __NAMESPACE__ . '\\Widget' );
 	}
 
 	/**
-	 * Function to register the "Subscription Form" shortcode.
+	 * Register the Subscription Form shortcode.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_shortcode() {
 		add_shortcode( 'wp-chimp', [ __NAMESPACE__ . '\\Shortcode', 'render' ] );
 	}
 
 	/**
-	 * Function to register translateable string displayed in the Subscription Form.
+	 * Register translate-able strings loaded in the admin area.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function admin_enqueue_locale_scripts() {
 
@@ -211,11 +206,9 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Undocumented function
+	 * Register translate-able strings loaded in the front-end.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function enqueue_locale_scripts() {
 
@@ -231,11 +224,9 @@ final class Subscription_Form {
 	}
 
 	/**
-	 * Undocumented function
+	 * Load scripts and styles.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'wp-chimp-subscription-form' );

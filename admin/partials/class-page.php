@@ -4,16 +4,14 @@
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/admin/partials
+ * @package WP_Chimp/Admin
+ * @since 0.1.0
  */
 
 namespace WP_Chimp\Admin\Partials;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
@@ -62,10 +60,11 @@ class Page {
 	}
 
 	/**
-	 * Undocumented function
+	 * Register the Query instance
 	 *
-	 * @param [type] $query
-	 * @return void
+	 * @since 0.1.0
+	 *
+	 * @param Lists\Query $query The List\Query instance to retrieve the lists from the database.
 	 */
 	public function set_lists_query( $query ) {
 		$this->lists_query = $query;
@@ -75,29 +74,29 @@ class Page {
 	 * Register the page settings
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_page() {
 
-		register_setting( $this->plugin_name, 'wp_chimp_api_key', [
-			'type'              => 'string',
-			'description'       => 'The MailChimp API key associated with WP-Chimp plugin',
-			'sanitize_callback' => 'sanitize_text_field',
-		] );
+		register_setting(
+			$this->plugin_name, 'wp_chimp_api_key', [
+				'type'              => 'string',
+				'description'       => 'The MailChimp API key associated with WP-Chimp plugin',
+				'sanitize_callback' => 'sanitize_text_field',
+			]
+		);
 
 		add_settings_section( 'section-mailchimp', '', [ $this, 'html_section_settings' ], $this->plugin_name );
-		add_settings_field( 'mailchimp-api-key', __( 'API Key', 'wp-chimp' ), [ $this, 'html_field_mailchimp_api_key' ], $this->plugin_name, 'section-mailchimp', [
-			'label_for' => 'field-mailchimp-api-key',
-		] );
+		add_settings_field(
+			'mailchimp-api-key', __( 'API Key', 'wp-chimp' ), [ $this, 'html_field_mailchimp_api_key' ], $this->plugin_name, 'section-mailchimp', [
+				'label_for' => 'field-mailchimp-api-key',
+			]
+		);
 	}
 
 	/**
 	 * Render the setting form on the page
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public static function render_form() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -129,7 +128,7 @@ class Page {
 				</table>
 			</div>
 			<h2 class="nav-tab-wrapper">
-				<span class="nav-tab nav-tab-active"><?php echo esc_html( 'MailChimp' ); ?></span>
+				<span class="nav-tab nav-tab-active"><?php esc_html_e( 'Settings', 'wp-chimp' ); ?></span>
 			</h2>
 			<form action="options.php" method="post">
 			<?php
@@ -146,17 +145,13 @@ class Page {
 	 * Function that fills the section with the desired content.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function html_section_settings() {}
 
 	/**
-	 * Render the "MailChimp API Key" input field
+	 * Render the "MailChimp API Key" input field.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function html_field_mailchimp_api_key() {
 
@@ -187,7 +182,7 @@ class Page {
 	}
 
 	/**
-	 * Function to handle option update
+	 * Handle the option update.
 	 *
 	 * @since 0.1.0
 	 * @access public
@@ -195,7 +190,6 @@ class Page {
 	 * @param string $option    Option name.
 	 * @param mixed  $old_value The old option value.
 	 * @param mixed  $value     The new option value.
-	 * @return void
 	 */
 	public function updated_option( $option, $old_value, $value ) {
 
@@ -204,18 +198,51 @@ class Page {
 		 * different we need to reset the initilization.
 		 */
 		if ( 'wp_chimp_api_key' === $option && $value !== $old_value ) {
-
-			$this->lists_query->truncate(); // Remove all entries from the `_chimp_lists` table.
-			$total_items = self::get_lists_total_items( $value );
-
-			update_option( 'wp_chimp_lists_init', 0 );
-			update_option( 'wp_chimp_lists_total_items', $total_items );
-			update_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
+			$this->reset_data( $option, $value );
 		}
 	}
 
 	/**
-	 * Function to get the total item of the lists registered in the MailChimp account.
+	 * Handle the option addition.
+	 *
+	 * Run when the option is first added.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $option Option name.
+	 * @param mixed  $value  The new option value.
+	 */
+	public function added_option( $option, $value ) {
+
+		if ( 'wp_chimp_api_key' === $option && $value ) {
+			$this->reset_data( $option, $value );
+		}
+	}
+
+	/**
+	 * Reset lists and some option whent API is added or updated.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $option Option name.
+	 * @param mixed  $value  The new option value.
+	 */
+	protected function reset_data( $option, $value ) {
+
+		// Remove all entries from the `_chimp_lists` table.
+		$this->lists_query->truncate();
+		$total_items = self::get_lists_total_items( $value );
+
+		update_option( 'wp_chimp_lists_init', 0 );
+		update_option( 'wp_chimp_lists_total_items', $total_items ? $total_items : 0 );
+		update_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
+	}
+
+	/**
+	 * Retrieve the total the lists total item registered in the MailChimp account.
+	 *
+	 * This function also acts as a "ping" to check whether the MailChimp API key
+	 * is valid and that we are able to communitcate with MailChimp.
 	 *
 	 * @since 0.1.0
 	 *
@@ -233,9 +260,11 @@ class Page {
 			}
 
 			if ( $mailchimp instanceof MailChimp ) {
-				$response = $mailchimp->get( 'lists', [
-					'fields' => 'total_items',
-				]);
+				$response = $mailchimp->get(
+					'lists', [
+						'fields' => 'total_items',
+					]
+				);
 			}
 
 			if ( isset( $response['status'] ) ) {

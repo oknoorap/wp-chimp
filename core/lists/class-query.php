@@ -3,16 +3,14 @@
  * The file that defines the class and the methods to query
  * *_chimp_lists table.
  *
- * @link https://wp-chimp.com
+ * @package WP_Chimp/Core
  * @since 0.1.0
- *
- * @package WP_Chimp
- * @subpackage WP_Chimp/includes
  */
 
 namespace WP_Chimp\Core\Lists;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
@@ -23,32 +21,32 @@ use WP_Chimp\Core;
  * The class to query the *_chimp_lists table
  *
  * @since 0.1.0
+ *
+ * @property array $default_attrs
  */
 final class Query {
 
 	/**
 	 * The columns and its value.
 	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    array
+	 * @since 0.1.0
+	 * @var array
 	 */
 	protected $default_data;
 
 	/**
 	 * The class constructor.
 	 *
-	 * @since  0.1.0
-	 * @access public
+	 * @since 0.1.0
 	 */
 	public function __construct() {
 
 		$this->default_data = [
-			'list_id'      => '',
-			'name'         => '',
-			'subscribers'  => 0,
+			'list_id' => '',
+			'name' => '',
+			'subscribers' => 0,
 			'double_optin' => 0,
-			'synced_at'    => '0000-00-00 00:00:00',
+			'synced_at' => '0000-00-00 00:00:00',
 		];
 	}
 
@@ -69,17 +67,23 @@ final class Query {
 	public function query( array $args = [] ) {
 		global $wpdb;
 
-		$args = wp_parse_args( $args, [
-			'per_page' => Core\get_the_lists_total_items(),
-			'offset' => 0,
-		]);
+		$args = wp_parse_args(
+			$args, [
+				'per_page' => Core\get_the_lists_total_items(),
+				'offset' => 0,
+			]
+		);
 
-		$lists = $wpdb->get_results( $wpdb->prepare("
+		$lists = $wpdb->get_results(
+			$wpdb->prepare(
+				"
 			SELECT list_id, name, subscribers, double_optin
 			FROM $wpdb->chimp_lists
 			LIMIT %d
 			OFFSET %d
-		", [ $args['per_page'], $args['offset'] ] ), ARRAY_A );
+		", [ $args['per_page'], $args['offset'] ]
+			), ARRAY_A
+		);
 
 		return $lists;
 	}
@@ -96,10 +100,12 @@ final class Query {
 	public function get_the_ids() {
 		global $wpdb;
 
-		$results = $wpdb->get_results("
+		$results = $wpdb->get_results(
+			"
 			SELECT list_id
 			FROM $wpdb->chimp_lists
-		", ARRAY_A );
+		", ARRAY_A
+		);
 
 		$list_ids = [];
 		foreach ( $results as $result ) {
@@ -123,11 +129,15 @@ final class Query {
 		global $wpdb;
 
 		if ( ! empty( $list_id ) ) {
-			$list = $wpdb->get_row( $wpdb->prepare("
+			$list = $wpdb->get_row(
+				$wpdb->prepare(
+					"
 				SELECT list_id, name, subscribers, double_optin
 				FROM $wpdb->chimp_lists
 				WHERE list_id = %s
-			", [ $list_id ] ), ARRAY_A );
+			", [ $list_id ]
+				), ARRAY_A
+			);
 		}
 
 		return null === $list ? [] : $list;
@@ -165,7 +175,8 @@ final class Query {
 			return new WP_Error( 'wp_chimp_list_id_exists', esc_html__( 'That MailChimp list ID already exists. Consider using the the update method to update the existing list.', 'wp-chimp' ), $this );
 		}
 
-		$inserted = $wpdb->insert( $wpdb->chimp_lists, $this->sanitize_values( $data ),
+		$inserted = $wpdb->insert(
+			$wpdb->chimp_lists, $this->sanitize_values( $data ),
 			[ '%s', '%s', '%d', '%d', '%s' ]
 		);
 
@@ -196,7 +207,8 @@ final class Query {
 
 		unset( $data['list_id'] ); // Remove the `list_id` from the updated column.
 
-		$updated = $wpdb->update( $wpdb->chimp_lists, $this->sanitize_values( $data ),
+		$updated = $wpdb->update(
+			$wpdb->chimp_lists, $this->sanitize_values( $data ),
 			[ 'list_id' => $id ],
 			[ '%s', '%d', '%d', '%s' ],
 			[ '%s' ]
@@ -217,7 +229,8 @@ final class Query {
 	public function delete( $id = '' ) {
 		global $wpdb;
 
-		$deleted = $wpdb->delete( $wpdb->chimp_lists,
+		$deleted = $wpdb->delete(
+			$wpdb->chimp_lists,
 			[ 'list_id' => $id ],
 			[ '%s' ]
 		);

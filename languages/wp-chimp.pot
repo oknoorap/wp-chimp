@@ -1,0 +1,289 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: WP Chimp\n"
+"POT-Creation-Date: 2018-07-02 08:06+0700\n"
+"PO-Revision-Date: 2018-07-01 10:54+0700\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: wp-chimp.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SearchPathExcluded-1: vendor\n"
+
+#: admin/class-admin.php:138
+msgid "No MailChimp lists found"
+msgstr ""
+
+#: admin/partials/class-menu.php:45
+msgid "Chimp"
+msgstr ""
+
+#: admin/partials/class-menu.php:46
+msgid "Chimp Settings"
+msgstr ""
+
+#: admin/partials/class-menu.php:65
+msgid "Overview"
+msgstr ""
+
+#: admin/partials/class-menu.php:81
+msgid ""
+"This screen will show a table of the Lists registered in your MailChimp "
+"account."
+msgstr ""
+
+#: admin/partials/class-menu.php:83
+msgid ""
+"You will need to add the MailChimp API key on the provided input field on "
+"this screen. Make sure that it's a valid API key and that the status is "
+"\"Enabled\". Once the API key is added and validated, it will retrieve the "
+"MailChimp Lists along with a number of data such as the ID, the name, the "
+"number of subscribers, and whether the List is double-optin."
+msgstr ""
+
+#: admin/partials/class-menu.php:85
+msgid ""
+"WordPress shortcode is shown on each of the MailChimp list that you can "
+"simply copy and paste it to display the MailChimp subcription form for the "
+"selected List in the post or page content."
+msgstr ""
+
+#: admin/partials/class-menu.php:98
+msgid "For more information:"
+msgstr ""
+
+#: admin/partials/class-menu.php:99
+msgid "About MailChimp API keys"
+msgstr ""
+
+#: admin/partials/class-menu.php:100
+msgid "About WordPress Shortcode"
+msgstr ""
+
+#: admin/partials/class-page.php:90
+msgid "API Key"
+msgstr ""
+
+#: admin/partials/class-page.php:111
+msgid "Synchronize Lists"
+msgstr ""
+
+#: admin/partials/class-page.php:121
+msgid "ID"
+msgstr ""
+
+#: admin/partials/class-page.php:122
+msgid "Name"
+msgstr ""
+
+#: admin/partials/class-page.php:123
+msgid "Subscribers"
+msgstr ""
+
+#: admin/partials/class-page.php:124
+msgid "Double Optin."
+msgstr ""
+
+#: admin/partials/class-page.php:125
+msgid "Shortcode"
+msgstr ""
+
+#: admin/partials/class-page.php:131 admin/partials/class-page.php:178
+msgid "Settings"
+msgstr ""
+
+#: admin/partials/class-page.php:137
+msgid "Save Settings"
+msgstr ""
+
+#: admin/partials/class-page.php:161
+msgid "Add your MailChimp API key"
+msgstr ""
+
+#: admin/partials/class-page.php:161
+msgid "How to get the API key?"
+msgstr ""
+
+#: autoload.php:73
+#, php-format
+msgid "The file attempting to be loaded at %s does not exist."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+#: core/class-plugin.php:132
+msgid "WP Chimp"
+msgstr ""
+
+#: core/class-plugin.php:149
+msgid ""
+"WP-Cron to be running. It is currently disabled using 'DISABLE_WP_CRON' "
+"constant."
+msgstr ""
+
+#: core/endpoints/class-rest-lists-controller.php:207
+#: core/endpoints/class-rest-sync-controller.php:203
+msgid "Current page of the collection."
+msgstr ""
+
+#: core/endpoints/class-rest-lists-controller.php:213
+#: core/endpoints/class-rest-sync-controller.php:209
+msgid "Maximum number of items to be returned in result set."
+msgstr ""
+
+#: core/endpoints/class-rest-lists-controller.php:232
+#: core/endpoints/class-rest-sync-controller.php:228
+msgid "MailChimp Lists"
+msgstr ""
+
+#: core/endpoints/class-rest-lists-controller.php:236
+#: core/endpoints/class-rest-sync-controller.php:232
+msgid "A string that uniquely identifies this list."
+msgstr ""
+
+#: core/endpoints/class-rest-lists-controller.php:241
+#: core/endpoints/class-rest-sync-controller.php:237
+msgid "The name of the list."
+msgstr ""
+
+#: core/endpoints/class-rest-lists-controller.php:247
+#: core/endpoints/class-rest-sync-controller.php:243
+msgid "The number of active members in the list."
+msgstr ""
+
+#: core/endpoints/class-rest-lists-controller.php:255
+#: core/endpoints/class-rest-sync-controller.php:251
+msgid "Whether or not to require the subscriber to confirm subscription."
+msgstr ""
+
+#: core/endpoints/class-rest-lists-controller.php:288
+#: core/endpoints/class-rest-sync-controller.php:280
+msgid "Sorry, you're not allowed to view this."
+msgstr ""
+
+#: core/lists/class-query.php:175
+msgid ""
+"That MailChimp list ID already exists. Consider using the the update method "
+"to update the existing list."
+msgstr ""
+
+#: core/lists/class-query.php:185
+#, php-format
+msgid "Inserting the MailChimp list ID %s failed."
+msgstr ""
+
+#: subscription-form/class-widget.php:117
+msgid "Title:"
+msgstr ""
+
+#: subscription-form/class-widget.php:123
+msgid "List_ID"
+msgstr ""
+
+#: subscription-form/class-widget.php:138
+msgid "Heading Text:"
+msgstr ""
+
+#: subscription-form/class-widget.php:142
+msgid "Sub-heading Text:"
+msgstr ""
+
+#: subscription-form/class-widget.php:146
+msgid "Input Email Placeholder:"
+msgstr ""
+
+#: subscription-form/class-widget.php:150
+msgid "Button Text:"
+msgstr ""
+
+#: subscription-form/class-widget.php:154
+msgid "Footer Text:"
+msgstr ""
+
+#: subscription-form/functions.php:93
+msgid "Subscription Form"
+msgstr ""
+
+#: subscription-form/functions.php:94
+msgid "Display a MailChimp subscription form."
+msgstr ""
+
+#: subscription-form/functions.php:97
+msgid "Subscribe"
+msgstr ""
+
+#: subscription-form/functions.php:98
+msgid "Get notified of our next update right to your inbox"
+msgstr ""
+
+#: subscription-form/functions.php:99
+msgid "Enter your email address"
+msgstr ""
+
+#: subscription-form/functions.php:100
+msgid "Submit"
+msgstr ""
+
+#: subscription-form/functions.php:101
+msgid "We hate spam too, unsubscribe at any time."
+msgstr ""
+
+#: subscription-form/functions.php:104
+msgid "You've sucessfully subscribed."
+msgstr ""
+
+#: subscription-form/functions.php:105
+msgid "Oops!, an unexpected error occured. Please try it again in a moment."
+msgstr ""
+
+#: subscription-form/functions.php:106
+msgid "It looks like your email address is invalid."
+msgstr ""
+
+#: subscription-form/functions.php:107
+msgid ""
+"You're almost done. Please check your email box to confirm your subscription."
+msgstr ""
+
+#: subscription-form/functions.php:110
+#, php-format
+msgid ""
+"Subscription Form is currently inactive. You might haven't yet input the "
+"MailChimp API key to %1$s or your MailChimp account might not contain a %2$s."
+msgstr ""
+
+#: subscription-form/functions.php:110
+msgid "the Settings page"
+msgstr ""
+
+#: subscription-form/functions.php:110
+msgid "List"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://wordpress.org/plugins/wp-chimp"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"This is a short description of what the plugin does. It's displayed in the "
+"WordPress admin area."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Thoriq Firdaus"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://wp-chimp.com"
+msgstr ""

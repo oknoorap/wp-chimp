@@ -6,5 +6,8 @@
         "drewm/mailchimp-api": "^2.0",
         "a5hleyrich/wp-background-processing": "^1.0",
         "underdev/requirements": "^1.2"
+    },
+    "require-dev": {
+      "brain/monkey": "~2.0.0"
     }
 }

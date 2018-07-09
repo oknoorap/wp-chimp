@@ -1,15 +1,14 @@
 <?php
 /**
- * File containing the Class to define the "Subscribe Form" Widget
+ * Subscription Form: Widget class
  *
+ * @package WP_Chimp/Subscription_Form
  * @since 0.1.0
- * @package WP_Chimp
- * @subpackage WP_Chimp/Subscription_Form
  */
 
 namespace WP_Chimp\Subscription_Form;
 
-/* If this file is called directly, abort. */
+// If this file is called directly, abort.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
@@ -19,25 +18,29 @@ use WP_REST_Request;
 use WP_Chimp\Core;
 
 /**
- * Class to define the "Subscribe Form" widget.
+ * Class to define the Subscribe Form widget.
  *
- * Define functionality of the widget both in the front-end,
- * and in the back-end.
+ * Register a new widget and define functionality to render the widget, both
+ * of the front-end and the back-end.
  *
  * @since 0.1.0
- * @author Thoriq Firdaus <thoriqoe@gmail.com>
+ *
+ * @property array $locale
+ * @property array $lists
+ * @property array $default_attrs
  */
 final class Widget extends WP_Widget {
 
 	/**
-	 * Undocumented variable
+	 * List of translate-able strings displayed on the Subscription Form
 	 *
+	 * @since 0.1.0
 	 * @var array
 	 */
 	private $locale;
 
 	/**
-	 * Lists
+	 * MailChimp Lists
 	 *
 	 * @since 0.1.0
 	 * @var array
@@ -45,7 +48,7 @@ final class Widget extends WP_Widget {
 	private $lists;
 
 	/**
-	 * List of "Subscription Form" default attributes.
+	 * Subscription Form default attributes.
 	 *
 	 * @since 0.1.0
 	 * @var array
@@ -63,10 +66,12 @@ final class Widget extends WP_Widget {
 		$this->locale = get_the_locale_strings();
 		$this->default_attrs = get_the_default_attrs();
 
-		parent::__construct( 'wp-chimp-subscription-form', $this->locale['title'], [
-			'classname'   => 'wp-chimp-subscription-form-widget',
-			'description' => $this->locale['description'],
-		] );
+		parent::__construct(
+			'wp-chimp-subscription-form', $this->locale['title'], [
+				'classname' => 'wp-chimp-subscription-form-widget',
+				'description' => $this->locale['description'],
+			]
+		);
 	}
 
 	/**
@@ -170,8 +175,6 @@ final class Widget extends WP_Widget {
 	 * Function to load the styles and scripts for the widget.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	private static function enqueue_scripts() {
 

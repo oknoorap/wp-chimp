@@ -1,7 +1,7 @@
 {
   "name": "wp-chimp",
-  "version": "0.1.0-alpha.1",
-  "description": "Lightweight MailChimp form for WordPress",
+  "version": "0.1.0",
+  "description": "Lean MailChimp subscription form plugin for WordPress",
   "main": "wp-chimp.php",
   "repository": {
     "type": "git",
@@ -84,19 +84,14 @@
     "extends": "stylelint-config-wordpress"
   },
   "scripts": {
-    "start": "npm install -g http-server && http-server -p 3000",
-    "precommit": "dev-kit/bin/ci-precommit",
-    "local:run": "dev-kit/bin/run",
-    "local:up": "dev-kit/bin/up -d wordpress",
-    "local:down": "dev-kit/bin/down",
-    "local:start": "dev-kit/bin/start",
-    "local:restart": "dev-kit/bin/start",
-    "local:destroy": "dev-kit/bin/destroy",
-    "local:ssh": "dev-kit/bin/ssh",
-    "local:ssh-node": "dev-kit/bin/ssh node",
-    "test:phpunit": "dev-kit/bin/phpunit",
-    "test:phpcs": "dev-kit/bin/phpcs",
-    "test:eslint": "dev-kit/bin/eslint",
     "test:stylelint": "./node_modules/.bin/stylelint 'assets/src/scss/*.*'"
+    "local:pull": "docker-compose pull",
+    "local:up": "bash bin/up.sh -d wordpress",
+    "local:down": "bash bin/down.sh",
+    "local:start": "bash bin/start.sh",
+    "local:restart": "bash bin/start.sh",
+    "local:destroy": "bash bin/destroy.sh",
+    "local:ssh": "bash bin/ssh.sh",
+    "local:run": "bash bin/run.sh"
   }
 }

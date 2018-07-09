@@ -4,16 +4,14 @@
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/admin/partials
+ * @package WP_Chimp/Admin
+ * @since 0.1.0
  */
 
 namespace WP_Chimp\Admin\Partials;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
@@ -54,8 +52,6 @@ class Menu {
 	 * Function to add a tab to the Contextual Help menu in the setting page.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	public function register_help_tabs() {
 
@@ -63,11 +59,13 @@ class Menu {
 
 		if ( 'settings_page_' . $this->plugin_name === $screen->id ) {
 
-			$screen->add_help_tab([
-				'id'       => "{$this->plugin_name}-overview",
-				'title'    => __( 'Overview', 'wp-chimp' ),
-				'callback' => [ __CLASS__, 'html_help_tab_overview' ],
-			]);
+			$screen->add_help_tab(
+				[
+					'id'       => "{$this->plugin_name}-overview",
+					'title'    => __( 'Overview', 'wp-chimp' ),
+					'callback' => [ __CLASS__, 'html_help_tab_overview' ],
+				]
+			);
 			$screen->set_help_sidebar( self::html_help_tab_sidebar() );
 		}
 	}
@@ -76,10 +74,8 @@ class Menu {
 	 * Render the content of the "Overview" section in the Help tab in the plugin Admin Page.
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
-	static public function html_help_tab_overview() {
+	public static function html_help_tab_overview() {
 		?>
 
 		<p><?php esc_html_e( 'This screen will show a table of the Lists registered in your MailChimp account.', 'wp-chimp' ); ?></p>
@@ -97,7 +93,7 @@ class Menu {
 	 *
 	 * @return string
 	 */
-	static public function html_help_tab_sidebar() {
+	public static function html_help_tab_sidebar() {
 
 		$content  = '<p><strong>' . esc_html__( 'For more information:', 'wp-chimp' ) . '</strong></p>';
 		$content .= '<p><a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank">' . esc_html__( 'About MailChimp API keys', 'wp-chimp' ) . '</a></p>';

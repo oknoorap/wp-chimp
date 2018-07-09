@@ -2,14 +2,16 @@
 /**
  * MailChimp List Table: DB_MailChimp_Lists class
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/database
+ * @package WP_Chimp/Core
+ * @since 0.1.0
  */
 
 namespace WP_Chimp\Core\Lists;
+
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
+}
 
 use WP_Chimp\Core\Database;
 
@@ -17,12 +19,16 @@ use WP_Chimp\Core\Database;
  * Setup the "chimp_list" database schema
  *
  * @since 0.1.0
+ *
+ * @property string $name
+ * @property string $version
  */
 final class Table extends Database {
 
 	/**
 	 * Table name
 	 *
+	 * @since 0.1.0
 	 * @var string
 	 */
 	protected $name = 'chimp_lists';
@@ -30,6 +36,7 @@ final class Table extends Database {
 	/**
 	 * Database version
 	 *
+	 * @since 0.1.0
 	 * @var string
 	 */
 	protected $version = 201803220001;

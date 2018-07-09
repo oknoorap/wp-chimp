@@ -4,17 +4,15 @@
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @link       https://wp-chimp.com
- * @since      0.1.0
- *
- * @package    WP_Chimp
- * @subpackage WP_Chimp/admin/partials
+ * @package WP_Chimp/Core
+ * @since 0.1.0
  */
 
 namespace WP_Chimp\Core\Lists;
 
-if ( ! defined( 'ABSPATH' ) ) { // If this file is called directly, abort.
-	die;
+// If this file is called directly, abort.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'No script kiddies please!' );
 }
 
 use WP_Background_Process;
@@ -34,10 +32,9 @@ final class Process extends WP_Background_Process {
 	protected $action = 'chimp_lists_process';
 
 	/**
-	 * Function to assign the MailChimp list
+	 * Function to assign the MailChimp list.
 	 *
 	 * @param Query $lists_query The Query class instance.
-	 * @return void
 	 */
 	public function set_lists_query( Query $lists_query ) {
 		$this->lists_query = $lists_query;
@@ -77,8 +74,6 @@ final class Process extends WP_Background_Process {
 	 * performed, or, call parent::complete().
 	 *
 	 * @since 0.1.0
-	 *
-	 * @return void
 	 */
 	protected function complete() {
 		parent::complete();
