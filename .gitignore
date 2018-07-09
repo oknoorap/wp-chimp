@@ -74,7 +74,8 @@ assets/js/*
 !assets/js/.gitkeep
 
 # translation files
-*.pot
+languages/*.pot
+languages/*.mo
 
 # readme
 README.txt
