@@ -3,36 +3,46 @@ const path = require('path')
 const buffer = require('vinyl-buffer')
 const sourceStream = require('vinyl-source-stream')
 const mergeStream = require('merge-stream')
+const merge = require('merge2')
+const plumber = require('gulp-plumber')
 const browserify = require('browserify')
 const babelify = require('babelify')
 const gulp = require('gulp')
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
+const cleanCSS = require('gulp-clean-css')
+const rename = require('gulp-rename')
+const watch = require('gulp-watch')
+const batch = require('gulp-batch')
 const sourcemaps = require('gulp-sourcemaps')
 const eslint = require('gulp-eslint')
 const readme = require('gulp-readme-to-markdown')
 
+const assetPath = path.join(__dirname, 'assets')
+const srcPath = {
+  SCSS: path.join(assetPath, 'src', 'scss'),
+  JS: path.join(assetPath, 'src', 'js')
+}
+const dstPath = {
+  CSS: path.join(assetPath, 'css'),
+  JS: path.join(assetPath, 'js')
+}
+
 const sassFiles = [
-  'admin.scss',
-  'subscription-form-editor.scss',
-  'subscription-form.scss'
+  'admin',
+  'subscription-form-editor',
+  'subscription-form'
 ]
 
-const ecmaScriptFiles = [
-  'admin.es',
-  'subscription-form-editor.es',
-  'subscription-form.es'
+const jsFiles = [
+  'admin',
+  'subscription-form-editor',
+  'subscription-form'
 ]
 
 /**
- * ---------------------------------------------------------------
- * Script tasks
- *
- * Define configurations and tasks to handle linting, transpiling,
- * bundling, and minifying of our JavaScript files.
- * ---------------------------------------------------------------
+ * Task to compile the JSX files to JS.
  */
-
 gulp.task('scripts', () => {
   return mergeStream(ecmaScriptFiles.map(file => {
     let fileName = path.basename(file, '.es')
@@ -61,34 +71,43 @@ gulp.task('eslint', () => {
 })
 
 /**
- * ---------------------------------------------------------------
- * Style tasks
- *
- * Define configurations and tasks to convert SCSS to plain CSS
- * and minify the output.
- * ---------------------------------------------------------------
- */
-
-/**
  * Task to compile the SCSS files to CSS.
  *
  * We will loop through each files and put the compiled CSS to the
  * destination directory as listed in `styleSources`
  */
-gulp.task('styles', () => {
+gulp.task('build:styles', () => {
+  const sassConfig = {
+    outputStyle: 'expanded'
+  }
+
   const autoprefixerConfig = {
-    browsers: [ 'last 3 versions' ],
+    browsers: [ 'last 3 versions', 'Firefox < 20' ],
     cascade: false
   }
 
-  return mergeStream(sassFiles.map(
-    file => gulp.src(`./assets/css/${file}`)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(sourcemaps.init())
-      .pipe(autoprefixer(autoprefixerConfig))
-      .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest('./assets/css'))
-  ))
+  const cleanCSSConfig = {
+    compatibility: 'ie8'
+  }
+
+  const renameConfig = {
+    suffix: '.min'
+  }
+
+  return merge(
+    sassFiles.map(file => {
+      return gulp.src(path.join(srcPath.SCSS, `${file}.scss`))
+        .pipe(plumber())
+        .pipe(sass(sassConfig))
+        .pipe(autoprefixer(autoprefixerConfig))
+        .pipe(sourcemaps.init())
+        .pipe(gulp.dest(dstPath.CSS))
+        .pipe(cleanCSS(cleanCSSConfig))
+        .pipe(rename(renameConfig))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(dstPath.CSS))
+    })
+  )
 })
 
 /**
@@ -110,15 +129,23 @@ gulp.task('readme', () => {
 })
 
 /**
- * ---------------------------------------------------------------
- * Default tasks
- *
- * Define default task that can be called by just running `gulp`
- * from cli
- * ---------------------------------------------------------------
+ * Watch files
  */
-
-gulp.task('default', [ 'eslint', 'scripts', 'styles' ], () => {
-  gulp.watch([ '**/*.es' ], [ 'eslint', 'scripts' ])
-  gulp.watch([ '**/*.scss' ], [ 'styles' ])
+gulp.task('watch:files', () => {
+  watch(path.join(srcPath.SCSS, '*.scss'), batch((events, done) => {
+    gulp.start('build:styles', done)
+  }))
 })
+
+/**
+ * Task to build all scripts, styles, translation file, and readme.
+ */
+gulp.task('build', [
+  'build:scripts',
+  'build:styles'
+])
+
+/**
+ * Define default task that can be called by just running `gulp` from cli.
+ */
+gulp.task('default', ['watch:files'])
