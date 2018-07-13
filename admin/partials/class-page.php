@@ -138,7 +138,7 @@ class Page {
 			?>
 			</form>
 		</div>
-	<?php
+		<?php
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Page {
 		?>
 		<input type="text" name="wp_chimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $api_key_obfuscated ); ?>" />
 		<p class="description"><?php esc_html_e( 'Add your MailChimp API key', 'wp-chimp' ); ?>. <a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank"><?php esc_html_e( 'How to get the API key?', 'wp-chimp' ); ?></a></p>
-	<?php
+		<?php
 	}
 
 	/**

@@ -171,14 +171,14 @@ function get_the_default_attrs() {
 function get_the_inactive_notice() {
 	if ( current_user_can( 'administrator' ) ) :
 		ob_start();
-	?>
+		?>
 	<div class="wp-chimp-inactive">
 		<p class="wp-chimp-inactive__content"><?php the_locale_strings( 'inactive_notice' ); ?></p>
 	</div>
-	<?php
+		<?php
 
-	$notice = ob_get_contents();
-	ob_end_clean();
+		$notice = ob_get_contents();
+		ob_end_clean();
 	endif;
 
 	return $notice;
