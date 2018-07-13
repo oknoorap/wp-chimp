@@ -8,6 +8,8 @@
         "underdev/requirements": "^1.2"
     },
     "require-dev": {
-      "brain/monkey": "~2.0.0"
+      "brain/monkey": "~2.0.0",
+      "wimg/php-compatibility": "*",
+      "wp-coding-standards/wpcs": "^0.14.1"
     }
 }
