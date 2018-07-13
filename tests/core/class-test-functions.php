@@ -85,4 +85,32 @@ class Test_Functions extends UnitTestCase {
 			], $data
 		);
 	}
+
+	/**
+	 * Test the function to obfuscate half of the string.
+	 *
+	 * @since 0.1.0
+	 */
+	public function test_obfuscate_string() {
+
+		$string = Core\obfuscate_string( '4G8Cuqgy94e7caG9VqSTv4Gy9hqTq8zYbskMmENj' );
+		$this->assertEquals( '********************v4Gy9hqTq8zYbskMmENj', $string );
+	}
+
+	/**
+	 * Test the function to obfuscate half of the string with an invalid data.
+	 *
+	 * @since 0.1.0
+	 */
+	public function test_obfuscate_string_invalid() {
+
+		$string_empty = Core\obfuscate_string( '' );
+		$this->assertEmpty( $string_empty );
+
+		$string_null = Core\obfuscate_string( null );
+		$this->assertEmpty( $string_null );
+
+		$string_array = Core\obfuscate_string( [] );
+		$this->assertEmpty( $string_array );
+	}
 }

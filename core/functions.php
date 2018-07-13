@@ -222,3 +222,26 @@ function convert_keys_to_snake_case( array $inputs ) {
 
 	return $inputs_converted;
 }
+
+/**
+ * Obfuscate half of a string.
+ *
+ * @since 0.1.0
+ *
+ * @param string $string The API key string.
+ * @return string The obfuscated API key
+ */
+function obfuscate_string( $string = '' ) {
+
+	$obfuscated_api_key = '';
+
+	if ( is_string( $string ) && ! empty( $string ) ) {
+
+		$api_key_length = strlen( $string );
+		$obfuscated_length = ceil( $api_key_length / 2 );
+		$obfuscated_api_key = str_repeat( '*', $obfuscated_length ) . substr( $string, $obfuscated_length );
+	}
+
+	return $obfuscated_api_key;
+}
+
