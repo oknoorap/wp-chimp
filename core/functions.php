@@ -58,6 +58,34 @@ function get_the_lists_total_items() {
 }
 
 /**
+ * Set the default of the MailChimp lists.
+ *
+ * @since 0.2.0
+ *
+ * @param array $lists The MailChimp lists data.
+ * @param array $index The index on the array in the MailChimp lists to set as the default.
+ * @return void
+ */
+function set_the_default_list( array $lists, $index = 0 ) {
+
+	if ( isset( $lists[ $index ] ) && isset( $lists[ $index ]['list_id'] ) ) {
+		$default = (string) $lists[ $index ]['list_id'];
+		update_option( 'wp_chimp_lists_default', $default );
+	}
+}
+
+/**
+ * Retrieve the default list from database.
+ *
+ * @since 0.2.0
+ *
+ * @return string The ID of the default list.
+ */
+function get_the_default_list() {
+	return get_option( 'wp_chimp_lists_default', '' );
+}
+
+/**
  * Check whether the lists are already installed to the database.
  *
  * This is set when the "Background Process" is done installing each list.
