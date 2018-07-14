@@ -18,12 +18,16 @@
 #wp-chimp-table-lists-body {
 
 	.dashicons {
-		background-color: #eaeaea;
-		border-radius: 30px;
+		background: #eaeaea;
 		padding: 1px;
-		width: 16px;
+		width: 32px;
 		height: 16px;
 		font-size: 16px;
+	}
+
+	.dashicons-yes {
+		color: #eaeaea;
+		background: #555;
 	}
 }
 
@@ -89,6 +93,7 @@
 		width: 260px;
 	}
 }
+
 
 .wp-chimp-table-data-placeholder {
 
