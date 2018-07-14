@@ -62,7 +62,6 @@ final class Widget extends WP_Widget {
 	 */
 	public function __construct() {
 
-		$this->lists = get_the_lists();
 		$this->locale = get_the_locale_strings();
 		$this->default_attrs = get_the_default_attrs();
 
@@ -125,7 +124,9 @@ final class Widget extends WP_Widget {
 			<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'list_id' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'list_id' ) ); ?>">
 
 			<?php
-			foreach ( $this->lists as $key => $list ) :
+			$lists = get_the_lists();
+
+			foreach ( $lists as $key => $list ) :
 				$selected = $options['list_id'];
 				$current  = $list['list_id'];
 				?>
