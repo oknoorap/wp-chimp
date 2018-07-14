@@ -89,7 +89,7 @@ class Test_Functions extends UnitTestCase {
 	/**
 	 * Test the function to obfuscate half of the string.
 	 *
-	 * @since 0.1.0
+	 * @since 0.2.0
 	 */
 	public function test_obfuscate_string() {
 
@@ -100,7 +100,7 @@ class Test_Functions extends UnitTestCase {
 	/**
 	 * Test the function to obfuscate half of the string with an invalid data.
 	 *
-	 * @since 0.1.0
+	 * @since 0.2.0
 	 */
 	public function test_obfuscate_string_invalid() {
 
