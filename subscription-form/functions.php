@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_REST_Request;
+use WP_REST_Response;
 use WP_Chimp\Core;
 
 /**
@@ -25,14 +26,21 @@ use WP_Chimp\Core;
  */
 function get_the_lists() {
 
-	$response = [];
+	static $request;
+	static $response;
 
-	$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
-	$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
-	$request->set_header( 'X-Requested-With', 'WP_REST_Request' );
+	if ( is_null( $request ) && is_null( $response ) ) {
 
-	$response = rest_do_request( $request );
-	$response = (array) $response->get_data();
+		$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$request->set_header( 'X-Requested-With', 'WP_REST_Request' );
+
+		$response = rest_do_request( $request );
+	}
+
+	if ( $response instanceof WP_REST_Response ) {
+		$response = (array) $response->get_data();
+	}
 
 	return $response;
 }
