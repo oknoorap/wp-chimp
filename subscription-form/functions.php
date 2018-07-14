@@ -65,27 +65,6 @@ function get_the_lists_count() {
 }
 
 /**
- * Retrieve the default MailChimp list ID.
- *
- * The default is picked up from the first one on the list.
- *
- * @since 0.1.0
- *
- * @return string The default list ID.
- */
-function get_the_default_list() {
-
-	$default = [];
-	$lists = get_the_lists();
-
-	if ( 1 <= count( $lists ) ) {
-		$default = $lists[0]['list_id'];
-	}
-
-	return $default;
-}
-
-/**
  * Retrieve lists of translate-able strings.
  *
  * These are the strings that will be displayed on the Subscription Form.
@@ -159,7 +138,7 @@ function the_locale_strings( $key ) {
 function get_the_default_attrs() {
 
 	return [
-		'list_id' => get_the_default_list(),
+		'list_id' => Core\get_the_default_list(),
 		'title' => get_the_locale_strings( 'title' ),
 		'heading_text' => get_the_locale_strings( 'heading_text' ),
 		'sub_heading_text' => get_the_locale_strings( 'sub_heading_text' ),

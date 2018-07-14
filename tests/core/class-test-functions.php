@@ -10,6 +10,7 @@ namespace WP_Chimp\Tests\Core;
 
 use WP_Chimp\Tests\UnitTestCase;
 use WP_Chimp\Core;
+use Brain\Monkey\Functions;
 
 /**
  * Class to test core functions defined under WP_Chimp\Core.
@@ -84,6 +85,75 @@ class Test_Functions extends UnitTestCase {
 				],
 			], $data
 		);
+	}
+
+	/**
+	 * Test the function to set and get the default list.
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_the_default_list() {
+
+		$lists = Core\sort_mailchimp_lists( self::RAW_DATA['lists'] );
+
+		Functions\expect( 'update_option' )
+			->once()
+			->with( 'wp_chimp_lists_default', $lists[0]['list_id'] )
+			->andReturn( true );
+		Core\set_the_default_list( $lists );
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_lists_default', '' )
+			->andReturn( $lists[0]['list_id'] );
+
+		$this->assertEquals( '520524cb3b', Core\get_the_default_list() );
+	}
+
+	/**
+	 * Test the function to set and get the default list with custom index.
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_the_default_list_index() {
+
+		$lists = Core\sort_mailchimp_lists( self::RAW_DATA['lists'] );
+		$index = 1;
+
+		Functions\expect( 'update_option' )
+			->once()
+			->with( 'wp_chimp_lists_default', $lists[ $index ]['list_id'] )
+			->andReturn( true );
+
+		Core\set_the_default_list( $lists, $index );
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_lists_default', '' )
+			->andReturn( $lists[ $index ]['list_id'] );
+
+		$this->assertEquals( '610424aa1c', Core\get_the_default_list() );
+	}
+
+	/**
+	 * Test the function to set and get the default list invalid value.
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_the_default_list_invalid() {
+
+		$lists = Core\sort_mailchimp_lists( self::RAW_DATA['lists'] );
+		$index = 3; // An invalid index; there's only 2 on the list.
+
+		Functions\expect( 'update_option' )->never();
+		Core\set_the_default_list( $lists, $index );
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_lists_default', '' )
+			->andReturn( '' );
+
+		$this->assertEquals( '', Core\get_the_default_list() );
 	}
 
 	/**
