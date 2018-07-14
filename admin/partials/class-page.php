@@ -269,15 +269,18 @@ class Page {
 				);
 			}
 
-			if ( isset( $response['status'] ) ) {
+			if ( $mailchimp->success() && isset( $response['total_items'] ) ) {
+				return absint( $response['total_items'] );
+			} else {
 
-				$format  = '%s: <span class="wp-chimp-api-status-detail">%s</span>';
-				$message = sprintf( $format, $response['title'], $response['detail'] );
+				if ( isset( $response['status'] ) ) {
+					add_settings_error( 'wp-chimp-api-status', 'mailchimp-api-error', $mailchimp->getLastError(), 'error' );
+				} else {
 
-				add_settings_error( 'wp-chimp-api-status', $response['status'], $message );
+					$message = __( 'Oops, something unexpected happened. Please try again.', 'wp-chimp' );
+					add_settings_error( 'wp-chimp-api-status', 'unknown-error', $message, 'error' );
+				}
 			}
 		}
-
-		return isset( $response['total_items'] ) ? absint( $response['total_items'] ) : null;
 	}
 }
