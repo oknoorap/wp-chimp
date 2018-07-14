@@ -110,7 +110,7 @@ gulp.task( 'styles', () => {
 
 // Watch changes
 gulp.task( 'watch', () => {
-  gulp.watch( '**/*', gulp.series( 'eslint', 'scripts' ) );
+  gulp.watch([ '**/*.js', '!**/*.min.js' ], gulp.parallel( 'eslint', 'scripts' ) );
   gulp.watch( '**/*.scss', gulp.series( 'styles' ) );
 });
 
