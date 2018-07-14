@@ -415,6 +415,8 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 
 				$lists = Core\sort_mailchimp_lists( $lists['lists'] );
 				$this->process_lists( $lists ); // Add lists to the "Background Process".
+
+				Core\set_the_default_list( $lists ); // Set the default of the lists.
 			}
 		}
 

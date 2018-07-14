@@ -129,7 +129,7 @@ class Plugin {
 			'wp' => '4.9',
 			'wp_cron' => true,
 		];
-		$this->requirements = new Requirements( __( 'WP Chimp', 'wp-chimp' ), $requires );
+		$this->requirements = new Requirements( 'WP Chimp', $requires );
 		$this->requirements->add_check( 'wp_cron', [ $this, 'check_wp_cron_spawn' ] );
 	}
 
