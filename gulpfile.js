@@ -135,6 +135,8 @@ gulp.task( 'copy', () => {
     '!vendor/bin/**',
     '!svn-assets/**',
     '!tests/**',
+    '!pipelines/**',
+    '!localhost/**',
     '!node_modules/**',
     '!gulpfile.js',
     '!LICENSE'
