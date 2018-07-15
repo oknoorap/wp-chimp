@@ -114,10 +114,6 @@ gulp.task( 'watch', () => {
   gulp.watch( '**/*.scss', gulp.series( 'styles' ) );
 });
 
-// Tasks associated with Composer
-gulp.task( 'composer:no-dev', shell.task( 'composer install --no-dev' ) );
-gulp.task( 'composer', shell.task( 'composer install' ) );
-
 // Define distributable files to copy.
 gulp.task( 'copy', () => {
 
@@ -150,7 +146,7 @@ gulp.task( 'copy', () => {
 gulp.task( 'build', gulp.series( 'eslint', 'scripts', 'styles' ) );
 
 // Copy the files into a ./dist directory.
-gulp.task( 'dist', gulp.series( 'build', 'composer:no-dev', 'copy', 'composer' ) );
+gulp.task( 'dist', gulp.series( 'build', 'copy' ) );
 
 /**
  * ---------------------------------------------------------------
