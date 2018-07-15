@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_REST_Request;
+use WP_REST_Response;
 use WP_Chimp\Core;
 
 /**
@@ -25,14 +26,21 @@ use WP_Chimp\Core;
  */
 function get_the_lists() {
 
-	$response = [];
+	static $request;
+	static $response;
 
-	$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
-	$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
-	$request->set_header( 'X-Requested-With', 'WP_REST_Request' );
+	if ( is_null( $request ) && is_null( $response ) ) {
 
-	$response = rest_do_request( $request );
-	$response = (array) $response->get_data();
+		$request = new WP_REST_Request( 'GET', '/wp-chimp/v1/lists' );
+		$request->set_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
+		$request->set_header( 'X-Requested-With', 'WP_REST_Request' );
+
+		$response = rest_do_request( $request );
+	}
+
+	if ( $response instanceof WP_REST_Response ) {
+		$response = (array) $response->get_data();
+	}
 
 	return $response;
 }
@@ -54,27 +62,6 @@ function get_the_lists_count() {
 	$lists_count = count( $lists );
 
 	return absint( $lists_count );
-}
-
-/**
- * Retrieve the default MailChimp list ID.
- *
- * The default is picked up from the first one on the list.
- *
- * @since 0.1.0
- *
- * @return string The default list ID.
- */
-function get_the_default_list() {
-
-	$default = [];
-	$lists = get_the_lists();
-
-	if ( 1 <= count( $lists ) ) {
-		$default = $lists[0]['list_id'];
-	}
-
-	return $default;
 }
 
 /**
@@ -151,7 +138,7 @@ function the_locale_strings( $key ) {
 function get_the_default_attrs() {
 
 	return [
-		'list_id' => get_the_default_list(),
+		'list_id' => Core\get_the_default_list(),
 		'title' => get_the_locale_strings( 'title' ),
 		'heading_text' => get_the_locale_strings( 'heading_text' ),
 		'sub_heading_text' => get_the_locale_strings( 'sub_heading_text' ),
@@ -171,14 +158,14 @@ function get_the_default_attrs() {
 function get_the_inactive_notice() {
 	if ( current_user_can( 'administrator' ) ) :
 		ob_start();
-	?>
+		?>
 	<div class="wp-chimp-inactive">
 		<p class="wp-chimp-inactive__content"><?php the_locale_strings( 'inactive_notice' ); ?></p>
 	</div>
-	<?php
+		<?php
 
-	$notice = ob_get_contents();
-	ob_end_clean();
+		$notice = ob_get_contents();
+		ob_end_clean();
 	endif;
 
 	return $notice;
