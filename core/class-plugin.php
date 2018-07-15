@@ -242,6 +242,7 @@ class Plugin {
 		$lists_db = new Lists\Table();
 
 		register_activation_hook( $this->file_path, [ $lists_db, 'maybe_upgrade' ] ); // Create or Updatedatabase on activation_path.
+		register_activation_hook( $this->file_path, [ $this, 'ensure_options' ] ); // Add option and the default value on activation.
 
 		$this->loader->add_action( 'switch_blog', $lists_db, 'switch_blog' );
 		$this->loader->add_action( 'admin_init', $lists_db, 'maybe_upgrade' );
@@ -365,6 +366,28 @@ class Plugin {
 		];
 
 		return convert_keys_to_camel_case( $args );
+	}
+
+	/**
+	 * Add option and the default value if it does not exsit
+	 *
+	 * @since 0.2.0
+	 */
+	public function ensure_options() {
+
+		$options = [
+			'wp_chimp_api_key' => '',
+			'wp_chimp_lists_default' => '',
+			'wp_chimp_api_key_status' => 'invalid',
+			'wp_chimp_lists_total_items' => 0,
+			'wp_chimp_lists_init' => 0,
+		];
+
+		foreach ( $options as $key => $default_value ) {
+			if ( false === get_option( $key ) ) {
+				add_option( $key, $default_value );
+			}
+		}
 	}
 
 	/**
