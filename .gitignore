@@ -32,8 +32,9 @@ bower_components
 # graphics
 *.psd
 
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
+# MySQL #
+*.sql
+/dump
 
 # Dependency directories
 node_modules/

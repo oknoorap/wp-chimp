@@ -138,7 +138,7 @@ class Page {
 			?>
 			</form>
 		</div>
-	<?php
+		<?php
 	}
 
 	/**
@@ -156,10 +156,12 @@ class Page {
 	public function html_field_mailchimp_api_key() {
 
 		$api_key = get_option( 'wp_chimp_api_key', '' );
+		$api_key_obfuscated = Core\obfuscate_string( $api_key );
+
 		?>
-		<input type="text" name="wp_chimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $api_key ); ?>" />
+		<input type="text" name="wp_chimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $api_key_obfuscated ); ?>" />
 		<p class="description"><?php esc_html_e( 'Add your MailChimp API key', 'wp-chimp' ); ?>. <a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank"><?php esc_html_e( 'How to get the API key?', 'wp-chimp' ); ?></a></p>
-	<?php
+		<?php
 	}
 
 	/**
@@ -267,15 +269,18 @@ class Page {
 				);
 			}
 
-			if ( isset( $response['status'] ) ) {
+			if ( $mailchimp->success() && isset( $response['total_items'] ) ) {
+				return absint( $response['total_items'] );
+			} else {
 
-				$format  = '%s: <span class="wp-chimp-api-status-detail">%s</span>';
-				$message = sprintf( $format, $response['title'], $response['detail'] );
+				if ( isset( $response['status'] ) ) {
+					add_settings_error( 'wp-chimp-api-status', 'mailchimp-api-error', $mailchimp->getLastError(), 'error' );
+				} else {
 
-				add_settings_error( 'wp-chimp-api-status', $response['status'], $message );
+					$message = __( 'Oops, something unexpected happened. Please try again.', 'wp-chimp' );
+					add_settings_error( 'wp-chimp-api-status', 'unknown-error', $message, 'error' );
+				}
 			}
 		}
-
-		return isset( $response['total_items'] ) ? absint( $response['total_items'] ) : null;
 	}
 }

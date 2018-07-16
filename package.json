@@ -56,6 +56,7 @@
     "gulp-watch": "^5.0.0",
     "gulp-wp-pot": "^2.3.1",
     "gulp-zip": "^4.1.0",
+    "husky": "^0.14.3",
     "merge-stream": "^1.0.1",
     "merge2": "^1.2.2",
     "stylelint": "^9.3.0",
@@ -86,14 +87,16 @@
     "extends": "stylelint-config-wordpress"
   },
   "scripts": {
+    "local:up": "bash localhost/up.sh -d wordpress",
+    "local:down": "bash localhost/down.sh",
+    "local:start": "bash localhost/start.sh",
+    "local:restart": "bash localhost/start.sh",
+    "local:destroy": "bash localhost/destroy.sh",
+    "local:ssh": "bash localhost/ssh.sh",
+    "local:export-db": "bash localhost/mysql-export.sh",
+    "local:import-db": "bash localhost/mysql-import.sh",
+    "tests": "bash pipelines/run.sh",
+    "precommit": "bash pipelines/run.sh"
     "test:stylelint": "./node_modules/.bin/stylelint 'assets/src/scss/*.*'",
-    "local:pull": "docker-compose pull",
-    "local:up": "bash bin/up.sh -d wordpress",
-    "local:down": "bash bin/down.sh",
-    "local:start": "bash bin/start.sh",
-    "local:restart": "bash bin/start.sh",
-    "local:destroy": "bash bin/destroy.sh",
-    "local:ssh": "bash bin/ssh.sh",
-    "local:run": "bash bin/run.sh"
   }
 }

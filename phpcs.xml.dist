@@ -2,6 +2,8 @@
 <ruleset name="WordPress Coding Standards for Plugins">
 	<description>Generally-applicable sniffs for WordPress plugins</description>
 
+	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs" />
+
 	<rule ref="WordPress-Core">
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment" />
 		<exclude name="Generic.Formatting.MultipleStatementAlignment" />
@@ -30,6 +32,7 @@
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/dev-kit/*</exclude-pattern>
+	<exclude-pattern>*/dist/*</exclude-pattern>
 	<exclude-pattern>tests/bootstrap.php</exclude-pattern>
 	<exclude-pattern>index.php</exclude-pattern>
 </ruleset>
