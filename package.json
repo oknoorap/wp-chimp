@@ -57,7 +57,6 @@
   },
   "dependencies": {
     "camelcase-keys": "^4.2.0",
-    "npm": "^6.1.0",
     "redom": "^3.12.4",
     "snakecase-keys": "^1.2.0"
   },
