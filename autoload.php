@@ -30,6 +30,7 @@ function autoloader( $class_name ) {
 
 	// Do a reverse loop through $file_parts to build the path to the file.
 	$namespace = '';
+	$file_name = '';
 	for ( $i = count( $file_parts ) - 1; $i > 0; $i-- ) {
 
 		// Read the current component of the file part.
@@ -58,6 +59,10 @@ function autoloader( $class_name ) {
 		} else {
 			$namespace = '/' . $current . $namespace;
 		}
+	}
+
+	if ( ! $file_name || empty( $file_name ) ) {
+		return;
 	}
 
 	// Now build a path to the file using mapping to the file location.
