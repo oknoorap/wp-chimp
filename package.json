@@ -15,7 +15,7 @@
     "subscription"
   ],
   "author": "Thoriq Firdaus",
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "bugs": {
     "url": "https://github.com/tfirdaus/wp-chimp/issues"
   },
