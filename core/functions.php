@@ -14,6 +14,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Retrieve the option value with the default fallback.
+ *
+ * @since 0.2.0
+ *
+ * @param string $option_name The option name. It must be the one recognized in the plugin.
+ * @return WP_Error|mixed The option value. WP_Error if the option name is not recognized.
+ */
+function get_the_option( $option_name ) {
+	return Options::get( $option_name );
+}
+
+/**
+ * Update the value of an option that was already added.
+ *
+ * @since 0.2.0
+ *
+ * @param string $option_name (Required) Name of option to update. It must be the one recognized in the plugin.
+ * @param string $value Option value.
+ * @return WP_Error|boolean False if value was not updated, otherwise true. WP_Error if the option name is not recognized.
+ */
+function update_the_option( $option_name, $value ) {
+	return Options::update( $option_name, $value );
+}
+
+/**
+ * Add a new option.
+ *
+ * @since 0.2.0
+ *
+ * @param string $option_name (Required) Name of option to update. It must be the one recognized in the plugin.
+ * @param string $value Option value.
+ * @return WP_Error|boolean False if value was not updated, otherwise true. WP_Error if the option name is not recognized.
+ */
+function add_the_option( $option_name, $value ) {
+	return Options::add( $option_name, $value );
+}
+
+/**
  * Retrieve the MailChimp API key.
  *
  * @since 0.1.0
@@ -21,7 +59,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string The MailChimp API key or an empty string.
  */
 function get_the_mailchimp_api_key() {
-	return get_option( 'wp_chimp_api_key', '' );
+	return (string) get_option( 'wp_chimp_api_key', '' );
 }
 
 /**
