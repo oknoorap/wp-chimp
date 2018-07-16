@@ -24,7 +24,7 @@
 		"source": "https://github.com/wp-chimp/wp-chimp"
 	},
   "require": {
-    "php": ">=5.4",
+    "php": ">=5.4.45",
     "drewm/mailchimp-api": "^2.0",
     "a5hleyrich/wp-background-processing": "^1.0",
     "underdev/requirements": "^1.2"
