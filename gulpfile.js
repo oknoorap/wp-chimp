@@ -1,4 +1,6 @@
 /* eslint-env node */
+const argv         = require( 'yargs' ).argv;
+const grunt        = require( 'grunt' );
 const path         = require( 'path' );
 const buffer       = require( 'vinyl-buffer' );
 const sourceStream = require( 'vinyl-source-stream' );
@@ -14,6 +16,7 @@ const eslint       = require( 'gulp-eslint' );
 const uglify       = require( 'gulp-uglifyes' );
 const shell        = require( 'gulp-shell' );
 
+const deployStatus = argv.status;
 const sassFiles = [
   'admin.scss',
   'subscription-form-editor.scss',
@@ -25,6 +28,47 @@ const ecmaScriptFiles = [
   'subscription-form-editor.js',
   'subscription-form.js'
 ];
+
+grunt.initConfig({
+
+  pkg: grunt.file.readJSON( 'package.json' ),
+
+  /* eslint-disable */
+  wp_deploy: {
+
+    // Deploys a new release to the WordPress SVN repo.
+    release: {
+      options: {
+        plugin_slug: '<%= pkg.name %>',
+        build_dir: 'dist',
+        assets_dir: 'svn-assets'
+      }
+    },
+
+    // Only commit the assets directory.
+    assets: {
+      options: {
+        plugin_slug: '<%= pkg.name %>',
+        build_dir: 'dist',
+        assets_dir: 'svn-assets',
+        deploy_trunk: false
+      }
+    },
+
+    // Only deploy to trunk (e.g. when only updating the 'Tested up to' value and not deploying a release).
+    trunk: {
+      options: {
+        plugin_slug: '<%= pkg.name %>',
+        build_dir: 'dist',
+        assets_dir: 'svn-assets',
+        deploy_tag: false
+      }
+    }
+  }
+  /* eslint-disable */
+});
+
+grunt.loadNpmTasks('grunt-wp-deploy');
 
 /**
  * ---------------------------------------------------------------
@@ -148,6 +192,22 @@ gulp.task( 'build', gulp.series( 'eslint', 'scripts', 'styles' ) );
 
 // Copy the files into a ./dist directory.
 gulp.task( 'dist', gulp.series( 'build', 'copy' ) );
+
+/**
+ * ---------------------------------------------------------------
+ * Deploy tasks
+ *
+ * Defining the tasks to deploy the plugin to WordPress SVN
+ * repository.
+ * ---------------------------------------------------------------
+ */
+
+// Copy the files into a ./dist directory.
+gulp.task( 'deploy', () => {
+  grunt.tasks( [ 'wp_deploy:' + deployStatus ], {
+    gruntfile: false
+  } );
+} );
 
 /**
  * ---------------------------------------------------------------
