@@ -97,7 +97,7 @@
     "local:ssh": "bash localhost/ssh.sh",
     "local:export-db": "bash localhost/mysql-export.sh",
     "local:import-db": "bash localhost/mysql-import.sh",
-    "tests": "bash pipelines/run.sh",
-    "precommit": "bash pipelines/run.sh"
+    "precommit": "bash pipelines/precommit.sh",
+    "tests": "bash pipelines/tests.sh"
   }
 }
