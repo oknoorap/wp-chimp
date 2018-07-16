@@ -370,28 +370,6 @@ class Plugin {
 	}
 
 	/**
-	 * Add option and the default value if it does not exsit
-	 *
-	 * @since 0.2.0
-	 */
-	public function ensure_options() {
-
-		$options = [
-			'wp_chimp_api_key' => '',
-			'wp_chimp_lists_default' => '',
-			'wp_chimp_api_key_status' => 'invalid',
-			'wp_chimp_lists_total_items' => 0,
-			'wp_chimp_lists_init' => 0,
-		];
-
-		foreach ( $options as $key => $default_value ) {
-			if ( false === get_option( $key ) ) {
-				add_option( $key, $default_value );
-			}
-		}
-	}
-
-	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
 	 * @since 0.1.0
