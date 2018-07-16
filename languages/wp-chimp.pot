@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: WP Chimp\n"
-"POT-Creation-Date: 2018-07-02 08:06+0700\n"
+"POT-Creation-Date: 2018-07-16 23:52+0700\n"
 "PO-Revision-Date: 2018-07-01 10:54+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -37,37 +37,49 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: admin/partials/class-menu.php:81
-msgid ""
-"This screen will show a table of the Lists registered in your MailChimp "
-"account."
+#: admin/partials/class-menu.php:73
+msgid "MailChimp API"
 msgstr ""
 
-#: admin/partials/class-menu.php:83
+#: admin/partials/class-menu.php:88
 msgid ""
-"You will need to add the MailChimp API key on the provided input field on "
-"this screen. Make sure that it's a valid API key and that the status is "
-"\"Enabled\". Once the API key is added and validated, it will retrieve the "
-"MailChimp Lists along with a number of data such as the ID, the name, the "
-"number of subscribers, and whether the List is double-optin."
+"MailChimp is one of the most populars, if not the most popular, marketing "
+"automation and email marketing platform. This is the setting page where you "
+"can connect your site to your MailChimp account and, once it is connected, "
+"provides you the ability to display a MailChimp subscription form on the "
+"post, page and the Widget area."
 msgstr ""
 
-#: admin/partials/class-menu.php:85
-msgid ""
-"WordPress shortcode is shown on each of the MailChimp list that you can "
-"simply copy and paste it to display the MailChimp subcription form for the "
-"selected List in the post or page content."
+#: admin/partials/class-menu.php:89
+msgid "To get started, you will need a MailChimp API account."
 msgstr ""
 
-#: admin/partials/class-menu.php:98
+#: admin/partials/class-menu.php:101
+#, php-format
+msgid ""
+"If you want to connect your site to your MailChimp account, you'll first "
+"need to generate an API key. This reference from MailChimp, %s, on how to "
+"create an API key in your account"
+msgstr ""
+
+#: admin/partials/class-menu.php:115
+msgid ""
+"Then add the API key to the provided input field on this page. Make sure "
+"that it's a valid API key status is \"Enabled\". Once the it is added and "
+"validated, it will start retrieving the MailChimp lists from your account "
+"along with a few of their details such as the list ID, the name, the number "
+"of subscribers, and display them all together on a table in this page."
+msgstr ""
+
+#: admin/partials/class-menu.php:128
 msgid "For more information:"
 msgstr ""
 
-#: admin/partials/class-menu.php:99
+#: admin/partials/class-menu.php:129
 msgid "About MailChimp API keys"
 msgstr ""
 
-#: admin/partials/class-menu.php:100
+#: admin/partials/class-menu.php:130
 msgid "About WordPress Shortcode"
 msgstr ""
 
@@ -99,7 +111,7 @@ msgstr ""
 msgid "Shortcode"
 msgstr ""
 
-#: admin/partials/class-page.php:131 admin/partials/class-page.php:178
+#: admin/partials/class-page.php:131 admin/partials/class-page.php:180
 msgid "Settings"
 msgstr ""
 
@@ -107,25 +119,28 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: admin/partials/class-page.php:161
+#: admin/partials/class-page.php:163
 msgid "Add your MailChimp API key"
 msgstr ""
 
-#: admin/partials/class-page.php:161
+#: admin/partials/class-page.php:163
 msgid "How to get the API key?"
 msgstr ""
 
-#: autoload.php:73
+#: admin/partials/class-page.php:280
+msgid "Oops, something unexpected happened. Please try again."
+msgstr ""
+
+#: autoload.php:78
 #, php-format
 msgid "The file attempting to be loaded at %s does not exist."
 msgstr ""
 
-#. Plugin Name of the plugin/theme
-#: core/class-plugin.php:132
-msgid "WP Chimp"
+#: core/class-options.php:83 core/class-options.php:101
+msgid "The option name is not registered."
 msgstr ""
 
-#: core/class-plugin.php:149
+#: core/class-plugin.php:166
 msgid ""
 "WP-Cron to be running. It is currently disabled using 'DISABLE_WP_CRON' "
 "constant."
@@ -182,92 +197,122 @@ msgstr ""
 msgid "Inserting the MailChimp list ID %s failed."
 msgstr ""
 
-#: subscription-form/class-widget.php:117
+#: packages/Classes/a5hleyrich/wp-background-processing/classes/wp-background-process.php:425
+#, php-format
+msgid "Every %d Minutes"
+msgstr ""
+
+#: packages/Classes/underdev/requirements/underDEV_Requirements.php:170
+#, php-format
+msgid "PHP extension: %s"
+msgid_plural "PHP extensions: %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: packages/Classes/underdev/requirements/underDEV_Requirements.php:257
+#, php-format
+msgid "register %s function but it's already taken"
+msgid_plural "register %s functions but these are already taken"
+msgstr[0] ""
+msgstr[1] ""
+
+#: packages/Classes/underdev/requirements/underDEV_Requirements.php:282
+#, php-format
+msgid "register %s class but it's already defined"
+msgid_plural "register %s classes but these are already defined"
+msgstr[0] ""
+msgstr[1] ""
+
+#: subscription-form/class-widget.php:116
 msgid "Title:"
 msgstr ""
 
-#: subscription-form/class-widget.php:123
+#: subscription-form/class-widget.php:122
 msgid "List_ID"
 msgstr ""
 
-#: subscription-form/class-widget.php:138
+#: subscription-form/class-widget.php:139
 msgid "Heading Text:"
 msgstr ""
 
-#: subscription-form/class-widget.php:142
+#: subscription-form/class-widget.php:143
 msgid "Sub-heading Text:"
 msgstr ""
 
-#: subscription-form/class-widget.php:146
+#: subscription-form/class-widget.php:147
 msgid "Input Email Placeholder:"
 msgstr ""
 
-#: subscription-form/class-widget.php:150
+#: subscription-form/class-widget.php:151
 msgid "Button Text:"
 msgstr ""
 
-#: subscription-form/class-widget.php:154
+#: subscription-form/class-widget.php:155
 msgid "Footer Text:"
 msgstr ""
 
-#: subscription-form/functions.php:93
+#: subscription-form/functions.php:80
 msgid "Subscription Form"
 msgstr ""
 
-#: subscription-form/functions.php:94
+#: subscription-form/functions.php:81
 msgid "Display a MailChimp subscription form."
 msgstr ""
 
-#: subscription-form/functions.php:97
+#: subscription-form/functions.php:84
 msgid "Subscribe"
 msgstr ""
 
-#: subscription-form/functions.php:98
+#: subscription-form/functions.php:85
 msgid "Get notified of our next update right to your inbox"
 msgstr ""
 
-#: subscription-form/functions.php:99
+#: subscription-form/functions.php:86
 msgid "Enter your email address"
 msgstr ""
 
-#: subscription-form/functions.php:100
+#: subscription-form/functions.php:87
 msgid "Submit"
 msgstr ""
 
-#: subscription-form/functions.php:101
+#: subscription-form/functions.php:88
 msgid "We hate spam too, unsubscribe at any time."
 msgstr ""
 
-#: subscription-form/functions.php:104
+#: subscription-form/functions.php:91
 msgid "You've sucessfully subscribed."
 msgstr ""
 
-#: subscription-form/functions.php:105
+#: subscription-form/functions.php:92
 msgid "Oops!, an unexpected error occured. Please try it again in a moment."
 msgstr ""
 
-#: subscription-form/functions.php:106
+#: subscription-form/functions.php:93
 msgid "It looks like your email address is invalid."
 msgstr ""
 
-#: subscription-form/functions.php:107
+#: subscription-form/functions.php:94
 msgid ""
 "You're almost done. Please check your email box to confirm your subscription."
 msgstr ""
 
-#: subscription-form/functions.php:110
+#: subscription-form/functions.php:97
 #, php-format
 msgid ""
 "Subscription Form is currently inactive. You might haven't yet input the "
 "MailChimp API key to %1$s or your MailChimp account might not contain a %2$s."
 msgstr ""
 
-#: subscription-form/functions.php:110
+#: subscription-form/functions.php:97
 msgid "the Settings page"
 msgstr ""
 
-#: subscription-form/functions.php:110
+#: subscription-form/functions.php:97
 msgid "List"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WP Chimp"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
@@ -275,9 +320,7 @@ msgid "https://wordpress.org/plugins/wp-chimp"
 msgstr ""
 
 #. Description of the plugin/theme
-msgid ""
-"This is a short description of what the plugin does. It's displayed in the "
-"WordPress admin area."
+msgid "Lean MailChimp subscription form plugin for WordPress"
 msgstr ""
 
 #. Author of the plugin/theme
