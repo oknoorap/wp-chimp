@@ -267,7 +267,7 @@ class Plugin {
 		 *
 		 * @var string
 		 */
-		$api_key = (string) get_option( 'wp_chimp_api_key', '' );
+		$api_key = get_the_option( 'wp_chimp_api_key' );
 
 		if ( ! empty( $api_key ) ) {
 

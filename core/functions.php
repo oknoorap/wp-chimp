@@ -59,7 +59,7 @@ function add_the_option( $option_name, $value ) {
  * @return string The MailChimp API key or an empty string.
  */
 function get_the_mailchimp_api_key() {
-	return (string) get_option( 'wp_chimp_api_key', '' );
+	return get_the_option( 'wp_chimp_api_key' );
 }
 
 /**
@@ -75,7 +75,7 @@ function get_the_mailchimp_api_key() {
  */
 function get_the_mailchimp_api_key_status() {
 
-	$api_key_status = (string) get_option( 'wp_chimp_api_key_status', 'invalid' );
+	$api_key_status = get_the_option( 'wp_chimp_api_key_status' );
 	return 'invalid' === $api_key_status ? false : true;
 }
 
@@ -91,7 +91,7 @@ function get_the_mailchimp_api_key_status() {
  */
 function get_the_lists_total_items() {
 
-	$total_items = get_option( 'wp_chimp_lists_total_items', 0 );
+	$total_items = get_the_option( 'wp_chimp_lists_total_items' );
 	return absint( $total_items );
 }
 
@@ -120,7 +120,7 @@ function set_the_default_list( array $lists, $index = 0 ) {
  * @return string The ID of the default list.
  */
 function get_the_default_list() {
-	return get_option( 'wp_chimp_lists_default', '' );
+	return get_the_option( 'wp_chimp_lists_default' );
 }
 
 /**
@@ -134,7 +134,7 @@ function get_the_default_list() {
  */
 function is_lists_init() {
 
-	$init = get_option( 'wp_chimp_lists_init', 0 );
+	$init = get_the_option( 'wp_chimp_lists_init' );
 	return 1 === absint( $init );
 }
 

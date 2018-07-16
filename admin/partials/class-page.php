@@ -155,7 +155,7 @@ class Page {
 	 */
 	public function html_field_mailchimp_api_key() {
 
-		$api_key = get_option( 'wp_chimp_api_key', '' );
+		$api_key = Core\get_the_option( 'wp_chimp_api_key' );
 		$api_key_obfuscated = Core\obfuscate_string( $api_key );
 
 		?>
