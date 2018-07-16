@@ -311,3 +311,31 @@ function obfuscate_string( $string = '' ) {
 	return $obfuscated_api_key;
 }
 
+/**
+ * Validate and convert a value into a string type of value.
+ *
+ * @since 0.2.0
+ *
+ * @param mixed $value The value to filter.
+ * @return string
+ */
+function filter_string( $value ) {
+	return filter_var( $value, FILTER_SANITIZE_STRING );
+}
+
+/**
+ * Validate API key status output.
+ *
+ * @since 0.2.0
+ *
+ * @param mixed $value The value to filter.
+ * @return string
+ */
+function filter_api_key_status( $value ) {
+
+	if ( in_array( $value, [ 'valid', 'invalid' ], true ) ) {
+		return $value;
+	}
+
+	return 'invalid';
+}

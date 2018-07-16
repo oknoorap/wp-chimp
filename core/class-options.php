@@ -30,11 +30,26 @@ class Options {
 	 * @var array
 	 */
 	static public $options = [
-		'wp_chimp_api_key' => '',
-		'wp_chimp_lists_default' => '',
-		'wp_chimp_api_key_status' => 'invalid',
-		'wp_chimp_lists_total_items' => 0,
-		'wp_chimp_lists_init' => 0,
+		'wp_chimp_api_key' => [
+			'default' => '',
+			'validate_callback' => 'WP_Chimp\\Core\\filter_string',
+		],
+		'wp_chimp_lists_default' => [
+			'default' => '',
+			'validate_callback' => 'WP_Chimp\\Core\\filter_string',
+		],
+		'wp_chimp_api_key_status' => [
+			'default' => 'invalid',
+			'validate_callback' => 'WP_Chimp\\Core\\filter_api_key_status',
+		],
+		'wp_chimp_lists_total_items' => [
+			'default' => 0,
+			'validate_callback' => 'absint',
+		],
+		'wp_chimp_lists_init' => [
+			'default' => 0,
+			'validate_callback' => 'absint',
+		],
 	];
 
 	/**
@@ -62,7 +77,8 @@ class Options {
 	public static function get( $option_name ) {
 
 		if ( isset( self::$options[ $option_name ] ) ) {
-			return get_option( $option_name, self::$options[ $option_name ] );
+			$value = get_option( $option_name, self::$options[ $option_name ]['default'] );
+			return call_user_func( self::$options[ $option_name ]['validate_callback'], $value );
 		} else {
 			return new WP_Error( 'wp-chimp-option-name-invalid', __( 'The option name is not registered.', 'wp-chimp' ) );
 		}

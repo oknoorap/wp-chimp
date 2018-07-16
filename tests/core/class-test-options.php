@@ -20,11 +20,26 @@ use Brain\Monkey\Functions;
 class Test_Options extends UnitTestCase {
 
 	const OPTION_NAMES = [
-		'wp_chimp_api_key' => '',
-		'wp_chimp_lists_default' => '',
-		'wp_chimp_api_key_status' => 'invalid',
-		'wp_chimp_lists_total_items' => 0,
-		'wp_chimp_lists_init' => 0,
+		'wp_chimp_api_key' => [
+			'default' => '',
+			'validate_callback' => 'WP_Chimp\\Core\\validate_string',
+		],
+		'wp_chimp_lists_default' => [
+			'default' => '',
+			'validate_callback' => 'WP_Chimp\\Core\\validate_string',
+		],
+		'wp_chimp_api_key_status' => [
+			'default' => 'invalid',
+			'validate_callback' => 'WP_Chimp\\Core\\validate_api_key_status',
+		],
+		'wp_chimp_lists_total_items' => [
+			'default' => 0,
+			'validate_callback' => 'absint',
+		],
+		'wp_chimp_lists_init' => [
+			'default' => 0,
+			'validate_callback' => 'absint',
+		],
 	];
 
 	/**
@@ -60,9 +75,9 @@ class Test_Options extends UnitTestCase {
 	 */
 	public function test_default_option_names_and_values() {
 
-		foreach ( self::OPTION_NAMES as $option_name => $value ) {
+		foreach ( self::OPTION_NAMES as $option_name => $data ) {
 			$this->assertArrayHasKey( $option_name, Options::$options );
-			$this->assertTrue( Options::$options[ $option_name ] === $value );
+			$this->assertTrue( Options::$options[ $option_name ]['default'] === $data['default'] );
 		}
 	}
 
@@ -81,11 +96,11 @@ class Test_Options extends UnitTestCase {
 			'wp_chimp_lists_init' => 1,
 		];
 
-		foreach ( self::OPTION_NAMES as $option_name => $value ) {
+		foreach ( self::OPTION_NAMES as $option_name => $data ) {
 
 			Functions\expect( 'get_option' )
 				->once()
-				->with( $option_name, $value )
+				->with( $option_name, $data['default'] )
 				->andReturn( $expected_values[ $option_name ] );
 
 			$returned_value = Options::get( $option_name );
@@ -106,6 +121,180 @@ class Test_Options extends UnitTestCase {
 		$this->assertInstanceOf( \WP_Error::class, $returned_value );
 		$this->assertEquals( 'wp-chimp-option-name-invalid', $returned_value->get_error_code() );
 		$this->assertEquals( 'The option name is not registered.', $returned_value->get_error_message( 'wp-chimp-option-name-invalid' ) );
+	}
+
+	/**
+	 * Test the get method for option that should return a string.
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_string() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_api_key', '' )
+			->andReturn( '7TwW4Zw2Perj6nkp-us1' );
+
+		$returned_value = Options::get( 'wp_chimp_api_key' );
+		$this->assertEquals( '7TwW4Zw2Perj6nkp-us1', $returned_value );
+	}
+
+	/**
+	 * Test the get method for option that should return a string but
+	 * the WordPress get_option function return a float (somehow).
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_string_return_int() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_api_key', '' )
+			->andReturn( 123 );
+
+		$returned_value = Options::get( 'wp_chimp_api_key' );
+		$this->assertTrue( is_string( $returned_value ) );
+		$this->assertEquals( '123', $returned_value );
+	}
+
+	/**
+	 * Test the get method for option that should return a string but
+	 * the WordPress get_option function return a float (somehow).
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_string_return_float() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_api_key', '' )
+			->andReturn( 1.23 );
+
+		$returned_value = Options::get( 'wp_chimp_api_key' );
+		$this->assertTrue( is_string( $returned_value ) );
+		$this->assertEquals( '1.23', $returned_value );
+	}
+
+	/**
+	 * Test the get method for option that should return a string but
+	 * the WordPress get_option function return a boolean (somehow).
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_string_return_bool() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_api_key', '' )
+			->andReturn( true );
+
+		$returned_value = Options::get( 'wp_chimp_api_key' );
+		$this->assertTrue( is_string( $returned_value ) );
+		$this->assertEquals( '1', $returned_value );
+	}
+
+	/**
+	 * Test the get method for option that should return a string but
+	 * the WordPress get_option function return a boolean (somehow).
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_int() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_lists_total_items', 0 )
+			->andReturn( 1 );
+
+		$returned_value = Options::get( 'wp_chimp_lists_total_items' );
+		$this->assertTrue( is_int( $returned_value ) );
+		$this->assertEquals( 1, $returned_value );
+	}
+
+	/**
+	 * Test the get method for option that should return a string but
+	 * the WordPress get_option function return a boolean (somehow).
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_int_return_bool() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_lists_total_items', 0 )
+			->andReturn( true );
+
+		$returned_value = Options::get( 'wp_chimp_lists_total_items' );
+		$this->assertTrue( is_int( $returned_value ) );
+		$this->assertEquals( 1, $returned_value );
+	}
+
+	/**
+	 * Test the get method for option that should return a string but
+	 * the WordPress get_option function return a float (somehow).
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_int_return_float() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_lists_total_items', 0 )
+			->andReturn( 1.23 );
+
+		$returned_value = Options::get( 'wp_chimp_lists_total_items' );
+		$this->assertTrue( is_int( $returned_value ) );
+		$this->assertEquals( 1, $returned_value );
+	}
+
+	/**
+	 * Test the get method for option that should return a string but
+	 * the WordPress get_option function return a string (somehow).
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_int_return_string() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_lists_total_items', 0 )
+			->andReturn( '1' );
+
+		$returned_value = Options::get( 'wp_chimp_lists_total_items' );
+		$this->assertTrue( is_int( $returned_value ) );
+		$this->assertEquals( 1, $returned_value );
+	}
+
+	/**
+	 * Test the api key status option.
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_api_key_status() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_api_key_status', 'invalid' )
+			->andReturn( 'valid' );
+
+		$returned_value = Options::get( 'wp_chimp_api_key_status' );
+		$this->assertEquals( 'valid', $returned_value );
+	}
+
+	/**
+	 * Test the api key status option with an invalid returned valud.
+	 *
+	 * @since 0.2.0
+	 */
+	public function test_get_api_key_status_return_invalid() {
+
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'wp_chimp_api_key_status', 'invalid' )
+			->andReturn( 1 ); // Return a boolean. Actually should only return 'valid' and 'invalid'.
+
+		$returned_value = Options::get( 'wp_chimp_api_key_status' );
+		$this->assertEquals( 'invalid', $returned_value );
 	}
 
 	/**
