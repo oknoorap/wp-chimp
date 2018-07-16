@@ -240,9 +240,10 @@ class Plugin {
 	protected function define_database_hooks() {
 
 		$lists_db = new Lists\Table();
+		$options  = new Options();
 
 		register_activation_hook( $this->file_path, [ $lists_db, 'maybe_upgrade' ] ); // Create or Updatedatabase on activation_path.
-		register_activation_hook( $this->file_path, [ $this, 'ensure_options' ] ); // Add option and the default value on activation.
+		register_activation_hook( $this->file_path, [ $options, 'ensure_options' ] ); // Add option and the default value on activation.
 
 		$this->loader->add_action( 'switch_blog', $lists_db, 'switch_blog' );
 		$this->loader->add_action( 'admin_init', $lists_db, 'maybe_upgrade' );
