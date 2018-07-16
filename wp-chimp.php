@@ -15,7 +15,7 @@
  * Plugin Name: WP Chimp
  * Plugin URI: https://wordpress.org/plugins/wp-chimp
  * Description: Lean MailChimp subscription form plugin for WordPress
- * Version: 0.1.0
+ * Version: 0.2.0
  * Author: Thoriq Firdaus
  * Author URI: https://wp-chimp.com
  * License: GPLv2 or later
@@ -60,7 +60,7 @@ function wp_chimp() {
 
 	if ( is_null( $plugin ) ) {
 
-		$plugin = new WP_Chimp\Core\Plugin( 'wp-chimp', '0.1.0', __FILE__ );
+		$plugin = new WP_Chimp\Core\Plugin( 'wp-chimp', '0.2.0', __FILE__ );
 		$plugin->set_loader( new WP_Chimp\Core\Loader() );
 
 		$plugin->run();
