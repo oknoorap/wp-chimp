@@ -35,9 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * will load files from the packages installed through Composer
  *
  * @link http://php.net/manual/en/function.spl-autoload-register.php
- * @link https://getcomposer.org/doc/01-basic-usage.md#autoloading
  */
-require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 
 /**
