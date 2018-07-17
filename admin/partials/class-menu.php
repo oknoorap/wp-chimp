@@ -66,6 +66,14 @@ class Menu {
 					'callback' => [ __CLASS__, 'html_help_tab_overview' ],
 				]
 			);
+
+			$screen->add_help_tab(
+				[
+					'id'       => "{$this->plugin_name}-mailchimp-api",
+					'title'    => __( 'MailChimp API', 'wp-chimp' ),
+					'callback' => [ __CLASS__, 'html_help_tab_mailchimp_api' ],
+				]
+			);
 			$screen->set_help_sidebar( self::html_help_tab_sidebar() );
 		}
 	}
@@ -77,13 +85,35 @@ class Menu {
 	 */
 	public static function html_help_tab_overview() {
 		?>
+		<p><?php esc_html_e( 'MailChimp is one of the most populars, if not the most popular, marketing automation and email marketing platform. This is the setting page where you can connect your site to your MailChimp account and, once it is connected, provides you the ability to display a MailChimp subscription form on the post, page and the Widget area.', 'wp-chimp' ); ?></p>
+		<p><?php esc_html_e( 'To get started, you will need a MailChimp API key.', 'wp-chimp' ); ?></p>
+		<?php
+	}
 
-		<p><?php esc_html_e( 'This screen will show a table of the Lists registered in your MailChimp account.', 'wp-chimp' ); ?></p>
+	/**
+	 * Render the content of the "MailChimp API" section in the Help tab in the plugin Admin Page.
+	 *
+	 * @since 0.2.0
+	 */
+	public static function html_help_tab_mailchimp_api() {
 
-		<p><?php esc_html_e( 'You will need to add the MailChimp API key on the provided input field on this screen. Make sure that it\'s a valid API key and that the status is "Enabled". Once the API key is added and validated, it will retrieve the MailChimp Lists along with a number of data such as the ID, the name, the number of subscribers, and whether the List is double-optin.', 'wp-chimp' ); ?></p>
+		// Translators: %s link to MailChimp help article.
+		$about_mailchimp_api_key = sprintf( __( 'If you want to connect your site to your MailChimp account, you\'ll first need to generate an API key. This reference from MailChimp, %s, on how to create an API key in your account', 'wp-chimp' ), '<a href="https://mailchimp.com/help/about-api-keys/" target="_blank">About API Keys</a>' );
+		?>
 
-		<p><?php esc_html_e( 'WordPress shortcode is shown on each of the MailChimp list that you can simply copy and paste it to display the MailChimp subcription form for the selected List in the post or page content.', 'wp-chimp' ); ?></p>
-	<?php
+		<p>
+		<?php
+			echo wp_kses( $about_mailchimp_api_key, [
+				'a' => [
+					'href' => true,
+					'target' => true,
+				],
+			] );
+		?>
+		</p>
+
+		<p><?php esc_html_e( 'Then add the API key to the provided input field on this page. Make sure that it\'s a valid API key status is "Enabled". Once the it is added and validated, it will start retrieving the MailChimp lists from your account along with a few of their details such as the list ID, the name, the number of subscribers, and display them all together on a table in this page.', 'wp-chimp' ); ?></p>
+		<?php
 	}
 
 	/**

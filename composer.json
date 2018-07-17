@@ -1,15 +1,61 @@
 {
-    "name": "tfirdaus/wp-chimp",
-    "description": "Lightweight MailChimp form for WordPress",
-    "license": "GPL-2.0+",
-    "require": {
-        "drewm/mailchimp-api": "^2.0",
-        "a5hleyrich/wp-background-processing": "^1.0",
-        "underdev/requirements": "^1.2"
-    },
-    "require-dev": {
-      "brain/monkey": "~2.0.0",
-      "wimg/php-compatibility": "*",
-      "wp-coding-standards/wpcs": "^0.14.1"
+  "name": "wp-chimp/wp-chimp",
+  "description": "Lean MailChimp subscription form plugin for WordPress",
+  "keywords" : [
+    "wordpress",
+    "plugin",
+    "mailchimp",
+    "subscription",
+    "form"
+  ],
+  "homepage": "https://wordpress.org/plugins/wp-chimp",
+  "license": "GPL-2.0-or-later",
+  "type": "wordpress-plugin",
+  "authors": [
+    {
+      "name": "Thoriq Firdaus",
+      "email": "thoriqoe@gmail.com",
+      "homepage": "https://thoriq.com"
     }
+  ],
+  "support": {
+		"issues": "https://github.com/wp-chimp/wp-chimp/issues",
+		"forum": "https://wordpress.org/support/plugin/wp-chimp",
+		"source": "https://github.com/wp-chimp/wp-chimp"
+	},
+  "require": {
+    "php": ">=5.4.45",
+    "drewm/mailchimp-api": "^2.0",
+    "a5hleyrich/wp-background-processing": "^1.0",
+    "underdev/requirements": "^1.2"
+  },
+  "require-dev": {
+    "brain/monkey": "~2.0.0",
+    "wimg/php-compatibility": "*",
+    "wp-coding-standards/wpcs": "^0.14.1",
+    "coenjacobs/mozart": "^0.2.2"
+  },
+  "extra": {
+    "mozart": {
+      "dep_namespace": "WP_Chimp\\Deps\\",
+      "dep_directory": "/packages/Deps/",
+      "classmap_directory": "/packages/Classes/",
+      "classmap_prefix": "WP_Chimp_Packages_",
+      "packages": [
+          "drewm/mailchimp-api",
+          "a5hleyrich/wp-background-processing",
+          "underdev/requirements"
+      ]
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+        "\"vendor/bin/mozart\" compose",
+        "composer dumpautoload"
+    ],
+    "post-update-cmd": [
+        "\"vendor/bin/mozart\" compose",
+        "composer dumpautoload"
+    ]
+  }
 }

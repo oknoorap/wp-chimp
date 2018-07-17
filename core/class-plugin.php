@@ -18,8 +18,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_Chimp\Admin;
 use WP_Chimp\Subscription_Form;
-use DrewM\MailChimp\MailChimp;
-use underDEV_Requirements as Requirements;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
+
+/**
+ * Loaded dependencies with Mozart.
+ *
+ * The prefix looks terrible at best, but no other choice at least
+ * for the moment.
+ *
+ * @since 0.2.0
+ * @see https://github.com/coenjacobs/mozart
+ */
+use WP_Chimp_Packages_underDEV_Requirements as WP_Chimp_Requirements;
 
 /**
  * The core plugin class.
@@ -113,8 +123,15 @@ class Plugin {
 	 */
 	protected function load_dependencies() {
 
-		require_once plugin_dir_path( $this->file_path ) . 'core/functions.php';
-		require_once plugin_dir_path( $this->file_path ) . 'subscription-form/functions.php';
+		$path = plugin_dir_path( $this->file_path );
+		$classes = "${path}packages/Classes";
+
+		require_once $classes . '/underdev/requirements/underDEV_Requirements.php';
+		require_once $classes . '/a5hleyrich/wp-background-processing/classes/wp-async-request.php';
+		require_once $classes . '/a5hleyrich/wp-background-processing/classes/wp-background-process.php';
+
+		require_once $path . 'core/functions.php';
+		require_once $path . 'subscription-form/functions.php';
 	}
 
 	/**
@@ -125,11 +142,11 @@ class Plugin {
 	protected function check_requirements() {
 
 		$requires = [
-			'php' => '5.4',
-			'wp' => '4.9',
+			'php' => '5.4.45',
+			'wp' => '4.9.0',
 			'wp_cron' => true,
 		];
-		$this->requirements = new Requirements( __( 'WP Chimp', 'wp-chimp' ), $requires );
+		$this->requirements = new WP_Chimp_Requirements( 'WP Chimp', $requires );
 		$this->requirements->add_check( 'wp_cron', [ $this, 'check_wp_cron_spawn' ] );
 	}
 
@@ -223,8 +240,10 @@ class Plugin {
 	protected function define_database_hooks() {
 
 		$lists_db = new Lists\Table();
+		$options  = new Options();
 
 		register_activation_hook( $this->file_path, [ $lists_db, 'maybe_upgrade' ] ); // Create or Updatedatabase on activation_path.
+		register_activation_hook( $this->file_path, [ $options, 'ensure_options' ] ); // Add option and the default value on activation.
 
 		$this->loader->add_action( 'switch_blog', $lists_db, 'switch_blog' );
 		$this->loader->add_action( 'admin_init', $lists_db, 'maybe_upgrade' );
@@ -248,7 +267,7 @@ class Plugin {
 		 *
 		 * @var string
 		 */
-		$api_key = (string) get_option( 'wp_chimp_api_key', '' );
+		$api_key = get_the_option( 'wp_chimp_api_key' );
 
 		if ( ! empty( $api_key ) ) {
 

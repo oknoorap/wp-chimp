@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Exception;
 use WP_Chimp\Core;
-use DrewM\MailChimp\MailChimp;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
  * Class that register new menu in the Admin area and load the page.
@@ -138,7 +138,7 @@ class Page {
 			?>
 			</form>
 		</div>
-	<?php
+		<?php
 	}
 
 	/**
@@ -155,11 +155,13 @@ class Page {
 	 */
 	public function html_field_mailchimp_api_key() {
 
-		$api_key = get_option( 'wp_chimp_api_key', '' );
+		$api_key = Core\get_the_option( 'wp_chimp_api_key' );
+		$api_key_obfuscated = Core\obfuscate_string( $api_key );
+
 		?>
-		<input type="text" name="wp_chimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $api_key ); ?>" />
+		<input type="text" name="wp_chimp_api_key" id="field-mailchimp-api-key" class="regular-text" value="<?php echo esc_attr( $api_key_obfuscated ); ?>" />
 		<p class="description"><?php esc_html_e( 'Add your MailChimp API key', 'wp-chimp' ); ?>. <a href="https://kb.mailchimp.com/integrations/api-integrations/about-api-keys" target="_blank"><?php esc_html_e( 'How to get the API key?', 'wp-chimp' ); ?></a></p>
-	<?php
+		<?php
 	}
 
 	/**
@@ -233,9 +235,9 @@ class Page {
 		$this->lists_query->truncate();
 		$total_items = self::get_lists_total_items( $value );
 
-		update_option( 'wp_chimp_lists_init', 0 );
-		update_option( 'wp_chimp_lists_total_items', $total_items ? $total_items : 0 );
-		update_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
+		Core\update_the_option( 'wp_chimp_lists_init', 0 );
+		Core\update_the_option( 'wp_chimp_lists_total_items', $total_items ? $total_items : 0 );
+		Core\update_the_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
 	}
 
 	/**
@@ -267,15 +269,18 @@ class Page {
 				);
 			}
 
-			if ( isset( $response['status'] ) ) {
+			if ( $mailchimp->success() && isset( $response['total_items'] ) ) {
+				return absint( $response['total_items'] );
+			} else {
 
-				$format  = '%s: <span class="wp-chimp-api-status-detail">%s</span>';
-				$message = sprintf( $format, $response['title'], $response['detail'] );
+				if ( isset( $response['status'] ) ) {
+					add_settings_error( 'wp-chimp-api-status', 'mailchimp-api-error', $mailchimp->getLastError(), 'error' );
+				} else {
 
-				add_settings_error( 'wp-chimp-api-status', $response['status'], $message );
+					$message = __( 'Oops, something unexpected happened. Please try again.', 'wp-chimp' );
+					add_settings_error( 'wp-chimp-api-status', 'unknown-error', $message, 'error' );
+				}
 			}
 		}
-
-		return isset( $response['total_items'] ) ? absint( $response['total_items'] ) : null;
 	}
 }

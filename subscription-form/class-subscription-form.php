@@ -147,7 +147,7 @@ final class Subscription_Form {
 				'attributes' => [
 					'list_id' => [
 						'type' => 'string',
-						'default' => get_the_default_list(),
+						'default' => Core\get_the_default_list(),
 					],
 					'heading_text' => [
 						'type' => 'string',

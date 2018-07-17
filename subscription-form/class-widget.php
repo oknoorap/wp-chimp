@@ -62,7 +62,6 @@ final class Widget extends WP_Widget {
 	 */
 	public function __construct() {
 
-		$this->lists = get_the_lists();
 		$this->locale = get_the_locale_strings();
 		$this->default_attrs = get_the_default_attrs();
 
@@ -125,10 +124,12 @@ final class Widget extends WP_Widget {
 			<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'list_id' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'list_id' ) ); ?>">
 
 			<?php
-			foreach ( $this->lists as $key => $list ) :
+			$lists = get_the_lists();
+
+			foreach ( $lists as $key => $list ) :
 				$selected = $options['list_id'];
 				$current  = $list['list_id'];
-			?>
+				?>
 				<option value="<?php echo esc_attr( $list['list_id'] ); ?>" <?php selected( $selected, $current, true ); ?>><?php echo esc_html( $list['name'] ); ?></option>
 			<?php endforeach; ?>
 
@@ -154,7 +155,7 @@ final class Widget extends WP_Widget {
 			<label for="<?php echo esc_attr( $this->get_field_id( 'footer_text' ) ); ?>"><?php esc_attr_e( 'Footer Text:', 'wp-chimp' ); ?></label>
 			<textarea class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'footer_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'footer_text' ) ); ?>" rows="2"><?php echo esc_textarea( $options['footer_text'] ); ?></textarea>
 		</p>
-	<?php
+		<?php
 	}
 
 	/**

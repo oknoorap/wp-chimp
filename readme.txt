@@ -4,7 +4,7 @@ Donate link: https://paypal.me/tfirdaus
 Tags: mailchimp, form, subscription, gutenberg, widget, shortocode.
 Requires at least: 4.9.0
 Tested up to: 4.9.7
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 Requires PHP: 5.4.45
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -66,9 +66,20 @@ None, at the moment. Please ask :)
 
 == Changelog ==
 
+= 0.2.0 =
+* Changed: The MailChimp API key that's shown in the Settings page is now obfuscated.
+* Fixed: Slow WordPress `get_option` querying the plugin options.
+* Fixed: Duplicated lists query in the plugin Settings page.
+* Fixed: Incorrect endpoint URL to resync the lists.
+
 = 0.1.0 =
 * Added: Basic functionality of a MailChimp subscription form.
 * Added: A custom basic Gutenberg block interface to add and edit the subscription form.
 * Added: A Widget to add and edit the subscription form.
 * Added: A Settings page for the plugin.
 * Added: A couple of custom WP-API endpoints.
+
+== Upgrade Notice ==
+
+= 0.2.0 =
+This version fixed numerous bugs, and it now obfuscates the MailChimp API key display in the Settings page.

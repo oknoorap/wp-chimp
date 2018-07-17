@@ -15,14 +15,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
-use WP_Background_Process;
+use WP_Chimp\Core;
+
+/**
+ * Loaded dependencies with Mozart.
+ *
+ * The prefix looks terrible at best, but no other choice at least
+ * for the moment.
+ *
+ * @since 0.2.0
+ * @see https://github.com/coenjacobs/mozart
+ */
+use WP_Chimp_Packages_WP_Background_Process as WP_Chimp_Background_Process;
 
 /**
  * Class that register new menu in the Admin area and load the page.
  *
  * @since 0.1.0
  */
-final class Process extends WP_Background_Process {
+final class Process extends WP_Chimp_Background_Process {
 
 	/**
 	 * The unique wp_cron action.
@@ -78,6 +89,6 @@ final class Process extends WP_Background_Process {
 	protected function complete() {
 		parent::complete();
 
-		update_option( 'wp_chimp_lists_init', 1 );
+		Core\update_the_option( 'wp_chimp_lists_init', 1 );
 	}
 }
