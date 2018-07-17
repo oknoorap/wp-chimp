@@ -59,9 +59,9 @@ class Options {
 	 */
 	public static function ensure_options() {
 
-		foreach ( self::$options as $key => $default_value ) {
-			if ( false === get_option( $key ) ) {
-				self::update( $key, $default_value );
+		foreach ( self::$options as $option_name => $data ) {
+			if ( false === get_option( $option_name ) ) {
+				self::update( $option_name, $data['default'] );
 			}
 		}
 	}
