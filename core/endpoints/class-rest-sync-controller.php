@@ -102,29 +102,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Function ot get the plugin api namespace.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The name space and the version.
-	 */
-	public static function get_namespace() {
-		return 'wp-chimp/' . self::VERSION;
-	}
-
-	/**
-	 * Get REST Base.
-	 *
-	 * @since 0.1.0
-	 * @access public
-	 *
-	 * @return string
-	 */
-	public static function get_rest_base() {
-		return 'sync';
-	}
-
-	/**
 	 * Function to register the MailChimp instance.
 	 *
 	 * @since 0.1.0
