@@ -1,6 +1,6 @@
 [submodule "localhost"]
 	path = localhost
-	url = git@github.com:tfirdaus/wp-bash-localhost.git
+	url = https://github.com/tfirdaus/wp-bash-localhost.git
 [submodule "pipelines"]
 	path = pipelines
-	url = git@github.com:tfirdaus/wp-bash-pipelines.git
+	url = https://github.com/tfirdaus/wp-bash-pipelines.git
