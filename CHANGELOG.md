@@ -6,7 +6,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
-## 0.1.1 - 2018-06-03
+## [0.2.0] - 2014-07-17
+
+### Added
+
+- A pre-commit hook to analyze code before commiting changes to Git (#26).
+- A new class called `Options` to add, update, and validate the plugin options.
+
+### Changed
+
+- The MailChimp API key that's shown in the Settings page is now obfuscated (#29).
+
+### Fixed
+
+- Slow WordPress `get_option` querying the plugin options.
+- Duplicated lists query in the plugin Settings page.
+- Incorrect endpoint URL to resync the lists.
+
+## 0.1.0 - 2018-06-03
 
 ### Added
 
@@ -16,4 +33,5 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - A Settings page for the plugin.
 - A couple of custom WP-API endpoints.
 
-[Unreleased]: https://github.com/wp-chimp/wp-chimp/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/wp-chimp/wp-chimp/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/wp-chimp/wp-chimp/compare/v0.1.0...v0.2.0
