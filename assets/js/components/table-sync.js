@@ -29,7 +29,7 @@ class TableSync {
    */
   onClick() {
     this.tableRequest.request({
-      'url': 'wp-chimp/v1/sync/lists'
+      'endpoint': '/sync/lists'
     });
   }
 }
