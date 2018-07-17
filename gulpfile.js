@@ -154,8 +154,8 @@ gulp.task( 'styles', () => {
 
 // Watch changes
 gulp.task( 'watch', () => {
-  gulp.watch([ '**/*.js', '!**/*.min.js' ], gulp.parallel( 'eslint', 'scripts' ) );
-  gulp.watch( '**/*.scss', gulp.series( 'styles' ) );
+  gulp.watch([ 'assets/js/**/*.js', '!assets/js/**/*.min.js' ], gulp.series( 'eslint', 'scripts' ) );
+  gulp.watch([ 'assets/css/*.scss' ], gulp.series( 'styles' ) );
 });
 
 // Define distributable files to copy.
@@ -218,4 +218,4 @@ gulp.task( 'deploy', () => {
  * ---------------------------------------------------------------
  */
 
-gulp.task( 'default', gulp.parallel( 'eslint', 'scripts', 'styles', 'watch' ) );
+gulp.task( 'default', gulp.parallel( 'build', 'watch' ) );

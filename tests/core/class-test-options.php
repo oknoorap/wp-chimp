@@ -19,26 +19,26 @@ use Brain\Monkey\Functions;
  */
 class Test_Options extends UnitTestCase {
 
-	const OPTION_NAMES = [
+	const OPTIONS = [
 		'wp_chimp_api_key' => [
 			'default' => '',
-			'validate_callback' => 'WP_Chimp\\Core\\validate_string',
+			'sanitize_callback' => 'WP_Chimp\\Core\\validate_string',
 		],
 		'wp_chimp_lists_default' => [
 			'default' => '',
-			'validate_callback' => 'WP_Chimp\\Core\\validate_string',
+			'sanitize_callback' => 'WP_Chimp\\Core\\validate_string',
 		],
 		'wp_chimp_api_key_status' => [
 			'default' => 'invalid',
-			'validate_callback' => 'WP_Chimp\\Core\\validate_api_key_status',
+			'sanitize_callback' => 'WP_Chimp\\Core\\validate_api_key_status',
 		],
 		'wp_chimp_lists_total_items' => [
 			'default' => 0,
-			'validate_callback' => 'absint',
+			'sanitize_callback' => 'absint',
 		],
 		'wp_chimp_lists_init' => [
 			'default' => 0,
-			'validate_callback' => 'absint',
+			'sanitize_callback' => 'absint',
 		],
 	];
 
@@ -75,10 +75,23 @@ class Test_Options extends UnitTestCase {
 	 */
 	public function test_default_option_names_and_values() {
 
-		foreach ( self::OPTION_NAMES as $option_name => $data ) {
-			$this->assertArrayHasKey( $option_name, Options::$options );
-			$this->assertTrue( Options::$options[ $option_name ]['default'] === $data['default'] );
+		foreach ( Options::$options as $option_name => $data ) {
+
+			$this->assertArrayHasKey( 'default', $data );
+			$this->assertArrayHasKey( 'sanitize_callback', $data );
+			$this->assertTrue( is_callable( $data['sanitize_callback'] ) );
+
+			Functions\expect( 'get_option' )
+				->once()
+				->with( $option_name )
+				->andReturn( false );
+
+			Functions\expect( 'update_option' )
+				->once()
+				->with( $option_name, $data['default'] );
 		}
+
+		Options::ensure_options();
 	}
 
 	/**
@@ -96,7 +109,7 @@ class Test_Options extends UnitTestCase {
 			'wp_chimp_lists_init' => 1,
 		];
 
-		foreach ( self::OPTION_NAMES as $option_name => $data ) {
+		foreach ( self::OPTIONS as $option_name => $data ) {
 
 			Functions\expect( 'get_option' )
 				->once()

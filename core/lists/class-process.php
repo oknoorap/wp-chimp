@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
+use WP_Chimp\Core;
+
 /**
  * Loaded dependencies with Mozart.
  *
@@ -87,6 +89,6 @@ final class Process extends WP_Chimp_Background_Process {
 	protected function complete() {
 		parent::complete();
 
-		update_option( 'wp_chimp_lists_init', 1 );
+		Core\update_the_option( 'wp_chimp_lists_init', 1 );
 	}
 }

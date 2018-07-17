@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Exception;
 use WP_Chimp\Core;
-use DrewM\MailChimp\MailChimp;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
  * Class that register new menu in the Admin area and load the page.
@@ -235,9 +235,9 @@ class Page {
 		$this->lists_query->truncate();
 		$total_items = self::get_lists_total_items( $value );
 
-		update_option( 'wp_chimp_lists_init', 0 );
-		update_option( 'wp_chimp_lists_total_items', $total_items ? $total_items : 0 );
-		update_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
+		Core\update_the_option( 'wp_chimp_lists_init', 0 );
+		Core\update_the_option( 'wp_chimp_lists_total_items', $total_items ? $total_items : 0 );
+		Core\update_the_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
 	}
 
 	/**

@@ -21,7 +21,7 @@ use WP_REST_Controller;
 use WP_Chimp\Core;
 use WP_Chimp\Core\Lists;
 
-use DrewM\MailChimp\MailChimp;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
  * The class that register the custom '/list' endpoint to WP-API.
@@ -99,29 +99,6 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-	}
-
-	/**
-	 * Function ot get the plugin api namespace.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The name space and the version.
-	 */
-	public static function get_namespace() {
-		return 'wp-chimp/' . self::VERSION;
-	}
-
-	/**
-	 * Get REST Base.
-	 *
-	 * @since 0.1.0
-	 * @access public
-	 *
-	 * @return string
-	 */
-	public static function get_rest_base() {
-		return 'sync';
 	}
 
 	/**

@@ -32,23 +32,23 @@ class Options {
 	static public $options = [
 		'wp_chimp_api_key' => [
 			'default' => '',
-			'validate_callback' => 'WP_Chimp\\Core\\filter_string',
+			'sanitize_callback' => 'WP_Chimp\\Core\\filter_string',
 		],
 		'wp_chimp_lists_default' => [
 			'default' => '',
-			'validate_callback' => 'WP_Chimp\\Core\\filter_string',
+			'sanitize_callback' => 'WP_Chimp\\Core\\filter_string',
 		],
 		'wp_chimp_api_key_status' => [
 			'default' => 'invalid',
-			'validate_callback' => 'WP_Chimp\\Core\\filter_api_key_status',
+			'sanitize_callback' => 'WP_Chimp\\Core\\filter_api_key_status',
 		],
 		'wp_chimp_lists_total_items' => [
 			'default' => 0,
-			'validate_callback' => 'absint',
+			'sanitize_callback' => 'absint',
 		],
 		'wp_chimp_lists_init' => [
 			'default' => 0,
-			'validate_callback' => 'absint',
+			'sanitize_callback' => 'absint',
 		],
 	];
 
@@ -59,9 +59,9 @@ class Options {
 	 */
 	public static function ensure_options() {
 
-		foreach ( self::$options as $key => $default_value ) {
-			if ( false === get_option( $key ) ) {
-				self::update( $key, $default_value );
+		foreach ( self::$options as $option_name => $data ) {
+			if ( false === get_option( $option_name ) ) {
+				self::update( $option_name, $data['default'] );
 			}
 		}
 	}
@@ -78,7 +78,7 @@ class Options {
 
 		if ( isset( self::$options[ $option_name ] ) ) {
 			$value = get_option( $option_name, self::$options[ $option_name ]['default'] );
-			return call_user_func( self::$options[ $option_name ]['validate_callback'], $value );
+			return call_user_func( self::$options[ $option_name ]['sanitize_callback'], $value );
 		} else {
 			return new WP_Error( 'wp-chimp-option-name-invalid', __( 'The option name is not registered.', 'wp-chimp' ) );
 		}
