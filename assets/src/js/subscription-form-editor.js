@@ -1,13 +1,12 @@
-import { getApiRootStatus } from './components/utilities'
-import FormEditor from './components/form-editor'
-import FormInactive from './components/form-inactive'
+import { getApiRootStatus } from './lib/utils'
+import FormEditor from './components/form/editor'
+import FormInactive from './components/form/inactive'
 
 const wp = window.wp || {}
 
 const locale = wpChimpL10n
 const { mailchimpApiStatus } = wpChimpSettingState
 const { registerBlockType } = wp.blocks
-const { createElement: el } = wp.element
 
 /**
  * Every block starts by registering a new block type definition.
@@ -67,15 +66,14 @@ registerBlockType('wp-chimp/subscription-form', {
    */
   edit (props) {
     if (!getApiRootStatus() || !mailchimpApiStatus) {
-      return el(FormInactive, {
-        className: 'wp-chimp-inactive'
-      })
+      return (
+        <FormInactive className="wp-chimp-inactive" />
+      )
     }
 
-    return el(FormEditor, {
-      ...props,
-      className: 'wp-chimp-subscription-form'
-    })
+    return (
+      <FormEditor className="wp-chimp-subscription-form" {...props} />
+    )
   },
 
   /**

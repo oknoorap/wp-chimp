@@ -110,7 +110,7 @@ final class Subscription_Form {
 			filemtime( "{$this->dir_path}/{$script_js}" )
 		);
 
-		$editor_css = 'assets/css/subscription-form-editor.css';
+		$editor_css = 'assets/css/subscription-form-editor.min.css';
 		wp_register_style(
 			'wp-chimp-subscription-form-editor',
 			plugins_url( $editor_css, $this->file_path ),
@@ -118,7 +118,7 @@ final class Subscription_Form {
 			filemtime( "{$this->dir_path}/{$editor_css}" )
 		);
 
-		$style_css = 'assets/css/subscription-form.css';
+		$style_css = 'assets/css/subscription-form.min.css';
 		wp_register_style(
 			'wp-chimp-subscription-form',
 			plugins_url( $style_css, $this->file_path ),

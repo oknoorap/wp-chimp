@@ -1,12 +1,7 @@
 /* eslint-env node */
 const path = require('path')
-const buffer = require('vinyl-buffer')
-const sourceStream = require('vinyl-source-stream')
-const mergeStream = require('merge-stream')
 const merge = require('merge2')
 const plumber = require('gulp-plumber')
-const browserify = require('browserify')
-const babelify = require('babelify')
 const gulp = require('gulp')
 const sass = require('gulp-sass')
 const autoprefixer = require('gulp-autoprefixer')
@@ -17,15 +12,19 @@ const batch = require('gulp-batch')
 const sourcemaps = require('gulp-sourcemaps')
 const wpPot = require('gulp-wp-pot')
 const gettext = require('gulp-gettext')
-const eslint = require('gulp-eslint')
 const readme = require('gulp-readme-to-markdown')
 const getFileHeader = require('wp-get-file-header')
-const pkg = require('./package')
+const rollup = require('gulp-rollup')
+const babel = require('rollup-plugin-babel')
+const uglify = require('gulp-uglify')
+const resolve = require('rollup-plugin-node-resolve')
+const jsx = require('rollup-plugin-jsx')
 
 const assetPath = path.join(__dirname, 'assets')
 const srcPath = {
   SCSS: path.join(assetPath, 'src', 'scss'),
-  JS: path.join(assetPath, 'src', 'js')
+  JS: path.join(assetPath, 'src', 'js'),
+  REACT: path.join(__dirname, 'node_modules', 'react')
 }
 const dstPath = {
   CSS: path.join(assetPath, 'css'),
@@ -40,7 +39,7 @@ const sassFiles = [
 ]
 
 const jsFiles = [
-  'admin',
+  // 'admin',
   'subscription-form-editor',
   'subscription-form'
 ]
@@ -48,31 +47,39 @@ const jsFiles = [
 /**
  * Task to compile the JSX files to JS.
  */
-gulp.task('scripts', () => {
-  return mergeStream(ecmaScriptFiles.map(file => {
-    let fileName = path.basename(file, '.es')
-    return browserify({
-      'entries': `./assets/js/${file}`,
-      'debug': true,
-      'transform': [ babelify ]
-    })
-      .bundle()
-      .on('error', err => {
-        console.error(err)
-        this.emit('end')
-      })
-      .pipe(sourceStream(`${fileName}.js`))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({'loadMaps': true}))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./assets/js'))
-  }))
-})
+gulp.task('build:scripts', () => {
+  const compileSource = gulp.src(path.join(srcPath.JS, '**', '*.js'))
+    .pipe(plumber())
+    .pipe(rollup({
+      input: jsFiles.map(file => path.join(srcPath.JS, `${file}.js`)),
+      output: {
+        format: 'es',
+      },
+      plugins: [
+        jsx({ factory: 'wp.element.createElement', passUnknownTagsToFactory: true }),
+        resolve({
+          jsnext: true,
+          browser:true
+        })
+      ]
+    }))
+    .pipe(sourcemaps.init())
+    .pipe(gulp.dest(dstPath.JS))
+    .pipe(rollup({
+      input: jsFiles.map(file => path.join(dstPath.JS, `${file}.js`)),
+      output: {
+        format: 'iife',
+      },
+      plugins: [
+        babel()
+      ]
+    }))
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(dstPath.JS))
 
-gulp.task('eslint', () => {
-  return gulp.src('./assets/js/**/*.es')
-    .pipe(eslint())
-    .pipe(eslint.format())
+  return compileSource
 })
 
 /**
@@ -119,12 +126,12 @@ gulp.task('build:styles', () => {
  * Compile translation to .pot and .mo
  */
 gulp.task('build:lang', async () => {
-  const { textDomain: domain, pluginName: package } = await getFileHeader(path.join(__dirname, 'wp-chimp.php'))
+  const { textDomain: domain, pluginName } = await getFileHeader(path.join(__dirname, 'wp-chimp.php'))
   const buildPOT = gulp.src(path.join(__dirname, '**', '*.php'))
     .pipe(plumber())
     .pipe(wpPot({
       domain,
-      package
+      package: pluginName
     }))
     .pipe(gulp.dest(path.join(dstPath.LANG, `${domain}.pot`)))
 
@@ -156,16 +163,20 @@ gulp.task('watch:files', () => {
     gulp.start('build:styles', done)
   }))
 
-  watch(path.join(_dirname, '**', '*.php'), batch(events, done) => {
+  watch(path.join(srcPath.JS, '**', '*.js'), batch((events, done) => {
+    gulp.start('build:scripts', done)
+  }))
+
+  watch(path.join(__dirname, '**', '*.php'), batch((events, done) => {
     gulp.start('build:lang', done)
-  })
+  }))
 })
 
 /**
  * Task to build all scripts, styles, translation file, and readme.
  */
 gulp.task('build', [
-  // 'build:scripts',
+  'build:scripts',
   'build:styles',
   'build:lang'
 ])

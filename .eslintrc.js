@@ -1,5 +1,11 @@
 module.exports = {
-  extends: 'standard',
+  parser: 'babel-eslint',
+	extends: [
+		'wordpress',
+		'plugin:react/recommended',
+		'plugin:jsx-a11y/recommended',
+		'plugin:jest/recommended'
+	],
   parserOptions: {
     ecmaVersion: 8,
     sourceType: 'module'

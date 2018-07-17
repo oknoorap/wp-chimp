@@ -1,6 +1,3 @@
-import camelCaseKeys from 'camelcase-keys'
-import { mount, el, list, setChildren } from 'redom'
-
 /**
  * Get the translateable strings for the Admin Settings page.
  *
