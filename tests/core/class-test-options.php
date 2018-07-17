@@ -22,23 +22,23 @@ class Test_Options extends UnitTestCase {
 	const OPTION_NAMES = [
 		'wp_chimp_api_key' => [
 			'default' => '',
-			'validate_callback' => 'WP_Chimp\\Core\\validate_string',
+			'sanitize_callback' => 'WP_Chimp\\Core\\validate_string',
 		],
 		'wp_chimp_lists_default' => [
 			'default' => '',
-			'validate_callback' => 'WP_Chimp\\Core\\validate_string',
+			'sanitize_callback' => 'WP_Chimp\\Core\\validate_string',
 		],
 		'wp_chimp_api_key_status' => [
 			'default' => 'invalid',
-			'validate_callback' => 'WP_Chimp\\Core\\validate_api_key_status',
+			'sanitize_callback' => 'WP_Chimp\\Core\\validate_api_key_status',
 		],
 		'wp_chimp_lists_total_items' => [
 			'default' => 0,
-			'validate_callback' => 'absint',
+			'sanitize_callback' => 'absint',
 		],
 		'wp_chimp_lists_init' => [
 			'default' => 0,
-			'validate_callback' => 'absint',
+			'sanitize_callback' => 'absint',
 		],
 	];
 
