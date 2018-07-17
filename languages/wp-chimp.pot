@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: WP Chimp\n"
-"POT-Creation-Date: 2018-07-16 23:52+0700\n"
+"POT-Creation-Date: 2018-07-17 09:38+0700\n"
 "PO-Revision-Date: 2018-07-01 10:54+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -51,7 +51,7 @@ msgid ""
 msgstr ""
 
 #: admin/partials/class-menu.php:89
-msgid "To get started, you will need a MailChimp API account."
+msgid "To get started, you will need a MailChimp API key."
 msgstr ""
 
 #: admin/partials/class-menu.php:101
@@ -131,7 +131,7 @@ msgstr ""
 msgid "Oops, something unexpected happened. Please try again."
 msgstr ""
 
-#: autoload.php:78
+#: autoload.php:86
 #, php-format
 msgid "The file attempting to be loaded at %s does not exist."
 msgstr ""

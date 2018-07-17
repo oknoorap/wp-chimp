@@ -86,7 +86,7 @@ class Menu {
 	public static function html_help_tab_overview() {
 		?>
 		<p><?php esc_html_e( 'MailChimp is one of the most populars, if not the most popular, marketing automation and email marketing platform. This is the setting page where you can connect your site to your MailChimp account and, once it is connected, provides you the ability to display a MailChimp subscription form on the post, page and the Widget area.', 'wp-chimp' ); ?></p>
-		<p><?php esc_html_e( 'To get started, you will need a MailChimp API account.', 'wp-chimp' ); ?></p>
+		<p><?php esc_html_e( 'To get started, you will need a MailChimp API key.', 'wp-chimp' ); ?></p>
 		<?php
 	}
 
