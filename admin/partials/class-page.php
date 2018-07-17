@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Exception;
 use WP_Chimp\Core;
-use DrewM\MailChimp\MailChimp;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
  * Class that register new menu in the Admin area and load the page.

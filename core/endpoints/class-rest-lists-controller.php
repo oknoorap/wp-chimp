@@ -22,7 +22,7 @@ use WP_REST_Controller;
 use WP_Chimp\Core;
 use WP_Chimp\Core\Lists;
 
-use DrewM\MailChimp\MailChimp;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
  * The class that register the custom '/list' endpoint to WP-API.

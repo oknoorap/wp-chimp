@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_Chimp\Admin;
 use WP_Chimp\Subscription_Form;
-use WP_Chimp\Packages\DrewM\MailChimp\MailChimp;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
  * Loaded dependencies with Mozart.
