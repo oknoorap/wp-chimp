@@ -108,7 +108,7 @@ function set_the_default_list( array $lists, $index = 0 ) {
 
 	if ( isset( $lists[ $index ] ) && isset( $lists[ $index ]['list_id'] ) ) {
 		$default = (string) $lists[ $index ]['list_id'];
-		update_option( 'wp_chimp_lists_default', $default );
+		update_the_option( 'wp_chimp_lists_default', $default );
 	}
 }
 
