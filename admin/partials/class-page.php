@@ -236,6 +236,7 @@ class Page {
 		$total_items = self::get_lists_total_items( $value );
 
 		Core\update_the_option( 'wp_chimp_lists_init', 0 );
+		Core\update_the_option( 'wp_chimp_lists_default', '' );
 		Core\update_the_option( 'wp_chimp_lists_total_items', $total_items ? $total_items : 0 );
 		Core\update_the_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
 	}
