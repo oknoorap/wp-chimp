@@ -2,7 +2,7 @@
 Contributors: tfirdaus
 Donate link: https://paypal.me/tfirdaus
 Tags: mailchimp, form, subscription, gutenberg, widget, shortocode.
-Requires at least: 4.9.0
+Requires at least: 4.9
 Tested up to: 4.9.7
 Stable tag: 0.2.0
 Requires PHP: 5.4

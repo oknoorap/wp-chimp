@@ -142,8 +142,8 @@ class Plugin {
 	protected function check_requirements() {
 
 		$requires = [
-			'wp' => '4.9.0',
 			'php' => '5.4',
+			'wp' => '4.9',
 			'wp_cron' => true,
 		];
 		$this->requirements = new WP_Chimp_Requirements( 'WP Chimp', $requires );
