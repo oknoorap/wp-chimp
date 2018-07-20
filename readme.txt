@@ -85,5 +85,8 @@ None, at the moment. Please ask :)
 
 == Upgrade Notice ==
 
+= 0.2.1 =
+Minor updates to the plugin requirements and option.
+
 = 0.2.0 =
 This version fixed numerous bugs, and it now obfuscates the MailChimp API key display in the Settings page.
