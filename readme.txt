@@ -66,6 +66,10 @@ None, at the moment. Please ask :)
 
 == Changelog ==
 
+= 0.2.1 =
+* Changed: PHP and WordPress version requirement is now less strict (5.4 instead of 5.4.45 and 4.9 instead of 4.9.0).
+* Fixed: Reset the default list option when MailChimp API key is added or updated.
+
 = 0.2.0 =
 * Changed: The MailChimp API key that's shown in the Settings page is now obfuscated.
 * Fixed: Slow WordPress `get_option` querying the plugin options.
