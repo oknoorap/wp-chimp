@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [0.2.1] - 2014-07-20
+
+### Changed
+
+- PHP and WordPress version requirement is now less strict (5.4 instead of 5.4.45 and 4.9 instead of 4.9.0) (#32).
+
+### Fixed
+
+- Reset the default list option when MailChimp API key is added or updated (#31).
+
 ## [0.2.0] - 2014-07-17
 
 ### Added
@@ -33,5 +43,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - A Settings page for the plugin.
 - A couple of custom WP-API endpoints.
 
-[Unreleased]: https://github.com/wp-chimp/wp-chimp/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/wp-chimp/wp-chimp/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/wp-chimp/wp-chimp/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/wp-chimp/wp-chimp/compare/v0.1.0...v0.2.0
