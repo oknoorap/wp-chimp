@@ -91,7 +91,7 @@
     "extends": "stylelint-config-wordpress"
   },
   "scripts": {
-    "local:up": "bash localhost/up.sh -d wordpress",
+    "local:up": "bash localhost/up.sh",
     "local:down": "bash localhost/down.sh",
     "local:start": "bash localhost/start.sh",
     "local:restart": "bash localhost/start.sh",
