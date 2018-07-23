@@ -49,6 +49,7 @@ class Options {
 		'wp_chimp_lists_init' => [
 			'default' => 0,
 			'sanitize_callback' => 'absint',
+			'autoload' => false,
 		],
 	];
 
@@ -61,7 +62,8 @@ class Options {
 
 		foreach ( self::$options as $option_name => $data ) {
 			if ( false === get_option( $option_name ) ) {
-				self::update( $option_name, $data['default'] );
+				$autoload = isset( $data['autoload'] ) ? $data['autoload'] : true;
+				add_option( $option_name, $data['default'], '', $autoload );
 			}
 		}
 	}
