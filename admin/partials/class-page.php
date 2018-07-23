@@ -231,8 +231,9 @@ class Page {
 	 */
 	protected function reset_data( $option, $value ) {
 
-		// Remove all entries from the `_chimp_lists` table.
-		$this->lists_query->truncate();
+		$this->lists_query->truncate(); // Remove all entries from the `_chimp_lists` table.
+		$this->lists_query->delete_cache(); // Remove from the Object Caching.
+
 		$total_items = self::get_lists_total_items( $value );
 
 		Core\update_the_option( 'wp_chimp_lists_init', 0 );

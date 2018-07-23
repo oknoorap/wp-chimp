@@ -49,6 +49,8 @@ services:
 
   redis:
     image: ${REDIS_IMAGE}
+    ports:
+      - "${REDIS_PUBLISHED_PORT}:6379"
     volumes:
       - redis_data:/data
 

@@ -362,7 +362,10 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 *               the key, added is invalid.
 	 */
 	protected function get_lists( array $args ) {
-		$this->lists_query->truncate(); // Remove all the lists in the database first.
+
+		$this->lists_query->truncate(); // Remove all entries from the `_chimp_lists` table.
+		$this->lists_query->delete_cache(); // Remove from the Object Caching.
+
 		return $this->get_remote_lists( $args );
 	}
 

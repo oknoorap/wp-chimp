@@ -21,7 +21,21 @@ use Mockery;
 class Test_Query extends UnitTestCase {
 
 	/**
-	 * Undocumented variable
+	 * The cache key to save the lists in the Object Caching.
+	 *
+	 * @since 0.3.0
+	 */
+	const CACHE_KEY = 'lists';
+
+	/**
+	 * The cache group.
+	 *
+	 * @since 0.3.0
+	 */
+	const CACHE_GROUP = 'wp_chimp_lists';
+
+	/**
+	 * The lists sample data
 	 *
 	 * @since 0.1.0
 	 * @var array
@@ -161,7 +175,10 @@ class Test_Query extends UnitTestCase {
 	public function test_insert_empty_data() {
 
 		$inserted = $this->lists_query->insert( [] );
-		$this->assertFalse( $inserted );
+
+		$this->assertInstanceOf( 'WP_Error', $inserted );
+		$this->assertTrue( property_exists( $inserted, 'errors' ) );
+		$this->assertTrue( array_key_exists( 'wp_chimp_list_data_invalid', $inserted->errors ) );
 	}
 
 	/**
@@ -184,7 +201,9 @@ class Test_Query extends UnitTestCase {
 			]
 		);
 
-		$this->assertFalse( $inserted );
+		$this->assertInstanceOf( 'WP_Error', $inserted );
+		$this->assertTrue( property_exists( $inserted, 'errors' ) );
+		$this->assertTrue( array_key_exists( 'wp_chimp_list_data_invalid', $inserted->errors ) );
 	}
 
 	/**
@@ -207,7 +226,9 @@ class Test_Query extends UnitTestCase {
 			]
 		);
 
-		$this->assertFalse( $inserted );
+		$this->assertInstanceOf( 'WP_Error', $inserted );
+		$this->assertTrue( property_exists( $inserted, 'errors' ) );
+		$this->assertTrue( array_key_exists( 'wp_chimp_list_data_invalid', $inserted->errors ) );
 	}
 
 	/**
@@ -326,5 +347,161 @@ class Test_Query extends UnitTestCase {
 
 		$saved_data = $this->lists_query->query();
 		$this->assertEquals( 0, count( $saved_data ) );
+	}
+
+	/**
+	 * Test the method to retrieve the cache lists
+	 *
+	 * @since 0.3.0
+	 */
+	public function test_get_cache() {
+
+		$cache_output = [
+			[
+				'list_id'      => '520524cb3b',
+				'name'         => 'MailChimp List 1',
+				'subscribers'  => 100,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+			[
+				'list_id'      => '320424cb3b',
+				'name'         => 'MailChimp List 2',
+				'subscribers'  => 200,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+			[
+				'list_id'      => '610424aa1c',
+				'name'         => 'MailChimp List 3',
+				'subscribers'  => 200,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+		];
+
+		Functions\expect( 'wp_cache_get' )
+			->once()
+			->with( self::CACHE_KEY, self::CACHE_GROUP )
+			->andReturn( $cache_output );
+
+		$cache = $this->lists_query->get_cache();
+
+		$this->assertInternalType( 'array', $cache );
+		$this->assertEquals( $cache_output, $cache );
+	}
+
+	/**
+	 * Test the method to retrieve the cache lists with an invalid output
+	 *
+	 * @since 0.3.0
+	 */
+	public function test_get_cache_invalid() {
+
+		Functions\expect( 'wp_cache_get' )
+			->once()
+			->with( self::CACHE_KEY, self::CACHE_GROUP )
+			->andReturn( true ); // Output must be an array containing the lists.
+
+		$cache = $this->lists_query->get_cache();
+
+		$this->assertInternalType( 'array', $cache );
+		$this->assertEmpty( $cache );
+	}
+
+	/**
+	 * Test the method to delete the cache
+	 *
+	 * @since 0.3.0
+	 */
+	public function test_delete_cache() {
+
+		Functions\expect( 'wp_cache_delete' )
+			->once()
+			->with( self::CACHE_KEY, self::CACHE_GROUP )
+			->andReturn( true );
+
+		$cache = $this->lists_query->delete_cache();
+		$this->assertTrue( $cache );
+	}
+
+	/**
+	 * Test the method to add the cache
+	 *
+	 * @return void
+	 */
+	public function test_add_cache() {
+
+		$value = [
+			[
+				'list_id'      => '520524cb3b',
+				'name'         => 'MailChimp List 1',
+				'subscribers'  => 100,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+			[
+				'list_id'      => '320424cb3b',
+				'name'         => 'MailChimp List 2',
+				'subscribers'  => 200,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+			[
+				'list_id'      => '610424aa1c',
+				'name'         => 'MailChimp List 3',
+				'subscribers'  => 200,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+		];
+
+		Functions\expect( 'wp_cache_add' )
+			->once()
+			->with( self::CACHE_KEY, $value, self::CACHE_GROUP )
+			->andReturn( true );
+
+		$cache = $this->lists_query->add_cache( $value );
+		$this->assertTrue( $cache );
+	}
+
+	/**
+	 * Test the method to add the cache
+	 *
+	 * @return void
+	 */
+	public function test_set_cache() {
+
+		$value = [
+			[
+				'list_id'      => '520524cb3b',
+				'name'         => 'MailChimp List 1',
+				'subscribers'  => 100,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+			[
+				'list_id'      => '320424cb3b',
+				'name'         => 'MailChimp List 2',
+				'subscribers'  => 200,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+			[
+				'list_id'      => '610424aa1c',
+				'name'         => 'MailChimp List 3',
+				'subscribers'  => 200,
+				'double_optin' => 0,
+				'synced_at'    => date( 'Y-m-d H:i:s' ),
+			],
+		];
+
+		Functions\expect( 'wp_cache_set' )
+			->once()
+			->with( self::CACHE_KEY, $value, self::CACHE_GROUP )
+			->andReturn( true );
+
+		$cache = $this->lists_query->set_cache( $value );
+		$this->assertTrue( $cache );
 	}
 }

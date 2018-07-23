@@ -86,9 +86,9 @@ class Test_Options extends UnitTestCase {
 				->with( $option_name )
 				->andReturn( false );
 
-			Functions\expect( 'update_option' )
+			Functions\expect( 'add_option' )
 				->once()
-				->with( $option_name, $data['default'] );
+				->with( $option_name, $data['default'], '', isset( $data['autoload'] ) ? $data['autoload'] : true );
 		}
 
 		Options::ensure_options();
