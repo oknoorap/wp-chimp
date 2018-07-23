@@ -20,6 +20,8 @@ use WP_Chimp\Admin;
 use WP_Chimp\Subscription_Form;
 use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
+use Exception;
+
 /**
  * Loaded dependencies with Mozart.
  *
@@ -271,30 +273,36 @@ class Plugin {
 
 		if ( ! empty( $api_key ) ) {
 
-			$mailchimp = new MailChimp( $api_key );
+			try {
+				$mailchimp = new MailChimp( $api_key );
 
-			$lists_rest->set_mailchimp( $mailchimp );
-			$sync_rest->set_mailchimp( $mailchimp );
+				$lists_rest->set_mailchimp( $mailchimp );
+				$sync_rest->set_mailchimp( $mailchimp );
+
+				/**
+				 * Add Lists\Query instance to List\Process and Endpoints\REST_Lists_Controller
+				 * to be able to add, get, or delete lists from the database.
+				 */
+				$lists_process->set_lists_query( $lists_query );
+				$lists_rest->set_lists_query( $lists_query );
+				$sync_rest->set_lists_query( $lists_query );
+
+				/**
+				 * Add Lists\Process instance to Endpoints\REST_Lists_Controller
+				 * to add background processing when adding lists from the
+				 * MailChimp API response.
+				 */
+				$lists_rest->set_lists_process( $lists_process );
+				$sync_rest->set_lists_process( $lists_process );
+
+				$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' ); // Register `/lists` endpoint.
+				$this->loader->add_action( 'rest_api_init', $sync_rest, 'register_routes' ); // Register `/lists/sync` endpoint.
+			} catch ( Exception $e ) {
+
+				// TODO: Should actually do something here.
+				unset( $e );
+			}
 		}
-
-		/**
-		 * Add Lists\Query instance to List\Process and Endpoints\REST_Lists_Controller
-		 * to be able to add, get, or delete lists from the database.
-		 */
-		$lists_process->set_lists_query( $lists_query );
-		$lists_rest->set_lists_query( $lists_query );
-		$sync_rest->set_lists_query( $lists_query );
-
-		/**
-		 * Add Lists\Process instance to Endpoints\REST_Lists_Controller
-		 * to add background processing when adding lists from the
-		 * MailChimp API response.
-		 */
-		$lists_rest->set_lists_process( $lists_process );
-		$sync_rest->set_lists_process( $lists_process );
-
-		$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' ); // Register `/lists` endpoint.
-		$this->loader->add_action( 'rest_api_init', $sync_rest, 'register_routes' ); // Register `/lists/sync` endpoint.
 	}
 
 	/**
