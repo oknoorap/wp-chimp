@@ -254,21 +254,17 @@ class Page {
 	 */
 	protected static function get_lists_total_items( $api_key ) {
 
-		if ( ! empty( $api_key ) ) {
+		if ( empty( $api_key ) ) { // If empty, abort early.
+			return;
+		}
 
-			try {
-				$mailchimp = new MailChimp( $api_key );
-			} catch ( Exception $e ) {
-				add_settings_error( 'wp-chimp-invalid-api-key', '401', $e->getMessage() );
-			}
-
-			if ( $mailchimp instanceof MailChimp ) {
-				$response = $mailchimp->get(
-					'lists', [
-						'fields' => 'total_items',
-					]
-				);
-			}
+		try {
+			$mailchimp = new MailChimp( $api_key );
+			$response = $mailchimp->get(
+				'lists', [
+					'fields' => 'total_items',
+				]
+			);
 
 			if ( $mailchimp->success() && isset( $response['total_items'] ) ) {
 				return absint( $response['total_items'] );
@@ -282,6 +278,10 @@ class Page {
 					add_settings_error( 'wp-chimp-api-status', 'unknown-error', $message, 'error' );
 				}
 			}
+		} catch ( Exception $e ) {
+
+			$message = __( 'Invalid MailChimp API key supplied.', 'wp-chimp' );
+			add_settings_error( 'wp-chimp-invalid-api-key', '401', $message );
 		}
 	}
 }
