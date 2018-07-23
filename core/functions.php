@@ -134,7 +134,12 @@ function get_the_default_list() {
  */
 function is_lists_init() {
 
-	$init = get_the_option( 'wp_chimp_lists_init' );
+	$init = get_option( 'wp_chimp_lists_init' );
+
+	if ( is_wp_error( $init ) ) {
+		return false;
+	}
+
 	return 1 === absint( $init );
 }
 
