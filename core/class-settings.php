@@ -44,7 +44,7 @@ class Settings extends Plugin_Base {
 	 */
 	public function enqueue_state() {
 
-		$state = self::get_setting_state();
+		$state = self::get_state();
 		$data = 'var wpChimpSettingState = ' . wp_json_encode( $state );
 
 		wp_add_inline_script( $this->plugin_name, $data, 'before' );
