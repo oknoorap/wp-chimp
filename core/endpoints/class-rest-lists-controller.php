@@ -17,81 +17,18 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
 use WP_REST_Response;
-use WP_REST_Controller;
 
 use WP_Chimp\Core;
-use WP_Chimp\Core\Lists;
-
+use WP_Chimp\Core\Endpoints\REST_Controller;
 use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
  * The class that register the custom '/list' endpoint to WP-API.
  *
- * @since  0.1.0
- *
- * @property string $plugin_name
- * @property string $version
- * @property string $mailchimp
- * @property string $lists_query
+ * @since 0.1.0
+ * @since 0.3.0 Extends the REST_Controller class.
  */
-class REST_Lists_Controller extends WP_REST_Controller {
-
-	/**
-	 * API Endpoint version.
-	 *
-	 * @since 0.1.0
-	 */
-	const REST_VERSION = 'v1';
-
-	/**
-	 * API Endpoint namespace.
-	 *
-	 * @since 0.1.0
-	 */
-	const REST_NAMESPACE = 'wp-chimp/v1';
-
-	/**
-	 * API endpoint base URL.
-	 *
-	 * @since 0.1.0
-	 */
-	const REST_BASE = 'lists';
-
-	/**
-	 * The Plugin class instance.
-	 *
-	 * @since 0.1.0
-	 * @var string
-	 */
-	protected $plugin_name;
-
-	/**
-	 * The plugin version.
-	 *
-	 * @since 0.1.0
-	 * @var string
-	 */
-	protected $version;
-
-	/**
-	 * The MailChimp API key added in the option.
-	 *
-	 * @since 0.1.0
-	 * @var DrewM\MailChimp\MailChimp
-	 */
-	protected $mailchimp;
-
-	/**
-	 * The Query instance
-	 *
-	 * Used for interact with the {$prefix}chimp_lists table,
-	 * such as inserting a new row or updating the existing rows.
-	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    Storage\Query
-	 */
-	protected $lists_query;
+class REST_Lists_Controller extends REST_Controller {
 
 	/**
 	 * The class constructor.
@@ -102,49 +39,28 @@ class REST_Lists_Controller extends WP_REST_Controller {
 	 * @param string $version     The version of the plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
+		parent::__construct( $plugin_name, $version );
 
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->rest_base = $this->get_rest_base();
 	}
 
 	/**
-	 * Function to register the MailChimp instance.
+	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since 0.1.0
-	 *
-	 * @param MailChimp $mailchimp The MailChimp instance.
+	 * @since 0.3.0
 	 */
-	public function set_mailchimp( MailChimp $mailchimp ) {
-		$this->mailchimp = $mailchimp;
+	public function run() {
+		$this->loader->add_action( 'rest_api_init', $this, 'register_routes' ); // Register `/lists` endpoint.
 	}
 
 	/**
-	 * Register the Lists\Query instance
+	 * Define and retrieve the base of this controller's route.
 	 *
-	 * @since 0.1.0
-	 *
-	 * @param Lists\Query $query The List\Query instance to retrieve the lists from the database.
+	 * @inheritDoc
+	 * @return string
 	 */
-	public function set_lists_query( Lists\Query $query ) {
-		$this->lists_query = $query;
-	}
-
-	/**
-	 * Register the Lists\Process instance
-	 *
-	 * The Lists\Process instance is extending the WP_Background_Processing class abstraction
-	 * enabling asynchronous background processing to add the lists from the MailChimp API
-	 * to the database.
-	 *
-	 * @link https://github.com/A5hleyRich/wp-background-processing WP_Background_Processing repository
-	 * @see WP_Background_Process
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param Lists\Process $process The Lists\Process instance to add the list on the background.
-	 */
-	public function set_lists_process( Lists\Process $process ) {
-		$this->lists_process = $process;
+	public function get_rest_base() {
+		return 'lists';
 	}
 
 	/**
@@ -160,7 +76,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		 * @uses WP_REST_Server
 		 */
 		register_rest_route(
-			self::REST_NAMESPACE, self::REST_BASE, [
+			$this->namespace, $this->rest_base, [
 				[
 					'methods' => WP_REST_Server::READABLE,
 					'callback' => [ $this, 'get_items' ],
@@ -177,7 +93,7 @@ class REST_Lists_Controller extends WP_REST_Controller {
 		 * @uses WP_REST_Server
 		 */
 		register_rest_route(
-			self::REST_NAMESPACE, self::REST_BASE . '/(?P<id>[\w-]+)', [
+			$this->namespace, $this->rest_base . '/(?P<id>[\w-]+)', [
 				[
 					'methods' => WP_REST_Server::READABLE,
 					'callback' => [ $this, 'get_item' ],

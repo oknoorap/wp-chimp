@@ -13,17 +13,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
+use WP_Chimp\Core\Loader;
 use WP_Chimp\Core\Database;
 
 /**
  * Setup the "chimp_list" database schema
  *
  * @since 0.1.0
+ * @since 0.3.0 Adds the `$loader` property, and `set_loder` and `run` method.
  *
  * @property string $name
  * @property string $version
  */
 final class Table extends Database {
+
+	/**
+	 * The loader that's responsible for maintaining and registering all hooks that power
+	 * the plugin.
+	 *
+	 * @since 0.3.0
+	 * @var WP_Chimp\Core\Loader $loader Maintains and registers all hooks for the plugin.
+	 */
+	protected $loader;
 
 	/**
 	 * Table name
@@ -40,6 +51,28 @@ final class Table extends Database {
 	 * @var string
 	 */
 	protected $version = 201803220001;
+
+	/**
+	 * Run the loader to execute all of the hooks with WordPress.
+	 *
+	 * @since 0.3.0
+	 */
+	public function run() {
+
+		$this->loader->add_action( 'switch_blog', $this, 'switch_blog' );
+		$this->loader->add_action( 'admin_init', $this, 'maybe_upgrade' );
+	}
+
+	/**
+	 * Set the loader to orchestrate WordPress Hooks
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param Loader $loader The Loader instance.
+	 */
+	public function set_loader( Loader $loader ) {
+		$this->loader = $loader;
+	}
 
 	/**
 	 * Setup the database schema

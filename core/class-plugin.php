@@ -43,80 +43,9 @@ use WP_Chimp_Packages_underDEV_Requirements as WP_Chimp_Requirements;
  * version of the plugin.
  *
  * @since 0.1.0
- *
- * @property WP_Chimp\Core\Loader $loader
- * @property string $plugin_name
- * @property string $file_path
- * @property string $version
+ * @since 0.3.0 Extends the Core\Plugin_Base class.
  */
-class Plugin {
-
-	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
-	 *
-	 * @since 0.1.0
-	 * @var WP_Chimp\Core\Loader $loader Maintains and registers all hooks for the plugin.
-	 */
-	protected $loader;
-
-	/**
-	 * The unique identifier of this plugin.
-	 *
-	 * @since 0.1.0
-	 * @var string $plugin_name The string used to uniquely identify this plugin.
-	 */
-	protected $plugin_name;
-
-	/**
-	 * The filename of plugin.
-	 *
-	 * This is used for WordPress functions requiring the path to the main plugin file,
-	 * such as `plugin_dir_path()` and `plugin_basename()`.
-	 *
-	 * @since 0.1.0
-	 * @var string
-	 */
-	protected $file_path;
-
-	/**
-	 * The current version of the plugin.
-	 *
-	 * @since 0.1.0
-	 * @var string $version The current version of the plugin.
-	 */
-	protected $version;
-
-	/**
-	 * Define the core functionality of the plugin.
-	 *
-	 * Set the plugin name and the plugin version that can be used throughout the plugin.
-	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the public-facing side of the site.
-	 *
-	 * @since 0.1.0
-	 * @param string $plugin_name The name of this plugin.
-	 * @param string $version     The version of this plugin.
-	 * @param string $file_path   The full path of the main plugin file.
-	 */
-	public function __construct( $plugin_name, $version, $file_path ) {
-
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-		$this->file_path = $file_path;
-	}
-
-	/**
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param Loader $loader The Loader instance.
-	 */
-	public function set_loader( Loader $loader ) {
-		$this->loader = $loader;
-	}
+class Plugin extends Plugin_Base {
 
 	/**
 	 * Load the required dependencies for this plugin.
@@ -190,7 +119,9 @@ class Plugin {
 	protected function define_languages_hooks() {
 
 		$languages = new Languages( $this->plugin_name, $this->version, $this->file_path );
-		$this->loader->add_action( 'plugins_loaded', $languages, 'load_plugin_textdomain' );
+
+		$languages->set_loader( $this->loader );
+		$languages->run();
 	}
 
 	/**
@@ -202,35 +133,22 @@ class Plugin {
 	protected function define_admin_hooks() {
 
 		$admin = new Admin\Admin( $this->plugin_name, $this->version, $this->file_path );
-		$admin_page = new Admin\Partials\Page( $this->plugin_name, $this->version );
-		$admin_menu = new Admin\Partials\Menu( $this->plugin_name, $this->version );
+		$admin->set_loader( $this->loader );
+		$admin->run();
+
+		$admin_page = new Admin\Partials\Page( $this->plugin_name, $this->version, $this->file_path );
 
 		/**
 		 * Add Lists\Query instance to the Admin\Admin_Page to be able to add, get,
 		 * or delete lists from the database.
 		 */
 		$admin_page->set_lists_query( new Lists\Query() );
+		$admin_page->set_loader( $this->loader );
+		$admin_page->run();
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_locale_scripts' );
-
-		$this->loader->add_action( 'admin_init', $admin_page, 'register_page' );
-		$this->loader->add_action( 'added_option', $admin_page, 'added_option', 30, 2 );
-		$this->loader->add_action( 'updated_option', $admin_page, 'updated_option', 30, 3 );
-
-		$this->loader->add_action( 'admin_menu', $admin_menu, 'register_menu' );
-		$this->loader->add_action( 'current_screen', $admin_menu, 'register_help_tabs' );
-
-		/**
-		 * Add the Action link for the plugin in the Plugin list screen.
-		 *
-		 * !important that_path e plugin file name is always referring to the plugin main file
-		 * in the plugin's root folder instead of the sub-folders in order for the function_path to work.
-		 *
-		 * @link https://developer.wordpress.org/reference/hooks/prefixplugin_action_links_plugin_file/
-		 */
-		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( $this->file_path ), $admin_page, 'add_action_links', 2 );
+		$admin_menu = new Admin\Partials\Menu( $this->plugin_name, $this->version );
+		$admin_menu->set_loader( $this->loader );
+		$admin_menu->run();
 	}
 
 	/**
@@ -242,13 +160,13 @@ class Plugin {
 	protected function define_database_hooks() {
 
 		$lists_db = new Lists\Table();
-		$options  = new Options();
+		$lists_db->set_loader( $this->loader );
+		$lists_db->run();
+
+		$options = new Options();
 
 		register_activation_hook( $this->file_path, [ $lists_db, 'maybe_upgrade' ] ); // Create or Updatedatabase on activation_path.
 		register_activation_hook( $this->file_path, [ $options, 'ensure_options' ] ); // Add option and the default value on activation.
-
-		$this->loader->add_action( 'switch_blog', $lists_db, 'switch_blog' );
-		$this->loader->add_action( 'admin_init', $lists_db, 'maybe_upgrade' );
 	}
 
 	/**
@@ -257,12 +175,6 @@ class Plugin {
 	 * @since 0.1.0
 	 */
 	protected function define_endpoints_hooks() {
-
-		$lists_query = new Lists\Query();
-		$lists_process = new Lists\Process();
-
-		$lists_rest = new Endpoints\REST_Lists_Controller( $this->plugin_name, $this->version );
-		$sync_rest = new Endpoints\REST_Sync_Controller( $this->plugin_name, $this->version );
 
 		/**
 		 * The MailChimp API key.
@@ -275,6 +187,12 @@ class Plugin {
 
 			try {
 				$mailchimp = new MailChimp( $api_key );
+
+				$lists_query = new Lists\Query();
+				$lists_process = new Lists\Process();
+
+				$lists_rest = new Endpoints\REST_Lists_Controller( $this->plugin_name, $this->version );
+				$sync_rest = new Endpoints\REST_Sync_Controller( $this->plugin_name, $this->version );
 
 				$lists_rest->set_mailchimp( $mailchimp );
 				$sync_rest->set_mailchimp( $mailchimp );
@@ -295,8 +213,12 @@ class Plugin {
 				$lists_rest->set_lists_process( $lists_process );
 				$sync_rest->set_lists_process( $lists_process );
 
-				$this->loader->add_action( 'rest_api_init', $lists_rest, 'register_routes' ); // Register `/lists` endpoint.
-				$this->loader->add_action( 'rest_api_init', $sync_rest, 'register_routes' ); // Register `/lists/sync` endpoint.
+				$lists_rest->set_loader( $this->loader );
+				$lists_rest->run();
+
+				$sync_rest->set_loader( $this->loader );
+				$sync_rest->run();
+
 			} catch ( Exception $e ) {
 
 				// TODO: Should actually do something here.
@@ -313,68 +235,21 @@ class Plugin {
 	protected function define_subscription_form_hooks() {
 
 		$subscription_form = new Subscription_Form\Subscription_Form( $this->plugin_name, $this->version, $this->file_path );
-
-		$this->loader->add_action( 'init', $subscription_form, 'register_scripts' );
-		$this->loader->add_action( 'init', $subscription_form, 'register_block' );
-		$this->loader->add_action( 'init', $subscription_form, 'register_shortcode' );
-		$this->loader->add_action( 'widgets_init', $subscription_form, 'register_widget' );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $subscription_form, 'enqueue_scripts', 30 );
-		$this->loader->add_action( 'wp_enqueue_scripts', $subscription_form, 'enqueue_locale_scripts', 30 );
-		$this->loader->add_action( 'admin_enqueue_scripts', $subscription_form, 'admin_enqueue_locale_scripts', 30 );
+		$subscription_form->set_loader( $this->loader );
+		$subscription_form->run();
 	}
 
 	/**
 	 * Register the settings state to be used in the JavaScript side of the plugin.
 	 *
 	 * @since 0.1.0
+	 * @since 0.3.0 The Core\Settings class is introduced.
 	 */
 	protected function define_settings_hooks() {
-		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_setting_state', 30 );
-	}
 
-	/**
-	 * Function to add the settings state.
-	 *
-	 * The settings state will be used in the JavaScript side of the plugin
-	 * i.e. whether we should display the 'Subscription Form', request data
-	 * to MailChimp API, etc.
-	 *
-	 * @since 0.1.0
-	 * @see ./admin/js/admin.es
-	 * @see ./admin/js/utilities.es
-	 */
-	public function enqueue_setting_state() {
-
-		$state = self::get_setting_state();
-		$data = 'var wpChimpSettingState = ' . wp_json_encode( $state );
-
-		wp_add_inline_script( $this->plugin_name, $data, 'before' );
-		wp_add_inline_script( 'wp-chimp-subscription-form-editor', $data, 'before' );
-	}
-
-	/**
-	 * Retrieve options and nonces.
-	 *
-	 * This data will be primarily consumed in the JavaScript.
-	 *
-	 * @since 0.1.0
-	 * @see enqueue_setting_state
-	 *
-	 * @return array
-	 */
-	protected static function get_setting_state() {
-
-		$args = [
-			'nonce' => wp_create_nonce( 'wp-chimp-setting' ),
-			'wp_rest_nonce' => wp_create_nonce( 'wp_rest' ),
-			'rest_api_url' => get_the_rest_api_url(),
-			'mailchimp_api_status' => is_mailchimp_api_valid(),
-			'lists_total_items' => get_the_lists_total_items(),
-			'lists_init' => is_lists_init(),
-		];
-
-		return convert_keys_to_camel_case( $args );
+		$settings = new Settings( $this->plugin_name, $this->version );
+		$settings->set_loader( $this->loader );
+		$settings->run();
 	}
 
 	/**
@@ -399,50 +274,5 @@ class Plugin {
 		}
 
 		$this->loader->run();
-	}
-
-	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The name of the plugin.
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
-
-	/**
-	 * The reference to the class that orchestrates the hooks with the plugin.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return WP_Chimp\Core\Loader The Loader instance.
-	 */
-	public function get_loader() {
-		return $this->loader;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The version number of the plugin.
-	 */
-	public function get_version() {
-		return $this->version;
-	}
-
-	/**
-	 * Retrieve the plugin file path.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The plugin file path.
-	 */
-	public function get_file_path() {
-		return $this->file_path;
 	}
 }

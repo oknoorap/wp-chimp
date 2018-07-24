@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_Chimp\Core;
+use WP_Chimp\Core\Plugin_Base;
 
 /**
  * Main class to register the "Subscription Form".
@@ -22,39 +23,11 @@ use WP_Chimp\Core;
  * widget, shortcode, locale strings, etc.
  *
  * @since 0.1.0
+ * @since 0.3.0 Extends the Core\Plugin_Base class.
  *
- * @property string $plugin_name
- * @property string $version
- * @property string $file_path
+ * @property string $dir_path
  */
-final class Subscription_Form {
-
-	/**
-	 * The unique identifier of this plugin.
-	 *
-	 * @since 0.1.0
-	 * @var string $plugin_name The string used to uniquely identify this plugin.
-	 */
-	protected $plugin_name;
-
-	/**
-	 * The current version of the plugin.
-	 *
-	 * @since 0.1.0
-	 * @var string $version The current version of the plugin.
-	 */
-	protected $version;
-
-	/**
-	 * The filename of plugin.
-	 *
-	 * This is used for WordPress functions requiring the path to the main plugin file,
-	 * such as `plugin_dir_path()` and `plugin_basename()`.
-	 *
-	 * @since 0.1.0
-	 * @var string
-	 */
-	protected $file_path;
+final class Subscription_Form extends Plugin_Base {
 
 	/**
 	 * The plugin directory path.
@@ -76,11 +49,26 @@ final class Subscription_Form {
 	 * @param string $file_path   The plugin file path.
 	 */
 	public function __construct( $plugin_name, $version, $file_path ) {
+		parent::__construct( $plugin_name, $version, $file_path );
 
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-		$this->file_path = $file_path;
 		$this->dir_path = dirname( $file_path );
+	}
+
+	/**
+	 * Run the loader to execute all of the hooks with WordPress.
+	 *
+	 * @since 0.3.0
+	 */
+	public function run() {
+
+		$this->loader->add_action( 'init', $this, 'register_scripts' );
+		$this->loader->add_action( 'init', $this, 'register_block' );
+		$this->loader->add_action( 'init', $this, 'register_shortcode' );
+		$this->loader->add_action( 'widgets_init', $this, 'register_widget' );
+
+		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_scripts', 30 );
+		$this->loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_locale_scripts', 30 );
+		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'admin_enqueue_locale_scripts', 30 );
 	}
 
 	/**
@@ -230,50 +218,5 @@ final class Subscription_Form {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'wp-chimp-subscription-form' );
-	}
-
-	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The name of the plugin.
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The version number of the plugin.
-	 */
-	public function get_version() {
-		return $this->version;
-	}
-
-	/**
-	 * Retrieve the plugin file path.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The plugin file path.
-	 */
-	public function get_file_path() {
-		return $this->file_path;
-	}
-
-	/**
-	 * Retrieve the plugin directory path.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The plugin directory path.
-	 */
-	public function get_dir_path() {
-		return $this->dir_path;
 	}
 }

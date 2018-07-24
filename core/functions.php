@@ -134,7 +134,7 @@ function get_the_default_list() {
  */
 function is_lists_init() {
 
-	$init = get_option( 'wp_chimp_lists_init' );
+	$init = get_the_option( 'wp_chimp_lists_init' );
 
 	if ( is_wp_error( $init ) ) {
 		return false;
@@ -172,7 +172,7 @@ function is_mailchimp_api_valid() {
  * @return string The WP-Chimp REST API endpont base URL.
  */
 function get_the_rest_api_namespace() {
-	return Endpoints\REST_Lists_Controller::REST_NAMESPACE;
+	return Endpoints\REST_Controller::get_namespace();
 }
 
 /**

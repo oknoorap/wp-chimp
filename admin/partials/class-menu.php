@@ -15,24 +15,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
+use WP_Chimp\Core\Plugin_Base;
+
 /**
  * Class that register new menu in the Admin area and load the page.
  *
  * @since 0.1.0
+ * @since 0.3.0 Extends the Core\Plugin_Base class.
  */
-class Menu {
+class Menu extends Plugin_Base {
 
 	/**
-	 * Initialize the class and set its properties.
+	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since 0.1.0
-	 * @param string $plugin_name The name of this plugin.
-	 * @param string $version     The version of this plugin.
+	 * @since 0.3.0
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function run() {
 
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+		$this->loader->add_action( 'admin_menu', $this, 'register_menu' );
+		$this->loader->add_action( 'current_screen', $this, 'register_help_tabs' );
 	}
 
 	/**
