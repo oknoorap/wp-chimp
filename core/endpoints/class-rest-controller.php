@@ -17,7 +17,6 @@ use WP_REST_Controller;
 
 use WP_Chimp\Core\Lists;
 use WP_Chimp\Core\Loader;
-
 use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
