@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_Error;
+
 use WP_Chimp\Core;
 
 /**
@@ -44,6 +45,7 @@ final class Query {
 	 * The columns and its value.
 	 *
 	 * @since 0.1.0
+	 * @var array
 	 */
 	protected $default_data;
 
