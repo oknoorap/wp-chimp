@@ -16,11 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
+use Exception;
+
 use WP_Chimp\Admin;
 use WP_Chimp\Subscription_Form;
 use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
-
-use Exception;
 
 /**
  * Loaded dependencies with Mozart.
@@ -55,11 +55,11 @@ class Plugin extends Plugin_Base {
 	protected function load_dependencies() {
 
 		$path = plugin_dir_path( $this->file_path );
-		$classes = "${path}packages/Classes";
+		$classes = $path . 'packages/Classes/';
 
-		require_once $classes . '/underdev/requirements/underDEV_Requirements.php';
-		require_once $classes . '/a5hleyrich/wp-background-processing/classes/wp-async-request.php';
-		require_once $classes . '/a5hleyrich/wp-background-processing/classes/wp-background-process.php';
+		require_once $classes . 'underdev/requirements/underDEV_Requirements.php';
+		require_once $classes . 'a5hleyrich/wp-background-processing/classes/wp-async-request.php';
+		require_once $classes . 'a5hleyrich/wp-background-processing/classes/wp-background-process.php';
 
 		require_once $path . 'core/functions.php';
 		require_once $path . 'subscription-form/functions.php';

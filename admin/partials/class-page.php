@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use Exception;
+
 use WP_Chimp\Core;
 use WP_Chimp\Core\Plugin_Base;
 use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
@@ -216,6 +217,7 @@ class Page extends Plugin_Base {
 	 * Reset lists and some option whent API is added or updated.
 	 *
 	 * @since 0.1.0
+	 * @since 0.2.1 Reset the default list.
 	 *
 	 * @param string $option Option name.
 	 * @param mixed  $value  The new option value.
