@@ -1,6 +1,6 @@
 {
   "name": "wp-chimp",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Lean MailChimp subscription form plugin for WordPress",
   "main": "wp-chimp.php",
   "repository": {
