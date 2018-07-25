@@ -66,6 +66,11 @@ None, at the moment. Please ask :)
 
 == Changelog ==
 
+= 0.3.0 =
+* Fixed: Object Caching compatibility with the plugin options (#34).
+* Fixed: Handle the Exception for when the MailChimp API key format is incorrect (#33).
+* Added: Object Caching layer to cache the MailChimp lists query.
+
 = 0.2.1 =
 * Changed: PHP and WordPress version requirement is now less strict (5.4 instead of 5.4.45 and 4.9 instead of 4.9.0).
 * Fixed: Reset the default list option when MailChimp API key is added or updated.
@@ -84,6 +89,9 @@ None, at the moment. Please ask :)
 * Added: A couple of custom WP-API endpoints.
 
 == Upgrade Notice ==
+
+= 0.3.0 =
+Fixed a number of bugs, and refine error handling.
 
 = 0.2.1 =
 Minor updates to the plugin requirements and option.

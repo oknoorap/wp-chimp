@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [0.3.0] - 2014-07-25
+
+### Fixed
+
+- Object Caching compatibility with the plugin options (#34).
+- Handle the Exception for when the MailChimp API key format is incorrect (#33).
+
+### Added
+
+- Object Caching layer to cache the MailChimp lists query.
+- `Core\Settings` class to handle the plugin settings or state.
+- `Core\Plugin_Base` as the base Class for some of the plugin Classes with shared properties and methods.
+- `Core\Endpoints\REST_Controller` as the base Class to create custom endpoint API in the plugin.
+
+### Changed
+
+- The WordPress hooks loader is now run from within its own Class (#35).
+
 ## [0.2.1] - 2014-07-20
 
 ### Changed
@@ -21,7 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - A pre-commit hook to analyze code before commiting changes to Git (#26).
-- A new class called `Options` to add, update, and validate the plugin options.
+- A new class called `Core\Options` to add, update, and validate the plugin options.
 
 ### Changed
 
@@ -43,6 +61,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - A Settings page for the plugin.
 - A couple of custom WP-API endpoints.
 
-[Unreleased]: https://github.com/wp-chimp/wp-chimp/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/wp-chimp/wp-chimp/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/wp-chimp/wp-chimp/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/wp-chimp/wp-chimp/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/wp-chimp/wp-chimp/compare/v0.1.0...v0.2.0
