@@ -174,6 +174,7 @@ gulp.task( 'copy', () => {
     '!dist/**',
     '!bin/**',
     '!vendor/**',
+    '!docker/**',
     '!svn-assets/**',
     '!tests/**',
     '!pipelines/**',
