@@ -1,10 +1,10 @@
 <?php
 /**
- * Provide a admin area view for the plugin
+ * Admin: Page class
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @package WP_Chimp/Admin
+ * @package WP_Chimp\Admin
  * @since 0.1.0
  */
 
@@ -22,7 +22,7 @@ use WP_Chimp\Core\Plugin_Base;
 use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
- * Class that register new menu in the Admin area and load the page.
+ * Class to render the admin page.
  *
  * @since 0.1.0
  * @since 0.3.0 Extends the Core\Plugin_Base class.

@@ -1,8 +1,8 @@
 <?php
 /**
- * The file that defines the abstract of the plugin base Class
+ * Core: Plugin_Base class
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core
  * @since 0.3.0
  */
 
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * The plugin base abstract class.
+ * The plugin base class.
  *
  * @since 0.3.0
  *
@@ -90,7 +90,7 @@ abstract class Plugin_Base {
 	 *
 	 * @since 0.3.0
 	 *
-	 * @param Loader $loader The Loader instance.
+	 * @param WP_Chimp\Core\Loader $loader The Loader instance.
 	 */
 	public function set_loader( Loader $loader ) {
 		$this->loader = $loader;

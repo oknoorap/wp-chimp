@@ -1,6 +1,6 @@
 <?php
 /**
- * File to save the Plugin Core functions
+ * Plugin core functions
  *
  * @package WP_Chimp/Core
  * @since 0.1.0

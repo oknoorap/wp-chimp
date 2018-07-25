@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the Class to define the "Subscribe Form" Shortcode
+ * Subscription Form: Shortcode class
  *
  * @package WP_Chimp/Subscription_Form
  * @since 0.1.0
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class to define the "Subscription Form" Widget.
+ * Class to define the "Subscription Form" shortcode.
  *
  * @since 0.1.0
  */

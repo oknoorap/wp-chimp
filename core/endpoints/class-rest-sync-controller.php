@@ -1,8 +1,8 @@
 <?php
 /**
- * The file that defines a REST controller for '/sync' endpoint.
+ * Endpoints: Sync_Controller class
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core\Endpoints
  * @since 0.1.0
  */
 
@@ -23,14 +23,15 @@ use WP_Chimp\Core\Endpoints\REST_Controller;
 use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
- * The class that register the custom '/sync' endpoint to WP-API.
+ * Class to register the custom '/sync' endpoint to WP-API.
  *
  * @since 0.1.0
+ * @since 0.3.0 Extends the REST_Controller class.
  */
 final class REST_Sync_Controller extends REST_Controller {
 
 	/**
-	 * The class constructor.
+	 * The Constructor.
 	 *
 	 * @since 0.1.0
 	 *
@@ -88,7 +89,7 @@ final class REST_Sync_Controller extends REST_Controller {
 	}
 
 	/**
-	 * Get the query params for collections
+	 * Get the query params for collections.
 	 *
 	 * @since 0.1.0
 	 *

@@ -1,9 +1,11 @@
 <?php
 /**
+ * Lists: Query class
+ *
  * The file that defines the class and the methods to query
  * *_chimp_lists table.
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core\Lists
  * @since 0.1.0
  */
 
@@ -50,7 +52,7 @@ final class Query {
 	protected $default_data;
 
 	/**
-	 * The class constructor.
+	 * The Constructor.
 	 *
 	 * @since 0.1.0
 	 */

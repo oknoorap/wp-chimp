@@ -1,8 +1,8 @@
 <?php
 /**
- * The file that defines a REST controller for '/lists' endpoints.
+ * Endpoints: Lists_Controller class
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core\Endpoints
  * @since 0.1.0
  */
 
@@ -23,7 +23,7 @@ use WP_Chimp\Core\Endpoints\REST_Controller;
 use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
- * The class that register the custom '/list' endpoint to WP-API.
+ * Class to register the custom '/lists' endpoint to WP-API.
  *
  * @since 0.1.0
  * @since 0.3.0 Extends the REST_Controller class.
@@ -31,7 +31,7 @@ use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 class REST_Lists_Controller extends REST_Controller {
 
 	/**
-	 * The class constructor.
+	 * The Constructor.
 	 *
 	 * @since 0.1.0
 	 *
@@ -110,7 +110,7 @@ class REST_Lists_Controller extends REST_Controller {
 	}
 
 	/**
-	 * Get the query params for collections
+	 * Get the query params for collections.
 	 *
 	 * @since 0.1.0
 	 *
@@ -205,7 +205,7 @@ class REST_Lists_Controller extends REST_Controller {
 	}
 
 	/**
-	 * Check if a given request has access to get a specific item
+	 * Check if a given request has access to get a specific item.
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 * @return WP_Error|bool

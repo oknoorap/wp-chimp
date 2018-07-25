@@ -1,11 +1,11 @@
 <?php
 /**
- * Define the internationalization functionality
+ * Core: Languages class
  *
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core
  * @since 0.1.0
  */
 
@@ -27,9 +27,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Languages extends Plugin_Base {
 
-	// Text domain. Unique identifier for retrieving translated strings.
-	const DOMAIN = 'wp-chimp';
-
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
@@ -45,6 +42,6 @@ class Languages extends Plugin_Base {
 	 * @since 0.1.0
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( self::DOMAIN, false, dirname( plugin_basename( $this->file_path ) ) . '/languages/' );
+		load_plugin_textdomain( $this->plugin_name, false, dirname( plugin_basename( $this->file_path ) ) . '/languages/' );
 	}
 }
