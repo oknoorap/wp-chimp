@@ -1,10 +1,8 @@
 <?php
 /**
- * The file that defines the handle the plugin Settings and State
+ * Core: Settings class
  *
- * Primarily, those settings that are consumable on the front-end.
- *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core
  * @since 0.3.0
  */
 
@@ -16,7 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Define the class that handle the plugin Settings and State.
+ * Class to handle the plugin settings or state.
+ *
+ * Primarily, those consumable on the front-end.
  *
  * @since 0.3.0
  */

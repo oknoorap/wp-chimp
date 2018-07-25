@@ -1,8 +1,8 @@
 <?php
 /**
- * The admin-specific functionality of the plugin.
+ * Admin: Main class
  *
- * @package WP_Chimp/Admin
+ * @package WP_Chimp\Admin
  * @since 0.1.0
  */
 

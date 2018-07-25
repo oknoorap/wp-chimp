@@ -17,9 +17,9 @@ use WP_Chimp\Core;
 use WP_Chimp\Core\Plugin_Base;
 
 /**
- * Main class to register the "Subscription Form".
+ * Class to register the Subscription Form.
  *
- * Register components surrounding the "Subscription Form" such as scripts, styles,
+ * Register components of the Subscription Form such as scripts, styles,
  * widget, shortcode, locale strings, etc.
  *
  * @since 0.1.0

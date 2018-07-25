@@ -1,8 +1,8 @@
 <?php
 /**
- * Define the site options functionality.
+ * Core: Options class
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core
  * @since 0.2.0
  */
 
@@ -16,7 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WP_Error;
 
 /**
- * A wrapper the WordPress get_option function.
+ * Define the site options functionality.
+ *
+ * The class poses a wrapper for the native WordPress `*_option` functions.
  *
  * @since 0.2.0
  */

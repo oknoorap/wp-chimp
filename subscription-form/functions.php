@@ -1,6 +1,6 @@
 <?php
 /**
- * Core "Subscription Form" functions
+ * Subscription Form functions
  *
  * @package WP_Chimp/Subscription_Form
  * @since 0.1.0

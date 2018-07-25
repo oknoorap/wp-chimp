@@ -1,8 +1,8 @@
 <?php
 /**
- * The file to defines the REST_Controller class.
+ * Endpoints: REST_Controller class
  *
- * @package WP_Chimp/Core/Endpoints
+ * @package WP_Chimp\Core\Endpoints
  * @since 0.3.0
  */
 
@@ -76,9 +76,9 @@ abstract class REST_Controller extends WP_REST_Controller {
 	protected $mailchimp;
 
 	/**
-	 * The Query instance
+	 * The Query instance.
 	 *
-	 * Used for interact with the {$prefix}chimp_lists table,
+	 * Used to interact with the {$prefix}chimp_lists table,
 	 * such as inserting a new row or updating the existing rows.
 	 *
 	 * @since 0.3.0
@@ -87,7 +87,7 @@ abstract class REST_Controller extends WP_REST_Controller {
 	protected $lists_query;
 
 	/**
-	 * The Process instance
+	 * The Process instance.
 	 *
 	 * The Lists\Process instance is extending the WP_Background_Processing class abstraction
 	 * enabling asynchronous background processing to add the lists from the MailChimp API
@@ -110,7 +110,7 @@ abstract class REST_Controller extends WP_REST_Controller {
 	protected $loader;
 
 	/**
-	 * The Constructor
+	 * The Constructor.
 	 *
 	 * @since 0.3.0
 	 *
@@ -133,11 +133,11 @@ abstract class REST_Controller extends WP_REST_Controller {
 	abstract public function run();
 
 	/**
-	 * Set the loader to orchestrate WordPress Hooks
+	 * Set the loader to orchestrate WordPress Hooks.
 	 *
 	 * @since 0.3.0
 	 *
-	 * @param Loader $loader The Loader instance.
+	 * @param WP_Chimp\Core\Loader $loader The Loader instance.
 	 */
 	public function set_loader( Loader $loader ) {
 		$this->loader = $loader;
@@ -155,7 +155,7 @@ abstract class REST_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Register the Lists\Query instance
+	 * Register the Lists\Query instance.
 	 *
 	 * @since 0.3.0
 	 *
@@ -166,7 +166,7 @@ abstract class REST_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Register the Lists\Process instance
+	 * Register the Lists\Process instance.
 	 *
 	 * @since 0.3.0
 	 *
