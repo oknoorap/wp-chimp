@@ -9,19 +9,20 @@
 namespace WP_Chimp\Tests;
 
 use WP_UnitTestCase;
+
 use WP_Chimp\Core;
+
 use Brain\Monkey;
-use Mockery;
 
 /**
- * Basic class to run unit and integration test
+ * Basic class to run unit test and integration test.
  *
  * @since 0.1.0
  */
 class UnitTestCase extends WP_UnitTestCase {
 
 	/**
-	 * The WordPress Database abstraction
+	 * The WordPress Database abstraction.
 	 *
 	 * @since 0.1.0
 	 * @var WPDB instance

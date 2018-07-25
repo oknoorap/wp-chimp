@@ -1,10 +1,8 @@
 <?php
 /**
- * Provide a admin area view for the plugin
+ * Admin: Menu class
  *
- * This file is used to markup the admin-facing aspects of the plugin.
- *
- * @package WP_Chimp/Admin
+ * @package WP_Chimp\Admin
  * @since 0.1.0
  */
 
@@ -18,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WP_Chimp\Core\Plugin_Base;
 
 /**
- * Class that register new menu in the Admin area and load the page.
+ * Class to register a new menu in the admin area.
  *
  * @since 0.1.0
  * @since 0.3.0 Extends the Core\Plugin_Base class.
@@ -37,7 +35,7 @@ class Menu extends Plugin_Base {
 	}
 
 	/**
-	 * Register a new menu page in the Admin.
+	 * Register a new menu page in the admin.
 	 *
 	 * @since 0.1.0
 	 */
@@ -50,7 +48,7 @@ class Menu extends Plugin_Base {
 	}
 
 	/**
-	 * Function to add a tab to the Contextual Help menu in the setting page.
+	 * Add a tab to the contextual help menu in the admin page.
 	 *
 	 * @since 0.1.0
 	 */

@@ -1,8 +1,8 @@
 <?php
 /**
- * MailChimp List Table: DB_MailChimp_Lists class
+ * Lists: Table class
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core\Lists
  * @since 0.1.0
  */
 
@@ -17,11 +17,12 @@ use WP_Chimp\Core\Loader;
 use WP_Chimp\Core\Database;
 
 /**
- * Setup the "chimp_list" database schema
+ * Class to register the custom, `chimp_lists`, table to store the MailChimp lists in the database.
  *
  * @since 0.1.0
  * @since 0.3.0 Adds the `$loader` property, and `set_loder` and `run` method.
  *
+ * @property WP_Chimp\Core\Loader $loader
  * @property string $name
  * @property string $version
  */
@@ -45,10 +46,10 @@ final class Table extends Database {
 	protected $name = 'chimp_lists';
 
 	/**
-	 * Database version
+	 * Database version.
 	 *
 	 * @since 0.1.0
-	 * @var string
+	 * @var int
 	 */
 	protected $version = 201803220001;
 
@@ -68,14 +69,14 @@ final class Table extends Database {
 	 *
 	 * @since 0.3.0
 	 *
-	 * @param Loader $loader The Loader instance.
+	 * @param WP_Chimp\Core\Loader $loader The Loader instance.
 	 */
 	public function set_loader( Loader $loader ) {
 		$this->loader = $loader;
 	}
 
 	/**
-	 * Setup the database schema
+	 * Setup the database schema.
 	 *
 	 * @since 0.1.0
 	 */
@@ -94,7 +95,7 @@ final class Table extends Database {
 	}
 
 	/**
-	 * Handle schema changes
+	 * Handle schema changes.
 	 *
 	 * @since 0.1.0
 	 */

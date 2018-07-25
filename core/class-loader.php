@@ -1,8 +1,8 @@
 <?php
 /**
- * Register all actions and filters for the plugin
+ * Core: Loader class
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core
  * @since 0.1.0
  */
 
