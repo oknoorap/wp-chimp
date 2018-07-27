@@ -4,7 +4,7 @@
 
 > Lean MailChimp subscription form plugin for WordPress
 
-[![WordPress plugin](https://img.shields.io/wordpress/plugin/v/wp-chimp.svg)](https://wordpress.org/plugins/wp-chimp/) [![WordPress](https://img.shields.io/wordpress/v/wp-chimp.svg)](https://wordpress.org/plugins/wp-chimp/)
+[![WordPress plugin](https://img.shields.io/wordpress/plugin/v/wp-chimp.svg)](https://wordpress.org/plugins/wp-chimp/) [![WordPress](https://img.shields.io/wordpress/v/wp-chimp.svg)](https://wordpress.org/plugins/wp-chimp/) [![David](https://img.shields.io/david/wp-chimp/wp-chimp.svg)](https://david-dm.org/wp-chimp/wp-chimp)
 
 ## Description
 
