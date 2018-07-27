@@ -69,7 +69,7 @@ services:
     volumes:
       - ./:${COMPOSER_PROJECT_DIR}
 
-  # Unit and CI Tests
+  # Unit and Integration Tests
   wordpress_php5.6:
     image: tfirdaus/wp-docklines:php5.6-fpm-alpine
     working_dir: ${WP_PROJECT_DIR}
