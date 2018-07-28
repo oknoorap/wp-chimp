@@ -11,7 +11,7 @@
 	<rule ref="WordPress-Extra" />
 	<rule ref="WordPress-Docs" />
 
-	<rule ref="WordPress.XSS.EscapeOutput">
+	<rule ref="WordPress.Security.EscapeOutput">
 		<properties>
 			<property name="customAutoEscapedFunctions" value="get_the_inactive_notice,render" type="array" />
 		</properties>
