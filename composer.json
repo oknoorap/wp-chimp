@@ -30,9 +30,9 @@
     "underdev/requirements": "^1.2"
   },
   "require-dev": {
-    "brain/monkey": "~2.0.0",
+    "brain/monkey": "^2.2.0",
     "wimg/php-compatibility": "*",
-    "wp-coding-standards/wpcs": "^0.14.1",
+    "wp-coding-standards/wpcs": "^1.0.0",
     "coenjacobs/mozart": "^0.2.2",
     "phpcompatibility/phpcompatibility-wp": "*"
   },
