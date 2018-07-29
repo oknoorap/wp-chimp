@@ -45,27 +45,13 @@ npm-debug.log
 ######################
 *.min.css
 *.min.js
-*.css
 *.map
-
-# Dist directories #
-#####################
-/dist
-/dist-*
+*.css
 
 # Composer #
 ######################
-/vendor
+/vendor/
 
-# Graphics #
+# Build or Dist directory #
 ######################
-*.psd
-
-# MySQL #
-######################
-*.sql
-/dump
-
-# Exception #
-######################
-!gulpfile.js
+/dist/

@@ -34,7 +34,8 @@
     "wimg/php-compatibility": "*",
     "wp-coding-standards/wpcs": "^1.0.0",
     "coenjacobs/mozart": "^0.2.2",
-    "phpcompatibility/phpcompatibility-wp": "*"
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4"
   },
   "prefer-stable": true,
   "extra": {

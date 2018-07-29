@@ -91,15 +91,15 @@
     "extends": "stylelint-config-wordpress"
   },
   "scripts": {
-    "local:up": "bash localhost/up.sh",
-    "local:down": "bash localhost/down.sh",
-    "local:start": "bash localhost/start.sh",
-    "local:restart": "bash localhost/start.sh",
-    "local:destroy": "bash localhost/destroy.sh",
-    "local:ssh": "bash localhost/ssh.sh",
-    "local:export-db": "bash localhost/mysql-export.sh",
-    "local:import-db": "bash localhost/mysql-import.sh",
-    "precommit": "bash pipelines/pre-commit.sh",
-    "test": "bash pipelines/tests.sh"
+    "local:up": "bash wp-dev-kit/localhost/up.sh",
+    "local:down": "bash wp-dev-kit/localhost/down.sh",
+    "local:start": "bash wp-dev-kit/localhost/start.sh",
+    "local:restart": "bash wp-dev-kit/localhost/start.sh",
+    "local:destroy": "bash wp-dev-kit/localhost/destroy.sh",
+    "local:ssh": "bash wp-dev-kit/localhost/ssh.sh",
+    "local:export-db": "bash wp-dev-kit/localhost/mysql-export.sh",
+    "local:import-db": "bash wp-dev-kit/localhost/mysql-import.sh",
+    "precommit": "bash wp-dev-kit/pipelines/pre-commit.sh",
+    "test": "bash wp-dev-kit/pipelines/tests.sh"
   }
 }
