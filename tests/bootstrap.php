@@ -21,20 +21,21 @@ if ( ! $_tests_dir ) { $_tests_dir = $_tmp_dir . '/wordpress-tests-lib'; }
 $_core_dir = getenv( 'WP_CORE_DIR' );
 if ( ! $_core_dir ) { $_core_dir = $_tmp_dir . '/wordpress/'; }
 
+$_composer_dir = dirname( __DIR__ ) . '/vendor';
+if ( ! file_exists( $_composer_dir . '/autoload.php') || ! file_exists( $_composer_dir . '/antecedent/patchwork/Patchwork.php' ) ) {
+    die( 'Please install via Composer before running tests.' );
+}
+
+// Load Composer development dependency.
+require_once $_composer_dir . '/antecedent/patchwork/Patchwork.php';
+require_once $_composer_dir . '/autoload.php';
+
 if ( ! file_exists( $_tests_dir . '/includes/functions.php' ) ) {
 	die( "Could not find $_tests_dir/includes/functions.php, have you run bin/install-wp-tests.sh ?" );
 }
 
 // Give access to tests_add_filter() function.
 require_once $_tests_dir . '/includes/functions.php';
-
-$_composer_dir = dirname( __DIR__ ) . '/vendor';
-if ( ! file_exists( $_composer_dir . '/autoload.php') ) {
-    die( 'Please install via Composer before running tests.' );
-}
-
-// Load Composer development dependency.
-require_once $_composer_dir . '/autoload.php';
 
 /**
  * Get the main plugin / project files

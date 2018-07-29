@@ -87,7 +87,8 @@ final class Subscription_Form extends Plugin_Base {
 				'wp-i18n',
 				'wp-element',
 			],
-			filemtime( "{$this->dir_path}/{$block_js}" )
+			filemtime( "{$this->dir_path}/{$block_js}" ),
+			true
 		);
 
 		$script_js = 'assets/js/subscription-form.min.js';
@@ -95,7 +96,8 @@ final class Subscription_Form extends Plugin_Base {
 			'wp-chimp-subscription-form',
 			plugins_url( $script_js, $this->file_path ),
 			[ 'jquery' ],
-			filemtime( "{$this->dir_path}/{$script_js}" )
+			filemtime( "{$this->dir_path}/{$script_js}" ),
+			true
 		);
 
 		$editor_css = 'assets/css/subscription-form-editor.css';
