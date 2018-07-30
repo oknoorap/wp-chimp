@@ -1,8 +1,8 @@
 <?php
 /**
- * The file that defines a REST controller for '/lists' endpoints.
+ * Endpoints: Sync_Controller class
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core\Endpoints
  * @since 0.1.0
  */
 
@@ -16,79 +16,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
-use WP_REST_Controller;
+use WP_REST_Response;
 
 use WP_Chimp\Core;
-use WP_Chimp\Core\Lists;
-
-use DrewM\MailChimp\MailChimp;
+use WP_Chimp\Core\Endpoints\REST_Controller;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
- * The class that register the custom '/list' endpoint to WP-API.
+ * Class to register the custom '/sync' endpoint to WP-API.
  *
  * @since 0.1.0
+ * @since 0.3.0 Extends the REST_Controller class.
  */
-final class REST_Sync_Controller extends WP_REST_Controller {
+final class REST_Sync_Controller extends REST_Controller {
 
 	/**
-	 * API Endpoint version.
-	 *
-	 * @since 0.1.0
-	 */
-	const REST_VERSION = 'v1';
-
-	/**
-	 * API Endpoint namespace.
-	 *
-	 * @since 0.1.0
-	 */
-	const REST_NAMESPACE = 'wp-chimp/v1';
-
-	/**
-	 * API endpoint base URL.
-	 *
-	 * @since 0.1.0
-	 */
-	const REST_BASE = 'sync';
-
-	/**
-	 * The Plugin class instance.
-	 *
-	 * @since 0.1.0
-	 * @var string
-	 */
-	protected $plugin_name;
-
-	/**
-	 * The plugin version.
-	 *
-	 * @since 0.1.0
-	 * @var string
-	 */
-	protected $version;
-
-	/**
-	 * The MailChimp API key added in the option.
-	 *
-	 * @since 0.1.0
-	 * @var DrewM\MailChimp\MailChimp
-	 */
-	protected $mailchimp;
-
-	/**
-	 * The Query instance
-	 *
-	 * Used for interact with the {$prefix}chimp_lists table,
-	 * such as inserting a new row or updating the existing rows.
-	 *
-	 * @since  0.1.0
-	 * @access protected
-	 * @var    Storage\Query
-	 */
-	protected $lists_query;
-
-	/**
-	 * The class constructor.
+	 * The Constructor.
 	 *
 	 * @since 0.1.0
 	 *
@@ -96,72 +39,28 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 * @param string $version     The version of the plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
+		parent::__construct( $plugin_name, $version );
 
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->rest_base = $this->get_rest_base();
 	}
 
 	/**
-	 * Function ot get the plugin api namespace.
+	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since 0.1.0
-	 *
-	 * @return string The name space and the version.
+	 * @since 0.3.0
 	 */
-	public static function get_namespace() {
-		return 'wp-chimp/' . self::VERSION;
+	public function run() {
+		$this->loader->add_action( 'rest_api_init', $this, 'register_routes' ); // Register `/lists/sync` endpoint.
 	}
 
 	/**
-	 * Get REST Base.
+	 * Define and retrieve the base of this controller's route.
 	 *
-	 * @since 0.1.0
-	 * @access public
-	 *
+	 * @inheritDoc
 	 * @return string
 	 */
-	public static function get_rest_base() {
+	public function get_rest_base() {
 		return 'sync';
-	}
-
-	/**
-	 * Function to register the MailChimp instance.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param MailChimp $mailchimp The MailChimp instance.
-	 */
-	public function set_mailchimp( MailChimp $mailchimp ) {
-		$this->mailchimp = $mailchimp;
-	}
-
-	/**
-	 * Function to register the Query instance
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param Lists\Query $query The List\Query instance to retrieve the lists from the database.
-	 */
-	public function set_lists_query( Lists\Query $query ) {
-		$this->lists_query = $query;
-	}
-
-	/**
-	 * Function to register the Lists\Process instance
-	 *
-	 * The Lists\Process instance is extending the WP_Background_Processing class abstraction
-	 * enabling asynchronous background processing to add the lists from the MailChimp API
-	 * to the database.
-	 *
-	 * @link https://github.com/A5hleyRich/wp-background-processing WP_Background_Processing repository
-	 * @see WP_Background_Process
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param Lists\Process $process The Lists\Process instance to add the list on the background.
-	 */
-	public function set_lists_process( Lists\Process $process ) {
-		$this->lists_process = $process;
 	}
 
 	/**
@@ -177,7 +76,7 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 		 * @uses WP_REST_Server
 		 */
 		register_rest_route(
-			self::REST_NAMESPACE, self::REST_BASE . '/lists', [
+			$this->namespace, $this->rest_base . '/lists', [
 				[
 					'methods' => WP_REST_Server::READABLE,
 					'callback' => [ $this, 'get_items' ],
@@ -190,7 +89,7 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the query params for collections
+	 * Get the query params for collections.
 	 *
 	 * @since 0.1.0
 	 *
@@ -385,7 +284,10 @@ final class REST_Sync_Controller extends WP_REST_Controller {
 	 *               the key, added is invalid.
 	 */
 	protected function get_lists( array $args ) {
-		$this->lists_query->truncate(); // Remove all the lists in the database first.
+
+		$this->lists_query->truncate(); // Remove all entries from the `_chimp_lists` table.
+		$this->lists_query->delete_cache(); // Remove from the Object Caching.
+
 		return $this->get_remote_lists( $args );
 	}
 

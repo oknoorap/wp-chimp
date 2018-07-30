@@ -1,0 +1,81 @@
+version: '3'
+services:
+
+  # Localhost configuration.
+  wordpress:
+    depends_on:
+      - redis
+    volumes:
+      - ./docker/wp-config-sample.php:/usr/src/wordpress/wp-config-sample.php
+    extra_hosts:
+      - "${WP_SITE_DOMAIN}:192.168.65.2"
+
+  redis:
+    image: ${REDIS_IMAGE}
+    ports:
+      - "${REDIS_PUBLISHED_PORT}:6379"
+    volumes:
+      - redis_data:/data
+
+  # Unit and Integration Tests
+  wordpress_tests_php5.6:
+    image: tfirdaus/wp-docklines:php5.6-fpm-alpine
+    working_dir: ${WP_PROJECT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+    environment:
+      WP_TESTS_ACTIVATED_PLUGINS: gutenberg
+
+      # Passed some variables to install-wp-tests.sh
+      DB_NAME: wordpress_tests
+      DB_USER: root
+      DB_HOST: ${DB_HOST}
+      DB_PASSWORD: ${DB_ROOT_PASSWORD}
+
+  wordpress_tests_php7.0:
+    image: tfirdaus/wp-docklines:php7.0-fpm-alpine
+    working_dir: ${WP_PROJECT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+    environment:
+      WP_TESTS_ACTIVATED_PLUGINS: gutenberg
+
+      # Passed some variables to install-wp-tests.sh
+      DB_NAME: wordpress_tests
+      DB_USER: root
+      DB_HOST: ${DB_HOST}
+      DB_PASSWORD: ${DB_ROOT_PASSWORD}
+
+  wordpress_tests_php7.1:
+    image: tfirdaus/wp-docklines:php7.1-fpm-alpine
+    working_dir: ${WP_PROJECT_DIR}
+    depends_on:
+      - database
+    volumes:
+      - ./:${WP_PROJECT_DIR}
+      - wp_tests_core:/tmp/wordpress/
+      - wp_tests_dir:/tmp/wordpress-tests-lib
+    environment:
+      WP_TESTS_ACTIVATED_PLUGINS: gutenberg
+
+      # Passed some variables to install-wp-tests.sh
+      DB_NAME: wordpress_tests
+      DB_USER: root
+      DB_HOST: ${DB_HOST}
+      DB_PASSWORD: ${DB_ROOT_PASSWORD}
+
+# Caches
+volumes:
+  www:
+  mysql_data:
+  redis_data:
+  wp_tests_core:
+  wp_tests_dir:

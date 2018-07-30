@@ -1,8 +1,8 @@
 <?php
 /**
- * The admin-specific functionality of the plugin.
+ * Admin: Main class
  *
- * @package WP_Chimp/Admin
+ * @package WP_Chimp\Admin
  * @since 0.1.0
  */
 
@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_Chimp\Core;
+use WP_Chimp\Core\Plugin_Base;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -22,51 +23,20 @@ use WP_Chimp\Core;
  * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @since 0.1.0
+ * @since 0.3.0 Extends the Core\Plugin_Base class.
  */
-class Admin {
+class Admin extends Plugin_Base {
 
 	/**
-	 * The ID of this plugin.
+	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since  0.1.0
-	 * @access private
-	 * @var    string   $plugin_name    The ID of this plugin.
+	 * @since 0.3.0
 	 */
-	private $plugin_name;
+	public function run() {
 
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 * @var    string  $version The current version of this plugin.
-	 */
-	private $version;
-
-	/**
-	 * The filename of plugin.
-	 *
-	 * This is used for WordPress functions requiring the path to the main plugin file,
-	 * such as `plugin_dir_path()` and `plugin_basename()`.
-	 *
-	 * @since 0.1.0
-	 * @var string
-	 */
-	protected $file_path;
-
-	/**
-	 * Initialize the class and set its properties.
-	 *
-	 * @since 0.1.0
-	 *
-	 * @param string $plugin_name The name of this plugin.
-	 * @param string $version     The version of this plugin.
-	 * @param string $file_path   The plugin file path.
-	 */
-	public function __construct( $plugin_name, $version, $file_path ) {
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-		$this->file_path = $file_path;
+		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $this, 'enqueue_locale_scripts' );
 	}
 
 	/**
@@ -117,7 +87,7 @@ class Admin {
 			 * between the defined hooks and the functions defined in this
 			 * class.
 			 */
-			wp_register_script( $this->plugin_name, plugins_url( 'assets/js/admin.min.js', $this->file_path ), [ 'jquery', 'wp-api' ], $this->version );
+			wp_register_script( $this->plugin_name, plugins_url( 'assets/js/admin.min.js', $this->file_path ), [ 'jquery', 'wp-api' ], $this->version, true );
 
 			wp_enqueue_script( $this->plugin_name );
 		}

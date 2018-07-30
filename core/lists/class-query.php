@@ -1,9 +1,11 @@
 <?php
 /**
+ * Lists: Query class
+ *
  * The file that defines the class and the methods to query
  * *_chimp_lists table.
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core\Lists
  * @since 0.1.0
  */
 
@@ -15,6 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_Error;
+
 use WP_Chimp\Core;
 
 /**
@@ -27,6 +30,20 @@ use WP_Chimp\Core;
 final class Query {
 
 	/**
+	 * The cache key to save the lists in the Object Caching.
+	 *
+	 * @since 0.3.0
+	 */
+	const CACHE_KEY = 'lists';
+
+	/**
+	 * The cache group.
+	 *
+	 * @since 0.3.0
+	 */
+	const CACHE_GROUP = 'wp_chimp_lists';
+
+	/**
 	 * The columns and its value.
 	 *
 	 * @since 0.1.0
@@ -35,7 +52,7 @@ final class Query {
 	protected $default_data;
 
 	/**
-	 * The class constructor.
+	 * The Constructor.
 	 *
 	 * @since 0.1.0
 	 */
@@ -74,18 +91,22 @@ final class Query {
 			]
 		);
 
-		$lists = $wpdb->get_results(
-			$wpdb->prepare(
-				"
-			SELECT list_id, name, subscribers, double_optin
-			FROM $wpdb->chimp_lists
-			LIMIT %d
-			OFFSET %d
-		", [ $args['per_page'], $args['offset'] ]
-			), ARRAY_A
-		);
+		// Check cache first.
+		$lists = self::get_cache();
 
-		return $lists;
+		if ( empty( $lists ) ) {
+
+			$lists = $wpdb->get_results("
+				SELECT list_id, name, subscribers, double_optin
+				FROM $wpdb->chimp_lists
+			", ARRAY_A );
+
+			if ( ! empty( $lists ) && ! is_wp_error( $lists ) ) {
+				wp_cache_set( self::CACHE_KEY, $lists, 'wp_chimp_lists' );
+			}
+		}
+
+		return array_slice( $lists, $args['offset'], $args['per_page'] );
 	}
 
 	/**
@@ -100,16 +121,22 @@ final class Query {
 	public function get_the_ids() {
 		global $wpdb;
 
-		$results = $wpdb->get_results(
-			"
-			SELECT list_id
-			FROM $wpdb->chimp_lists
-		", ARRAY_A
-		);
-
+		// Check cache first.
+		$lists = self::get_cache();
 		$list_ids = [];
-		foreach ( $results as $result ) {
-			$list_ids[] = $result['list_id'];
+
+		if ( empty( $lists ) ) {
+
+			$lists = $wpdb->get_results(
+				"
+				SELECT list_id
+				FROM $wpdb->chimp_lists
+			", ARRAY_A
+			);
+		}
+
+		foreach ( $lists as $list ) {
+			$list_ids[] = $list['list_id'];
 		}
 
 		return $list_ids;
@@ -128,7 +155,22 @@ final class Query {
 	public function get_by_the_id( $list_id = '' ) {
 		global $wpdb;
 
-		if ( ! empty( $list_id ) ) {
+		if ( empty( $list_id ) ) { // Return early if the $list_id is not supplied.
+			return [];
+		}
+
+		// Check cache first.
+		$lists = self::get_cache();
+
+		if ( ! empty( $lists ) ) {
+
+			foreach ( $lists as $data ) {
+				if ( $data['list_id'] === $list_id ) {
+					$list = $data;
+				}
+			}
+		} else { // If the cache is empty, retrieve from the database.
+
 			$list = $wpdb->get_row(
 				$wpdb->prepare(
 					"
@@ -140,7 +182,7 @@ final class Query {
 			);
 		}
 
-		return null === $list ? [] : $list;
+		return is_array( $list ) ? $list : [];
 	}
 
 	/**
@@ -157,11 +199,11 @@ final class Query {
 	public function insert( array $data ) {
 		global $wpdb;
 
-		$data = $this->sanitize_columns( $data );
+		$data = self::sanitize_columns( $data );
 		$data = wp_parse_args( $data, $this->default_data );
 
-		if ( $this->is_columns_data_invalid( $data ) ) {
-			return false;
+		if ( self::is_columns_data_invalid( $data ) ) {
+			return new WP_Error( 'wp_chimp_list_data_invalid', esc_html__( 'The list data is invalid.', 'wp-chimp' ), $data );
 		}
 
 		/**
@@ -169,16 +211,17 @@ final class Query {
 		 * the ID is a string, it is not an empty, and the row with the ID
 		 * does not exist.
 		 */
-		$current_id = $this->get_by_the_id( $data['list_id'] );
+		$current_id = self::get_by_the_id( $data['list_id'] );
 
 		if ( ! empty( $current_id ) ) {
-			return new WP_Error( 'wp_chimp_list_id_exists', esc_html__( 'That MailChimp list ID already exists. Consider using the the update method to update the existing list.', 'wp-chimp' ), $this );
+			return new WP_Error( 'wp_chimp_list_id_exists', esc_html__( 'That MailChimp list ID already exists. Consider using the the update method to update the existing list.', 'wp-chimp' ), $current_id );
 		}
 
 		$inserted = $wpdb->insert(
-			$wpdb->chimp_lists, $this->sanitize_values( $data ),
+			$wpdb->chimp_lists, self::sanitize_values( $data ),
 			[ '%s', '%s', '%d', '%d', '%s' ]
 		);
+		self::delete_cache();
 
 		if ( false === $inserted ) { // If the data is successfully inserted, add to the cache.
 			/* Translators: %s is the MailChimp list ID. */
@@ -201,18 +244,19 @@ final class Query {
 	public function update( $id = '', array $data ) {
 		global $wpdb;
 
-		if ( $this->is_columns_data_invalid( $data ) ) {
+		if ( self::is_columns_data_invalid( $data ) ) {
 			return false;
 		}
 
 		unset( $data['list_id'] ); // Remove the `list_id` from the updated column.
 
 		$updated = $wpdb->update(
-			$wpdb->chimp_lists, $this->sanitize_values( $data ),
+			$wpdb->chimp_lists, self::sanitize_values( $data ),
 			[ 'list_id' => $id ],
 			[ '%s', '%d', '%d', '%s' ],
 			[ '%s' ]
 		);
+		self::delete_cache();
 
 		return $updated;
 	}
@@ -234,6 +278,7 @@ final class Query {
 			[ 'list_id' => $id ],
 			[ '%s' ]
 		);
+		self::delete_cache();
 
 		return $deleted;
 	}
@@ -250,6 +295,7 @@ final class Query {
 		global $wpdb;
 
 		$emptied = $wpdb->query( "TRUNCATE TABLE $wpdb->chimp_lists" );
+		self::delete_cache();
 
 		/**
 		 * ...For CREATE, ALTER, TRUNCATE and DROP SQL statements, (which affect
@@ -337,5 +383,53 @@ final class Query {
 		}
 
 		return $sanitized_data;
+	}
+
+	/**
+	 * Retrieve the lists from the Object Caching.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @return array The lists from the cache.
+	 */
+	public static function get_cache() {
+
+		$cache = wp_cache_get( self::CACHE_KEY, self::CACHE_GROUP );
+		return ! is_array( $cache ) ? [] : $cache;
+	}
+
+	/**
+	 * Delete the lists from the Object Caching.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @return bool true on successful removal, false on failure.
+	 */
+	public static function delete_cache() {
+		return wp_cache_delete( self::CACHE_KEY, self::CACHE_GROUP );
+	}
+
+	/**
+	 * Add the lists from the Object Caching.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param mixed $value The value to cache.
+	 * @return bool true on successful removal, false on failure.
+	 */
+	public static function add_cache( $value = [] ) {
+		return wp_cache_add( self::CACHE_KEY, $value, self::CACHE_GROUP );
+	}
+
+	/**
+	 * Set the lists from the Object Caching.
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param mixed $value The value to cache.
+	 * @return bool true on successful removal, false on failure.
+	 */
+	public static function set_cache( $value = [] ) {
+		return wp_cache_set( self::CACHE_KEY, $value, self::CACHE_GROUP );
 	}
 }

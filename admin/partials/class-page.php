@@ -1,10 +1,10 @@
 <?php
 /**
- * Provide a admin area view for the plugin
+ * Admin: Page class
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @package WP_Chimp/Admin
+ * @package WP_Chimp\Admin
  * @since 0.1.0
  */
 
@@ -16,47 +16,39 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use Exception;
+
 use WP_Chimp\Core;
-use DrewM\MailChimp\MailChimp;
+use WP_Chimp\Core\Plugin_Base;
+use WP_Chimp\Deps\DrewM\MailChimp\MailChimp;
 
 /**
- * Class that register new menu in the Admin area and load the page.
+ * Class to render the admin page.
  *
  * @since 0.1.0
+ * @since 0.3.0 Extends the Core\Plugin_Base class.
  */
-class Page {
+class Page extends Plugin_Base {
 
 	/**
-	 * The ID of this plugin.
+	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since  0.1.0
-	 * @access private
-	 * @var    string  $plugin_name The ID of this plugin.
+	 * @since 0.3.0
 	 */
-	private $plugin_name;
+	public function run() {
 
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 * @var    string  $version The current version of this plugin.
-	 */
-	private $version;
+		$this->loader->add_action( 'admin_init', $this, 'register_page' );
+		$this->loader->add_action( 'added_option', $this, 'added_option', 30, 2 );
+		$this->loader->add_action( 'updated_option', $this, 'updated_option', 30, 3 );
 
-	/**
-	 * The class constructor.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 *
-	 * @param string $plugin_name The name of this plugin.
-	 * @param string $version     The version of this plugin.
-	 */
-	public function __construct( $plugin_name, $version ) {
-
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+		/**
+		 * Add the Action link for the plugin in the Plugin list screen.
+		 *
+		 * !important that_path e plugin file name is always referring to the plugin main file
+		 * in the plugin's root folder instead of the sub-folders in order for the function_path to work.
+		 *
+		 * @link https://developer.wordpress.org/reference/hooks/prefixplugin_action_links_plugin_file/
+		 */
+		$this->loader->add_filter( 'plugin_action_links_' . plugin_basename( $this->file_path ), $this, 'add_action_links', 2 );
 	}
 
 	/**
@@ -155,7 +147,7 @@ class Page {
 	 */
 	public function html_field_mailchimp_api_key() {
 
-		$api_key = get_option( 'wp_chimp_api_key', '' );
+		$api_key = Core\get_the_option( 'wp_chimp_api_key' );
 		$api_key_obfuscated = Core\obfuscate_string( $api_key );
 
 		?>
@@ -225,19 +217,22 @@ class Page {
 	 * Reset lists and some option whent API is added or updated.
 	 *
 	 * @since 0.1.0
+	 * @since 0.2.1 Reset the default list.
 	 *
 	 * @param string $option Option name.
 	 * @param mixed  $value  The new option value.
 	 */
 	protected function reset_data( $option, $value ) {
 
-		// Remove all entries from the `_chimp_lists` table.
-		$this->lists_query->truncate();
+		$this->lists_query->truncate(); // Remove all entries from the `_chimp_lists` table.
+		$this->lists_query->delete_cache(); // Remove from the Object Caching.
+
 		$total_items = self::get_lists_total_items( $value );
 
-		update_option( 'wp_chimp_lists_init', 0 );
-		update_option( 'wp_chimp_lists_total_items', $total_items ? $total_items : 0 );
-		update_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
+		Core\update_the_option( 'wp_chimp_lists_init', 0 );
+		Core\update_the_option( 'wp_chimp_lists_default', '' );
+		Core\update_the_option( 'wp_chimp_lists_total_items', $total_items ? $total_items : 0 );
+		Core\update_the_option( 'wp_chimp_api_key_status', null === $total_items ? 'invalid' : 'valid' );
 	}
 
 	/**
@@ -253,21 +248,17 @@ class Page {
 	 */
 	protected static function get_lists_total_items( $api_key ) {
 
-		if ( ! empty( $api_key ) ) {
+		if ( empty( $api_key ) ) { // If empty, abort early.
+			return;
+		}
 
-			try {
-				$mailchimp = new MailChimp( $api_key );
-			} catch ( Exception $e ) {
-				add_settings_error( 'wp-chimp-invalid-api-key', '401', $e->getMessage() );
-			}
-
-			if ( $mailchimp instanceof MailChimp ) {
-				$response = $mailchimp->get(
-					'lists', [
-						'fields' => 'total_items',
-					]
-				);
-			}
+		try {
+			$mailchimp = new MailChimp( $api_key );
+			$response = $mailchimp->get(
+				'lists', [
+					'fields' => 'total_items',
+				]
+			);
 
 			if ( $mailchimp->success() && isset( $response['total_items'] ) ) {
 				return absint( $response['total_items'] );
@@ -281,6 +272,10 @@ class Page {
 					add_settings_error( 'wp-chimp-api-status', 'unknown-error', $message, 'error' );
 				}
 			}
+		} catch ( Exception $e ) {
+
+			$message = __( 'Invalid MailChimp API key supplied.', 'wp-chimp' );
+			add_settings_error( 'wp-chimp-invalid-api-key', '401', $message );
 		}
 	}
 }

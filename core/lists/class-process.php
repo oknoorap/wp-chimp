@@ -1,10 +1,8 @@
 <?php
 /**
- * Provide a admin area view for the plugin
+ * Lists: Process class
  *
- * This file is used to markup the admin-facing aspects of the plugin.
- *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core\Lists
  * @since 0.1.0
  */
 
@@ -15,14 +13,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
-use WP_Background_Process;
+use WP_Chimp\Core;
 
 /**
- * Class that register new menu in the Admin area and load the page.
+ * Loaded dependencies with Mozart.
+ *
+ * The prefix looks terrible at best, but no other choice at least
+ * for the moment.
+ *
+ * @since 0.2.0
+ * @see https://github.com/coenjacobs/mozart
+ */
+use WP_Chimp_Packages_WP_Background_Process as WP_Chimp_Background_Process;
+
+/**
+ * Class to process the MailChimp lists from the API response on the background.
  *
  * @since 0.1.0
+ * @since 0.2.0 Extends `WP_Chimp_Background_Process` class.
  */
-final class Process extends WP_Background_Process {
+final class Process extends WP_Chimp_Background_Process {
 
 	/**
 	 * The unique wp_cron action.
@@ -41,7 +51,7 @@ final class Process extends WP_Background_Process {
 	}
 
 	/**
-	 * Task
+	 * Task.
 	 *
 	 * Override this method to perform any actions required on each
 	 * queue item. Return the modified item for further processing
@@ -68,7 +78,7 @@ final class Process extends WP_Background_Process {
 	}
 
 	/**
-	 * Complete
+	 * Complete.
 	 *
 	 * Override if applicable, but ensure that the below actions are
 	 * performed, or, call parent::complete().
@@ -78,6 +88,6 @@ final class Process extends WP_Background_Process {
 	protected function complete() {
 		parent::complete();
 
-		update_option( 'wp_chimp_lists_init', 1 );
+		Core\update_the_option( 'wp_chimp_lists_init', 1 );
 	}
 }

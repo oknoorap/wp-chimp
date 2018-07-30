@@ -1,6 +1,6 @@
 <?php
 /**
- * File to save the Plugin Core functions
+ * Plugin core functions
  *
  * @package WP_Chimp/Core
  * @since 0.1.0
@@ -14,6 +14,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Retrieve the option value with the default fallback.
+ *
+ * @since 0.2.0
+ *
+ * @param string $option_name The option name. It must be the one recognized in the plugin.
+ * @return WP_Error|mixed The option value. WP_Error if the option name is not recognized.
+ */
+function get_the_option( $option_name ) {
+	return Options::get( $option_name );
+}
+
+/**
+ * Update the value of an option that was already added.
+ *
+ * @since 0.2.0
+ *
+ * @param string $option_name (Required) Name of option to update. It must be the one recognized in the plugin.
+ * @param string $value Option value.
+ * @return WP_Error|boolean False if value was not updated, otherwise true. WP_Error if the option name is not recognized.
+ */
+function update_the_option( $option_name, $value ) {
+	return Options::update( $option_name, $value );
+}
+
+/**
+ * Add a new option.
+ *
+ * @since 0.2.0
+ *
+ * @param string $option_name (Required) Name of option to update. It must be the one recognized in the plugin.
+ * @param string $value Option value.
+ * @return WP_Error|boolean False if value was not updated, otherwise true. WP_Error if the option name is not recognized.
+ */
+function add_the_option( $option_name, $value ) {
+	return Options::add( $option_name, $value );
+}
+
+/**
  * Retrieve the MailChimp API key.
  *
  * @since 0.1.0
@@ -21,7 +59,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string The MailChimp API key or an empty string.
  */
 function get_the_mailchimp_api_key() {
-	return get_option( 'wp_chimp_api_key', '' );
+	return get_the_option( 'wp_chimp_api_key' );
 }
 
 /**
@@ -37,7 +75,7 @@ function get_the_mailchimp_api_key() {
  */
 function get_the_mailchimp_api_key_status() {
 
-	$api_key_status = (string) get_option( 'wp_chimp_api_key_status', 'invalid' );
+	$api_key_status = get_the_option( 'wp_chimp_api_key_status' );
 	return 'invalid' === $api_key_status ? false : true;
 }
 
@@ -53,7 +91,7 @@ function get_the_mailchimp_api_key_status() {
  */
 function get_the_lists_total_items() {
 
-	$total_items = get_option( 'wp_chimp_lists_total_items', 0 );
+	$total_items = get_the_option( 'wp_chimp_lists_total_items' );
 	return absint( $total_items );
 }
 
@@ -70,7 +108,7 @@ function set_the_default_list( array $lists, $index = 0 ) {
 
 	if ( isset( $lists[ $index ] ) && isset( $lists[ $index ]['list_id'] ) ) {
 		$default = (string) $lists[ $index ]['list_id'];
-		update_option( 'wp_chimp_lists_default', $default );
+		update_the_option( 'wp_chimp_lists_default', $default );
 	}
 }
 
@@ -82,7 +120,7 @@ function set_the_default_list( array $lists, $index = 0 ) {
  * @return string The ID of the default list.
  */
 function get_the_default_list() {
-	return get_option( 'wp_chimp_lists_default', '' );
+	return get_the_option( 'wp_chimp_lists_default' );
 }
 
 /**
@@ -96,7 +134,12 @@ function get_the_default_list() {
  */
 function is_lists_init() {
 
-	$init = get_option( 'wp_chimp_lists_init', 0 );
+	$init = get_the_option( 'wp_chimp_lists_init' );
+
+	if ( is_wp_error( $init ) ) {
+		return false;
+	}
+
 	return 1 === absint( $init );
 }
 
@@ -129,7 +172,7 @@ function is_mailchimp_api_valid() {
  * @return string The WP-Chimp REST API endpont base URL.
  */
 function get_the_rest_api_namespace() {
-	return Endpoints\REST_Lists_Controller::REST_NAMESPACE;
+	return Endpoints\REST_Controller::get_namespace();
 }
 
 /**
@@ -273,3 +316,31 @@ function obfuscate_string( $string = '' ) {
 	return $obfuscated_api_key;
 }
 
+/**
+ * Validate and convert a value into a string type of value.
+ *
+ * @since 0.2.0
+ *
+ * @param mixed $value The value to filter.
+ * @return string
+ */
+function filter_string( $value ) {
+	return filter_var( $value, FILTER_SANITIZE_STRING );
+}
+
+/**
+ * Validate API key status output.
+ *
+ * @since 0.2.0
+ *
+ * @param mixed $value The value to filter.
+ * @return string
+ */
+function filter_api_key_status( $value ) {
+
+	if ( in_array( $value, [ 'valid', 'invalid' ], true ) ) {
+		return $value;
+	}
+
+	return 'invalid';
+}

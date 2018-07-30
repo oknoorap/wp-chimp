@@ -1,8 +1,8 @@
 <?php
 /**
- * MailChimp List Table: DB_MailChimp_Lists class
+ * Lists: Table class
  *
- * @package WP_Chimp/Core
+ * @package WP_Chimp\Core\Lists
  * @since 0.1.0
  */
 
@@ -13,17 +13,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'No script kiddies please!' );
 }
 
+use WP_Chimp\Core\Loader;
 use WP_Chimp\Core\Database;
 
 /**
- * Setup the "chimp_list" database schema
+ * Class to register the custom, `chimp_lists`, table to store the MailChimp lists in the database.
  *
  * @since 0.1.0
+ * @since 0.3.0 Adds the `$loader` property, and `set_loder` and `run` method.
  *
+ * @property WP_Chimp\Core\Loader $loader
  * @property string $name
  * @property string $version
  */
 final class Table extends Database {
+
+	/**
+	 * The loader that's responsible for maintaining and registering all hooks that power
+	 * the plugin.
+	 *
+	 * @since 0.3.0
+	 * @var WP_Chimp\Core\Loader $loader Maintains and registers all hooks for the plugin.
+	 */
+	protected $loader;
 
 	/**
 	 * Table name
@@ -34,15 +46,37 @@ final class Table extends Database {
 	protected $name = 'chimp_lists';
 
 	/**
-	 * Database version
+	 * Database version.
 	 *
 	 * @since 0.1.0
-	 * @var string
+	 * @var int
 	 */
 	protected $version = 201803220001;
 
 	/**
-	 * Setup the database schema
+	 * Run the loader to execute all of the hooks with WordPress.
+	 *
+	 * @since 0.3.0
+	 */
+	public function run() {
+
+		$this->loader->add_action( 'switch_blog', $this, 'switch_blog' );
+		$this->loader->add_action( 'admin_init', $this, 'maybe_upgrade' );
+	}
+
+	/**
+	 * Set the loader to orchestrate WordPress Hooks
+	 *
+	 * @since 0.3.0
+	 *
+	 * @param WP_Chimp\Core\Loader $loader The Loader instance.
+	 */
+	public function set_loader( Loader $loader ) {
+		$this->loader = $loader;
+	}
+
+	/**
+	 * Setup the database schema.
 	 *
 	 * @since 0.1.0
 	 */
@@ -61,7 +95,7 @@ final class Table extends Database {
 	}
 
 	/**
-	 * Handle schema changes
+	 * Handle schema changes.
 	 *
 	 * @since 0.1.0
 	 */

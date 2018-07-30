@@ -32,6 +32,7 @@ const dstPath = {
   LANG: path.join(__dirname, 'languages')
 }
 
+const deployStatus = argv.status;
 const sassFiles = [
   'admin',
   'subscription-form-editor',
@@ -43,6 +44,47 @@ const jsFiles = [
   'subscription-form-editor',
   'subscription-form'
 ]
+
+grunt.initConfig({
+
+  pkg: grunt.file.readJSON( 'package.json' ),
+
+  /* eslint-disable */
+  wp_deploy: {
+
+    // Deploys a new release to the WordPress SVN repo.
+    release: {
+      options: {
+        plugin_slug: '<%= pkg.name %>',
+        build_dir: 'dist',
+        assets_dir: 'svn-assets'
+      }
+    },
+
+    // Only commit the assets directory.
+    assets: {
+      options: {
+        plugin_slug: '<%= pkg.name %>',
+        build_dir: 'dist',
+        assets_dir: 'svn-assets',
+        deploy_trunk: false
+      }
+    },
+
+    // Only deploy to trunk (e.g. when only updating the 'Tested up to' value and not deploying a release).
+    trunk: {
+      options: {
+        plugin_slug: '<%= pkg.name %>',
+        build_dir: 'dist',
+        assets_dir: 'svn-assets',
+        deploy_tag: false
+      }
+    }
+  }
+  /* eslint-disable */
+});
+
+grunt.loadNpmTasks('grunt-wp-deploy');
 
 /**
  * Task to compile the JSX files to JS.

@@ -15,10 +15,10 @@
  * Plugin Name: WP Chimp
  * Plugin URI: https://wordpress.org/plugins/wp-chimp
  * Description: Lean MailChimp subscription form plugin for WordPress
- * Version: 0.1.0
+ * Version: 0.3.0
  * Author: Thoriq Firdaus
  * Author URI: https://wp-chimp.com
- * License: GPL-2.0+
+ * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: wp-chimp
  * Domain Path: /languages
@@ -35,9 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * will load files from the packages installed through Composer
  *
  * @link http://php.net/manual/en/function.spl-autoload-register.php
- * @link https://getcomposer.org/doc/01-basic-usage.md#autoloading
  */
-require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 
 /**
@@ -60,7 +58,7 @@ function wp_chimp() {
 
 	if ( is_null( $plugin ) ) {
 
-		$plugin = new WP_Chimp\Core\Plugin( 'wp-chimp', '0.1.0', __FILE__ );
+		$plugin = new WP_Chimp\Core\Plugin( 'wp-chimp', '0.3.0', __FILE__ );
 		$plugin->set_loader( new WP_Chimp\Core\Loader() );
 
 		$plugin->run();

@@ -30,7 +30,16 @@ function autoloader( $class_name ) {
 
 	// Do a reverse loop through $file_parts to build the path to the file.
 	$namespace = '';
+	$file_name = '';
 	for ( $i = count( $file_parts ) - 1; $i > 0; $i-- ) {
+
+		if ( 'Deps' === $file_parts[1] ) {
+			unset( $file_parts[0] );
+
+			$deps_file = implode( '/', $file_parts ) . '.php';
+			$file_name = 'packages/' . $deps_file;
+			continue;
+		}
 
 		// Read the current component of the file part.
 		$current = strtolower( $file_parts[ $i ] );
@@ -58,6 +67,10 @@ function autoloader( $class_name ) {
 		} else {
 			$namespace = '/' . $current . $namespace;
 		}
+	}
+
+	if ( ! $file_name || empty( $file_name ) ) {
+		return;
 	}
 
 	// Now build a path to the file using mapping to the file location.

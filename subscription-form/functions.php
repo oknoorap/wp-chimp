@@ -1,6 +1,6 @@
 <?php
 /**
- * Core "Subscription Form" functions
+ * Subscription Form functions
  *
  * @package WP_Chimp/Subscription_Form
  * @since 0.1.0
@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WP_REST_Request;
 use WP_REST_Response;
+
 use WP_Chimp\Core;
 
 /**
