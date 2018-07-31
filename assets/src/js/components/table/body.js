@@ -1,3 +1,6 @@
+
+import { mount, el, list, setChildren } from 'redom'
+
 /**
  * Get the translateable strings for the Admin Settings page.
  *
@@ -11,8 +14,9 @@ const locale = wpChimpL10n
  * @since 0.1.0
  */
 class TableRow {
-  constructor () {
-    this.el = el('tr')
+
+  constructor() {
+    this.el = el( 'tr' )
   }
 
   /**
@@ -23,8 +27,8 @@ class TableRow {
    *
    * @param {Object} data
    */
-  update (data) {
-    setChildren(this.el, this.getTableData(data))
+  update( data ) {
+    setChildren( this.el, this.getTableData( data ) )
   }
 
   /**
@@ -35,29 +39,28 @@ class TableRow {
    *
    * @param {Object} data
    */
-  getTableData (data) {
-    const list = camelCaseKeys(data)
-    const dashiconsNo = el('span', { className: 'dashicons dashicons-no-alt' })
-    const dashiconsYes = el('span', { className: 'dashicons dashicons-yes' })
+  getTableData( data ) {
+    const dashiconsNo = el( 'span', { className: 'dashicons dashicons-no-alt' })
+    const dashiconsYes = el( 'span', { className: 'dashicons dashicons-yes' })
 
     return [
-      el('td', {
+      el( 'td', {
         className: 'wp-chimp-table__td-list-id'
       }, [
-        el('code', list.listId)
+        el( 'code', data.list_id )
       ]),
-      el('td', {
+      el( 'td', {
         className: 'wp-chimp-table__td-name'
-      }, list.name),
-      el('td', {
+      }, data.name ),
+      el( 'td', {
         className: 'wp-chimp-table__td-subscribers'
-      }, list.subscribers),
-      el('td', {
+      }, data.subscribers ),
+      el( 'td', {
         className: 'wp-chimp-table__td-double-optin'
-      }, list.doubleOptin === 0 || !list.doubleOptin ? dashiconsNo : dashiconsYes),
-      el('td', {
+      }, 0 === data.double_optin || ! data.double_optin ? dashiconsNo : dashiconsYes ),
+      el( 'td', {
         className: 'wp-chimp-table__td-shortcode'
-      }, el('code', `[wp-chimp list_id="${list.listId}"]`))
+      }, el( 'code', `[wp-chimp list_id="${data.list_id}"]` ) )
     ]
   }
 }
@@ -68,11 +71,13 @@ class TableRow {
  * @since 0.1.0
  */
 class TableBody {
-  constructor () {
-    this.el = el('tbody', { id: 'wp-chimp-table-lists-body' })
-    this.list = list(this.el, TableRow)
 
-    mount(document.querySelector('#wp-chimp-table-lists'), this)
+  constructor() {
+
+    this.el   = el( 'tbody', { id: 'wp-chimp-table-lists-body' })
+    this.list = list( this.el, TableRow )
+
+    mount( document.querySelector( '#wp-chimp-table-lists' ), this )
   }
 
   /**
@@ -82,8 +87,8 @@ class TableBody {
    *
    * @param {Object} data
    */
-  update (data) {
-    this.list.update(data)
+  update( data ) {
+    this.list.update( data )
   }
 
   /**
@@ -91,12 +96,13 @@ class TableBody {
    *
    * @since 0.1.0
    */
-  mountEmptyState () {
-    setChildren(this.el, el('tr', [
-      el('td', locale.noLists, {
+  mountEmptyState() {
+
+    setChildren( this.el, el( 'tr', [
+      el( 'td', locale.noLists, {
         'colspan': '5'
       })
-    ]))
+    ]) )
   }
 
   /**
@@ -104,16 +110,17 @@ class TableBody {
    *
    * @since 0.1.0
    */
-  mountPlaceholder () {
+  mountPlaceholder() {
+
     var placeholder = []
-    for (let i = 0; i < 5; i++) {
-      placeholder.push(el('td', [
-        el('span', '', {
+    for ( let i = 0; 5 > i; i++ ) {
+      placeholder.push( el( 'td', [
+        el( 'span', '', {
           className: `wp-chimp-table-data-placeholder__bar index-${i}`
         })
-      ]))
+      ]) )
     }
-    setChildren(this.el, el('tr', placeholder))
+    setChildren( this.el, el( 'tr', placeholder ) )
   }
 }
 

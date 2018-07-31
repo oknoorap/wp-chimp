@@ -11,8 +11,8 @@ class FormListSelect extends Component {
         <Dashicon icon="feedback" />
         <select value={listId}>
           {
-            lists.data.map(({ list_id: listId, name }) => {
-              return <option value={listId}>{name}</option>
+            lists.data.map(({ list_id: listId, name }, key) => {
+              return <option value={listId} key={key}>{name}</option>
             })
           }
         </select>

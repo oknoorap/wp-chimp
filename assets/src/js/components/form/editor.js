@@ -27,10 +27,10 @@ class FormEditor extends Component {
     }
 
     return (
-     <BlockControls key="form-controls" className={`${className}__block-controls`}>
+      <BlockControls key="form-controls" className={`${className}__block-controls`}>
         <FormListSelect {...this.props} />
         <FormView {...this.props} />
-     </BlockControls>
+      </BlockControls>
     )
   }
 }

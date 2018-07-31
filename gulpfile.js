@@ -18,13 +18,15 @@ const rollup = require('gulp-rollup')
 const babel = require('rollup-plugin-babel')
 const uglify = require('gulp-uglify')
 const resolve = require('rollup-plugin-node-resolve')
+const commonjs = require('rollup-plugin-commonjs')
 const jsx = require('rollup-plugin-jsx')
+const prettier = require('rollup-plugin-prettier')
 
 const assetPath = path.join(__dirname, 'assets')
 const srcPath = {
   SCSS: path.join(assetPath, 'src', 'scss'),
   JS: path.join(assetPath, 'src', 'js'),
-  REACT: path.join(__dirname, 'node_modules', 'react')
+  REDOM: path.join(__dirname, 'node_modules', 'redom', 'dist')
 }
 const dstPath = {
   CSS: path.join(assetPath, 'css'),
@@ -32,7 +34,6 @@ const dstPath = {
   LANG: path.join(__dirname, 'languages')
 }
 
-const deployStatus = argv.status;
 const sassFiles = [
   'admin',
   'subscription-form-editor',
@@ -40,51 +41,10 @@ const sassFiles = [
 ]
 
 const jsFiles = [
-  // 'admin',
+  'admin',
   'subscription-form-editor',
   'subscription-form'
 ]
-
-grunt.initConfig({
-
-  pkg: grunt.file.readJSON( 'package.json' ),
-
-  /* eslint-disable */
-  wp_deploy: {
-
-    // Deploys a new release to the WordPress SVN repo.
-    release: {
-      options: {
-        plugin_slug: '<%= pkg.name %>',
-        build_dir: 'dist',
-        assets_dir: 'svn-assets'
-      }
-    },
-
-    // Only commit the assets directory.
-    assets: {
-      options: {
-        plugin_slug: '<%= pkg.name %>',
-        build_dir: 'dist',
-        assets_dir: 'svn-assets',
-        deploy_trunk: false
-      }
-    },
-
-    // Only deploy to trunk (e.g. when only updating the 'Tested up to' value and not deploying a release).
-    trunk: {
-      options: {
-        plugin_slug: '<%= pkg.name %>',
-        build_dir: 'dist',
-        assets_dir: 'svn-assets',
-        deploy_tag: false
-      }
-    }
-  }
-  /* eslint-disable */
-});
-
-grunt.loadNpmTasks('grunt-wp-deploy');
 
 /**
  * Task to compile the JSX files to JS.
@@ -95,13 +55,26 @@ gulp.task('build:scripts', () => {
     .pipe(rollup({
       input: jsFiles.map(file => path.join(srcPath.JS, `${file}.js`)),
       output: {
-        format: 'es',
+        format: 'iife',
+        globals: [
+          'redom'
+        ]
       },
+      external: [
+        'redom',
+      ],
       plugins: [
         jsx({ factory: 'wp.element.createElement', passUnknownTagsToFactory: true }),
         resolve({
           jsnext: true,
-          browser:true
+          browser:true,
+        }),
+        babel({
+          plugins: ['external-helpers'],
+          runtimeHelpers: true
+        }),
+        prettier({
+          singleQuote: true
         })
       ]
     }))
@@ -112,6 +85,9 @@ gulp.task('build:scripts', () => {
       output: {
         format: 'iife',
       },
+      external: [
+        'redom',
+      ],
       plugins: [
         babel()
       ]
@@ -121,7 +97,16 @@ gulp.task('build:scripts', () => {
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(dstPath.JS))
 
-  return compileSource
+  const copyReDOM = gulp.src(path.join(srcPath.REDOM, 'redom.js'))
+    .pipe(gulp.dest(dstPath.JS))
+
+  const copyMinifiedReDOM = gulp.src(path.join(srcPath.REDOM, 'redom.min.js'))
+    .pipe(gulp.dest(dstPath.JS))
+
+  return merge(compileSource, [
+    copyReDOM,
+    copyMinifiedReDOM
+  ])
 })
 
 /**
@@ -201,17 +186,19 @@ gulp.task('readme', () => {
  * Watch files
  */
 gulp.task('watch:files', () => {
-  watch(path.join(srcPath.SCSS, '*.scss'), batch((events, done) => {
-    gulp.start('build:styles', done)
-  }))
+  gulp.start('build', () => {
+    watch(path.join(srcPath.SCSS, '*.scss'), batch((events, done) => {
+      gulp.start('build:styles', done)
+    }))
 
-  watch(path.join(srcPath.JS, '**', '*.js'), batch((events, done) => {
-    gulp.start('build:scripts', done)
-  }))
+    watch(path.join(srcPath.JS, '**', '*.js'), batch((events, done) => {
+      gulp.start('build:scripts', done)
+    }))
 
-  watch(path.join(__dirname, '**', '*.php'), batch((events, done) => {
-    gulp.start('build:lang', done)
-  }))
+    watch(path.join(__dirname, '**', '*.php'), batch((events, done) => {
+      gulp.start('build:lang', done)
+    }))
+  })
 })
 
 /**

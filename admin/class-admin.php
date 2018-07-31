@@ -87,8 +87,8 @@ class Admin extends Plugin_Base {
 			 * between the defined hooks and the functions defined in this
 			 * class.
 			 */
+			wp_enqueue_script( 'redom', plugins_url( 'assets/js/redom.min.js', $this->file_path ), [], $this->version, true );
 			wp_register_script( $this->plugin_name, plugins_url( 'assets/js/admin.min.js', $this->file_path ), [ 'jquery', 'wp-api' ], $this->version, true );
-
 			wp_enqueue_script( $this->plugin_name );
 		}
 	}

@@ -20,16 +20,24 @@
     "url": "https://github.com/tfirdaus/wp-chimp/issues"
   },
   "homepage": "https://github.com/tfirdaus/wp-chimp#readme",
+  "dependencies": {
+    "camelcase-keys": "^4.2.0",
+    "redom": "^3.12.7"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
+    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
+    "eslint": "^5.2.0",
     "eslint-config-wordpress": "^2.0.0",
     "eslint-plugin-jest": "^21.18.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.10.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-babel": "^7.0.1",
@@ -50,16 +58,13 @@
     "react": "^16.4.1",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-browserify-transform": "^1.0.1",
+    "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-jsx": "^1.0.3",
     "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-prettier": "^0.4.0",
     "stylelint-config-wordpress": "^13.0.0",
     "wp-get-file-header": "^1.0.1"
   },
-  "eslintIgnore": [
-    "assets/js/*.js",
-    "node_modules/*",
-    "vendor/*"
-  ],
   "stylelint": {
     "extends": "stylelint-config-wordpress"
   },
@@ -74,6 +79,7 @@
     "local:import-db": "bash wp-dev-kit/localhost/mysql-import.sh",
     "precommit": "bash wp-dev-kit/pipelines/pre-commit.sh",
     "test": "bash wp-dev-kit/pipelines/tests.sh",
+    "test:eslint": "./node_modules/.bin/eslint .",
     "test:stylelint": "./node_modules/.bin/stylelint 'assets/src/scss/*.*'"
   }
 }
