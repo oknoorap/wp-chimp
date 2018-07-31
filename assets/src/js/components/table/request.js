@@ -79,7 +79,7 @@ class TableRequest {
   request (args = {}) {
     const { restApiUrl } = wpChimpSettingState
 
-    this.configs.url = `${restApiUrl}${args.hasOwnProperty('url') ? args.endpoint : '/lists'}`
+    this.configs.url = `${restApiUrl}${args.hasOwnProperty('url') ? args.url : '/lists'}`
 
     if (args.hasOwnProperty('page')) {
       let page = parseInt(args.page, 10)

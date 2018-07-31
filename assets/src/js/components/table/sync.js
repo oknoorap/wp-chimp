@@ -24,7 +24,7 @@ class TableSync {
    */
   onClick () {
     this.tableRequest.request({
-      'url': 'wp-chimp/v1/sync/lists'
+      'url': '/sync/lists'
     })
   }
 }
