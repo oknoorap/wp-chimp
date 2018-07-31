@@ -79,6 +79,10 @@
     "local:import-db": "bash wp-dev-kit/localhost/mysql-import.sh",
     "precommit": "bash wp-dev-kit/pipelines/pre-commit.sh",
     "test": "bash wp-dev-kit/pipelines/tests.sh",
+    "build:scripts": "gulp build:scripts",
+    "build:styles": "gulp build:styles",
+    "build": "gulp build",
+    "dev": "gulp",
     "test:eslint": "./node_modules/.bin/eslint .",
     "test:stylelint": "./node_modules/.bin/stylelint 'assets/src/scss/*.*'"
   }
