@@ -29,6 +29,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "eslint-config-wordpress": "^2.0.0",
+    "eslint-plugin-jest": "^21.18.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-babel": "^7.0.1",
@@ -72,7 +73,7 @@
     "local:export-db": "bash wp-dev-kit/localhost/mysql-export.sh",
     "local:import-db": "bash wp-dev-kit/localhost/mysql-import.sh",
     "precommit": "bash wp-dev-kit/pipelines/pre-commit.sh",
-    "test": "bash wp-dev-kit/pipelines/tests.sh"
+    "test": "bash wp-dev-kit/pipelines/tests.sh",
     "test:stylelint": "./node_modules/.bin/stylelint 'assets/src/scss/*.*'"
   }
 }
