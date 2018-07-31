@@ -1,6 +1,6 @@
 @import "variables";
 
-.wp-chimp-subscription-form {
+.wp-admin .wp-chimp-subscription-form {
 
 	margin: 0;
 
@@ -33,6 +33,10 @@
 		}
 	}
 
+	&__heading {
+		margin-bottom: 0;
+	}
+
 	// The Form element.
 	.wp-chimp-form {
 
@@ -42,10 +46,10 @@
 	}
 }
 
-.wp-chimp-subscription-form,
-.wp-chimp-subscription-form .wp-chimp-form {
+.wp-admin .wp-chimp-subscription-form,
+.wp-admin .wp-chimp-subscription-form .wp-chimp-form {
 
-	&.is-editable {
+	.is-editable {
 
 		&:focus {
 			outline: 1px solid $gray;
