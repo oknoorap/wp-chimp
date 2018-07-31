@@ -18,20 +18,25 @@ const rollup = require('gulp-rollup')
 const babel = require('rollup-plugin-babel')
 const uglify = require('gulp-uglify')
 const resolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
 const jsx = require('rollup-plugin-jsx')
 const prettier = require('rollup-plugin-prettier')
 
 const assetPath = path.join(__dirname, 'assets')
+
 const srcPath = {
   SCSS: path.join(assetPath, 'src', 'scss'),
   JS: path.join(assetPath, 'src', 'js'),
   REDOM: path.join(__dirname, 'node_modules', 'redom', 'dist')
 }
+
 const dstPath = {
   CSS: path.join(assetPath, 'css'),
   JS: path.join(assetPath, 'js'),
   LANG: path.join(__dirname, 'languages')
+}
+
+const externalModules = {
+  redom: 'redom'
 }
 
 const sassFiles = [
@@ -56,13 +61,9 @@ gulp.task('build:scripts', () => {
       input: jsFiles.map(file => path.join(srcPath.JS, `${file}.js`)),
       output: {
         format: 'iife',
-        globals: [
-          'redom'
-        ]
+        globals: externalModules
       },
-      external: [
-        'redom',
-      ],
+      external: Object.keys(externalModules),
       plugins: [
         jsx({ factory: 'wp.element.createElement', passUnknownTagsToFactory: true }),
         resolve({
@@ -84,10 +85,9 @@ gulp.task('build:scripts', () => {
       input: jsFiles.map(file => path.join(dstPath.JS, `${file}.js`)),
       output: {
         format: 'iife',
+        globals: externalModules
       },
-      external: [
-        'redom',
-      ],
+      external: Object.keys(externalModules),
       plugins: [
         babel()
       ]
